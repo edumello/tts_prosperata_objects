@@ -3,6 +3,8 @@
 Este projeto automatiza os ataques do personagem Edward em Tabletop Simulator.
 Esta e a primeira versao oficial do painel e do script.
 
+Todos os caminhos deste arquivo sao relativos a `characters/edward/`, salvo quando indicado o contrario.
+
 ## Arquivos principais
 
 ```text
@@ -348,6 +350,12 @@ Regenerar:
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File image_menu\build_panel.ps1
+```
+
+A partir da raiz do repo, use:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File characters\edward\image_menu\build_panel.ps1
 ```
 
 O canvas do PNG e `2048x640`.

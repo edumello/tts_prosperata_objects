@@ -2,6 +2,8 @@
 
 Esta pasta contem o gerador e os metadados do painel visual usado no Tabletop Simulator.
 
+Todos os caminhos deste arquivo sao relativos a `characters/edward/`, salvo quando indicado o contrario.
+
 ## Arquivos oficiais
 
 ```text
@@ -13,10 +15,16 @@ image_menu/exports/edward_attack_panel_v1.png
 
 ## Gerar o painel
 
-Execute a partir da raiz do projeto:
+Execute a partir da pasta `characters/edward/`:
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File image_menu\build_panel.ps1
+```
+
+Ou a partir da raiz do repo:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File characters\edward\image_menu\build_panel.ps1
 ```
 
 O comando atualiza:

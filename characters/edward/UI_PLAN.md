@@ -2,6 +2,8 @@
 
 Este arquivo descreve como manter a UI oficial do painel Edward.
 
+Todos os caminhos deste arquivo sao relativos a `characters/edward/`, salvo quando indicado o contrario.
+
 ## Objetivo
 
 Manter um painel funcional e facil de ajustar no Tabletop Simulator, com:
@@ -214,6 +216,12 @@ COUNT = 15
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File image_menu\build_panel.ps1
+```
+
+A partir da raiz do repo:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File characters\edward\image_menu\build_panel.ps1
 ```
 
 Esse comando atualiza:

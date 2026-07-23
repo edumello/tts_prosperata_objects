@@ -1,29 +1,28 @@
-# Edward Attack Panel
+# Tabletop Simulator RPG Tools
 
-Painel/script de Tabletop Simulator para automatizar ataques do personagem Edward em Tormenta20.
+Repositorio para scripts, paineis e assets de personagens usados na mesa de RPG no Tabletop Simulator.
 
-## Arquivos principais
+## Estrutura
 
-- `ataque_edward.lua`: script do objeto no Tabletop Simulator.
-- `ui.xml`: referencia do popup de resultado via Global UI.
-- `assets/edward_attack_panel.png`: imagem oficial usada no painel.
-- `image_menu/build_panel.ps1`: gerador da imagem do painel.
-- `image_menu/manifest.json`: posicoes e metadados da UI.
-- `CONTEXT.md`: contexto tecnico e decisoes oficiais do projeto.
-- `UI_PLAN.md`: plano de manutencao da UI.
-
-## Fluxo de update
-
-1. Edite `ataque_edward.lua` e os arquivos necessarios.
-2. Se alterar a imagem, rode:
-
-```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File image_menu\build_panel.ps1
+```text
+characters/
+  edward/
+    ataque_edward.lua
+    ui.xml
+    assets/
+    image_menu/
+    CONTEXT.md
+    UI_PLAN.md
 ```
 
-3. Atualize o objeto salvo no Tabletop Simulator ou use o updater futuro.
-4. Teste `ROLAR ATAQUE`, `ROLAR DANO` e `ROLAR ATAQUE CRITICO`.
+Cada personagem deve ficar em sua propria pasta dentro de `characters/`, com script, assets, documentacao e ferramentas de geracao isolados.
 
-## Observacoes
+## Personagens
 
-O popup de resultado deve usar Global UI. Nao cole `ui.xml` na Object UI do painel, pois isso prende o popup ao objeto em 3D.
+- [Edward](characters/edward/README.md)
+
+## Convencoes
+
+- Use nomes de pastas sem espaco e sem acento para facilitar URLs publicas no GitHub.
+- Mantenha `CONTEXT.md` atualizado dentro da pasta do personagem sempre que mudar regras, layout ou fluxo de exportacao.
+- O popup de resultado do Edward usa Global UI gerada pelo Lua. Nao cole `ui.xml` na Object UI do painel.
