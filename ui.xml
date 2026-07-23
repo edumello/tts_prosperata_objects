@@ -1,0 +1,25 @@
+<!-- Global UI do popup de resultado. Nao colar na Object UI do painel. -->
+<Panel
+    id="resultadoAtaque"
+    active="false"
+    width="460"
+    height="190"
+    position="0 70"
+    color="rgba(0,0,0,0.86)">
+
+    <Text
+        id="textoAtaque"
+        width="420"
+        height="150"
+        position="0 0"
+        resizeTextForBestFit="true"
+        resizeTextMinSize="9"
+        resizeTextMaxSize="14"
+        horizontalOverflow="Wrap"
+        verticalOverflow="Truncate"
+        color="#FFFFFF"
+        fontStyle="Bold"
+        alignment="MiddleCenter">
+        Resultado do ataque
+    </Text>
+</Panel>

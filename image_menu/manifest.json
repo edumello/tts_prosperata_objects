@@ -1,0 +1,87 @@
+{
+  "version": "1.0.0",
+  "canvas": {
+    "width": 2048,
+    "height": 640
+  },
+  "export": {
+    "tts_panel": "assets/edward_attack_panel.png",
+    "preview": "image_menu/exports/edward_attack_panel_v1.png",
+    "builder": "image_menu/build_panel.ps1"
+  },
+  "tts": {
+    "recommended_thickness": 0.1,
+    "button_y": 0.1,
+    "button_scale": [0.2, 0.2, 0.2]
+  },
+  "positions": {
+    "preparada": [-1.30, 0.10, -0.31],
+    "poderoso": [-1.30, 0.10, -0.10],
+    "pesado": [-1.30, 0.10, 0.13],
+    "especial": [-1.55, 0.10, 0.34],
+    "especialPM": [-1.18, 0.10, 0.34],
+    "modExtraNome1": [-0.10, 0.10, -0.27],
+    "modExtraNome2": [-0.10, 0.10, -0.07],
+    "modExtraNome3": [-0.10, 0.10, 0.13],
+    "modExtraNome4": [-0.10, 0.10, 0.33],
+    "modExtra": [0.70, 0.10, -0.28],
+    "modExtra2": [0.70, 0.10, -0.08],
+    "modExtra3": [0.70, 0.10, 0.12],
+    "modExtra4": [0.70, 0.10, 0.32],
+    "previewPM": [2.25, 0.10, -0.27],
+    "previewAtaque": [2.25, 0.10, 0.03],
+    "previewDano": [2.25, 0.10, 0.33],
+    "rolarAtaque": [-1.18, 0.10, 0.68],
+    "critico": [0.12, 0.10, 0.68],
+    "rolarDano": [1.40, 0.10, 0.68]
+  },
+  "buttons": {
+    "order": [
+      "preparada",
+      "poderoso",
+      "especial",
+      "especialPM",
+      "modExtra",
+      "pesado",
+      "rolarAtaque",
+      "critico",
+      "rolarDano",
+      "previewPM",
+      "previewAtaque",
+      "previewDano",
+      "modExtra2",
+      "modExtra3",
+      "modExtra4"
+    ],
+    "count": 15
+  },
+  "inputs": {
+    "modExtraNames": 4,
+    "width": 760,
+    "height": 320,
+    "font_size": 180
+  },
+  "attackDie": {
+    "type": "Die_20",
+    "offsetLocal": [0, 2.0, -1.35],
+    "scale": [1.25, 1.25, 1.25],
+    "forceMin": [-3, 14, -3],
+    "forceMax": [3, 18, 3],
+    "torqueMin": [-35, -35, -35],
+    "torqueMax": [35, 35, 35],
+    "waitMaxSeconds": 8,
+    "readIntervalSeconds": 0.25
+  },
+  "damageDice": {
+    "type": "Die_6",
+    "offsetLocal": [0, 2.0, 1.35],
+    "spacing": 0.48,
+    "scale": [1.05, 1.05, 1.05],
+    "forceMin": [-3, 12, -3],
+    "forceMax": [3, 16, 3],
+    "torqueMin": [-30, -30, -30],
+    "torqueMax": [30, 30, 30],
+    "waitMaxSeconds": 8,
+    "readIntervalSeconds": 0.25
+  }
+}

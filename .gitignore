@@ -1,0 +1,16 @@
+# Local/editor files
+.agents/
+.tts/
+
+# OS noise
+Thumbs.db
+Desktop.ini
+
+# Temporary files
+*.tmp
+*.bak
+*.log
+
+# Tabletop Simulator local saves are machine-specific.
+# Keep exported/saved objects outside the repo unless intentionally copied here.
+*.json.bak
