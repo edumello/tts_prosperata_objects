@@ -2307,62 +2307,6 @@ local function finalizarAtaqueRolado(jogador, calculo, d20, d20Lista)
     }
 
     -- -----------------------------------------------------
-    -- Mensagem detalhada
-    -- -----------------------------------------------------
-
-    local mensagem = string.format(
-        "%s atacou com %s" ..
-        "\nAtaque: %s %s = %s" ..
-        "\nModificador de dano salvo: %s" ..
-        "\nDados de dano salvos: %sd%s" ..
-        "\nPM declarado: %s" ..
-        "\nModificadores: %s",
-
-        tostring(jogador),
-        tostring(CONFIG.nomeArma),
-        textoD20Ataque(d20, d20Lista),
-        sinal(calculo.modificadorAtaque),
-        tostring(totalAtaque),
-        sinal(calculo.modificadorDano),
-        tostring(calculo.quantidadeDadosDano),
-        tostring(CONFIG.ladosDadoDano),
-        tostring(calculo.custoPM),
-        tostring(calculo.listaEfeitos)
-    )
-
-    if resultadoAutomatico ~= nil then
-        mensagem =
-            mensagem ..
-            "\n" ..
-            resultadoAutomatico
-    end
-
-    if ameacaCritico then
-        mensagem =
-            mensagem ..
-            "\nAMEAÇA DE CRÍTICO: " ..
-            "confirme que o ataque acertou. " ..
-            "Use ROLAR ATAQUE CRITICO para o dano critico."
-    end
-
-    if state.pesado then
-        mensagem =
-            mensagem ..
-            "\nATAQUE PESADO: se acertar, use " ..
-            tostring(totalAtaque) ..
-            " no teste para derrubar ou empurrar."
-    end
-
-    if calculo.golpePessoal then
-        mensagem =
-            mensagem ..
-            "\n" ..
-            CONFIG.golpePessoalAvisoAvanco ..
-            "\n" ..
-            CONFIG.golpePessoalAvisoTruque
-    end
-
-    -- -----------------------------------------------------
     -- Resumo do chat e do popup global
     -- -----------------------------------------------------
 
@@ -2673,42 +2617,6 @@ local function finalizarDanoRolado(
     end
 
     -- -----------------------------------------------------
-    -- Mensagem detalhada
-    -- -----------------------------------------------------
-
-    local mensagem = string.format(
-        "%s rolou o dano de %s" ..
-        "\n%s: %sd%s [%s] %s = %s" ..
-        "\nAtaque relacionado: %s (%s)" ..
-        "\nPM declarado no ataque: %s" ..
-        "\nModificadores do ataque: %s",
-
-        tostring(ultimo.jogador),
-        tostring(CONFIG.nomeArma),
-        tostring(tipoDano),
-        tostring(quantidadeDados),
-        tostring(CONFIG.ladosDadoDano),
-        tostring(listaDados),
-        sinal(ultimo.modificadorDano),
-        tostring(totalDano),
-        tostring(ultimo.totalAtaque),
-        textoD20Ataque(
-            ultimo.d20,
-            ultimo.d20Lista
-        ),
-        tostring(ultimo.custoPM),
-        tostring(ultimo.listaEfeitos)
-    )
-
-    if usarCritico
-        and not ultimo.ameacaCritico then
-        mensagem =
-            mensagem ..
-            "\nCRÍTICO ATIVADO MANUALMENTE: " ..
-            "o d20 não estava originalmente na margem de ameaça."
-    end
-
-    -- -----------------------------------------------------
     -- Resumo do chat e do popup global
     -- -----------------------------------------------------
 
@@ -2726,6 +2634,13 @@ local function finalizarDanoRolado(
         tostring(ultimo.totalAtaque),
         tostring(ultimo.resumoEfeitosChat)
     )
+
+    if usarCritico
+        and not ultimo.ameacaCritico then
+        resumoChat =
+            resumoChat ..
+            " | CRITICO MANUAL"
+    end
 
     printToAll(
         resumoChat,
