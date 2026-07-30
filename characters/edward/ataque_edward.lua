@@ -1,6 +1,6 @@
 -- =========================================================
 -- CONFIGURAÇÃO DO PERSONAGEM
--- Edward / Humano Guerreiro 4 / Espada de execução
+-- Edward / Humano Guerreiro 5 / Espada de execução
 -- =========================================================
 
 local CONFIG = {
@@ -25,7 +25,18 @@ local CONFIG = {
     -- Guerreiro nível 9 a 12: máximo 3 PM
     -- Guerreiro nível 13 a 16: máximo 4 PM
     -- Guerreiro nível 17+: máximo 5 PM
-    ataqueEspecialMaxPM = 1,
+    ataqueEspecialMaxPM = 2,
+
+    -- Golpe Pessoal: Passo do Carrasco
+    golpePessoalNome = "Passo do Carrasco",
+    golpePessoalCustoPM = 1,
+    golpePessoalDadoExtra = 1,
+    golpePessoalEfeitos =
+        "Avanço + Brutal + Preciso + Truque Secreto",
+    golpePessoalAvisoAvanco =
+        "AVANÇO: você pode percorrer até seu deslocamento em linha reta antes de desferir o golpe.",
+    golpePessoalAvisoTruque =
+        "TRUQUE SECRETO: este Golpe Pessoal só pode ser usado uma vez contra cada alvo por cena.",
 
     -- Limites do modificador manual de ataque
     modExtraMin = -20,
@@ -43,6 +54,7 @@ local CONFIG = {
     -- D20 fisico usado por ROLAR ATAQUE
     dadoAtaqueTipo = "Die_20",
     dadoAtaqueOffsetLocal = {0, 2.0, -1.35},
+    dadoAtaqueEspacamento = 0.55,
     dadoAtaqueEscala = {1.25, 1.25, 1.25},
     dadoAtaqueForcaMinima = {-3, 14, -3},
     dadoAtaqueForcaMaxima = {3, 18, 3},
@@ -88,7 +100,14 @@ local CONFIG = {
     resultadoUITextoLargura = 420,
     resultadoUITextoAltura = 150,
     resultadoUIFonteMinima = 9,
-    resultadoUIFonteMaxima = 14
+    resultadoUIFonteMaxima = 14,
+
+    -- Atualizacao automatica via GitHub.
+    -- Estes arquivos precisam estar publicados no branch main.
+    githubScriptUrl =
+        "https://raw.githubusercontent.com/edumello/tts_prosperata_objects/main/characters/edward/ataque_edward.lua",
+    githubImagemUrl =
+        "https://raw.githubusercontent.com/edumello/tts_prosperata_objects/main/characters/edward/assets/edward_attack_panel.png"
 }
 
 -- =========================================================
@@ -106,12 +125,13 @@ local LAYOUT = {
     escala = {0.20, 0.20, 0.20},
 
     -- Thickness recomendado no Custom Tile: 0.10.
-    preparada = {-1.30, ALTURA_BOTAO, -0.31},
-    poderoso = {-1.30, ALTURA_BOTAO, -0.10},
-    pesado = {-1.30, ALTURA_BOTAO, 0.13},
+    preparada = {-1.30, ALTURA_BOTAO, -0.33},
+    poderoso = {-1.30, ALTURA_BOTAO, -0.15},
+    pesado = {-1.30, ALTURA_BOTAO, 0.03},
+    golpePessoal = {-1.30, ALTURA_BOTAO, 0.21},
 
-    especial = {-1.55, ALTURA_BOTAO, 0.34},
-    especialPM = {-1.18, ALTURA_BOTAO, 0.34},
+    especial = {-1.55, ALTURA_BOTAO, 0.39},
+    especialPM = {-1.18, ALTURA_BOTAO, 0.39},
     modExtraNome1 = {-0.10, ALTURA_BOTAO, -0.27},
     modExtraNome2 = {-0.10, ALTURA_BOTAO, -0.07},
     modExtraNome3 = {-0.10, ALTURA_BOTAO, 0.13},
@@ -127,7 +147,8 @@ local LAYOUT = {
     previewDano = {2.25, ALTURA_BOTAO, 0.33},
 
     rolarAtaque = {-1.18, ALTURA_BOTAO, 0.68},
-    rolarDano = {1.40, ALTURA_BOTAO, 0.68}
+    rolarDano = {1.40, ALTURA_BOTAO, 0.68},
+    updateGithub = {2.18, ALTURA_BOTAO, -0.66}
 }
 
 -- =========================================================
@@ -143,15 +164,17 @@ local BUTTON = {
     especialPM = 3,
     modExtra = 4,
     pesado = 5,
-    rolarAtaque = 6,
-    critico = 7,
-    rolarDano = 8,
-    previewPM = 9,
-    previewAtaque = 10,
-    previewDano = 11,
-    modExtra2 = 12,
-    modExtra3 = 13,
-    modExtra4 = 14
+    golpePessoal = 6,
+    rolarAtaque = 7,
+    critico = 8,
+    rolarDano = 9,
+    previewPM = 10,
+    previewAtaque = 11,
+    previewDano = 12,
+    modExtra2 = 13,
+    modExtra3 = 14,
+    modExtra4 = 15,
+    updateGithub = 16
 }
 
 local ESPECIAL_NOMES = {
@@ -170,9 +193,12 @@ local function criarUltimoAtaqueVazio()
         disponivel = false,
         jogador = "",
         d20 = 0,
+        d20Lista = {},
         totalAtaque = 0,
         modificadorAtaque = 0,
         modificadorDano = CONFIG.bonusDanoBase,
+        quantidadeDadosDano = CONFIG.quantidadeDadosDano,
+        golpePessoal = false,
         custoPM = 0,
         ameacaCritico = false,
         listaEfeitos = "Nenhum",
@@ -214,10 +240,12 @@ local function criarEstadoPadrao()
         especialModo = 0,
         especialPM = 1,
         pesado = false,
+        golpePessoal = false,
         modExtras = criarModExtrasPadrao(),
 
         ultimoAtaque = criarUltimoAtaqueVazio(),
         dadoAtaqueGuid = "",
+        dadoAtaqueGuids = {},
         dadoDanoGuids = {}
     }
 end
@@ -226,11 +254,13 @@ local state = criarEstadoPadrao()
 
 local esconderResultadoWaitId = nil
 local dadoAtaqueObjeto = nil
+local dadosAtaqueObjetos = {}
 local dadoAtaqueWaitId = nil
 local dadoAtaqueRolagemId = 0
 local dadosDanoObjetos = {}
 local dadoDanoWaitId = nil
 local dadoDanoRolagemId = 0
+local updateGithubEmAndamento = false
 
 local BUTTON_ORDER = {
     "preparada",
@@ -239,6 +269,7 @@ local BUTTON_ORDER = {
     "especialPM",
     "modExtra",
     "pesado",
+    "golpePessoal",
     "rolarAtaque",
     "critico",
     "rolarDano",
@@ -247,7 +278,8 @@ local BUTTON_ORDER = {
     "previewDano",
     "modExtra2",
     "modExtra3",
-    "modExtra4"
+    "modExtra4",
+    "updateGithub"
 }
 
 local CONTROLES = {
@@ -298,6 +330,14 @@ local CONTROLES = {
         layout = "pesado",
         largura = 640,
         tooltip = "Ataque Pesado: custa 1 PM. Se acertar, derruba ou empurra."
+    },
+    {
+        id = "golpePessoal",
+        click = "alternarGolpePessoal",
+        labelInicial = "OFF",
+        layout = "golpePessoal",
+        largura = 640,
+        tooltip = "Passo do Carrasco: Avanço + Brutal + Preciso + Truque Secreto. Custa 1 PM. Uma vez por alvo por cena."
     },
     {
         id = "rolarAtaque",
@@ -370,6 +410,14 @@ local CONTROLES = {
         layout = "modExtra4",
         largura = 360,
         tooltip = "Modificador extra 4 no ataque. Clique esquerdo +1. Clique alternativo -1."
+    },
+    {
+        id = "updateGithub",
+        click = "atualizarViaGithub",
+        labelInicial = "UPDATE",
+        layout = "updateGithub",
+        largura = 820,
+        tooltip = "Baixa do GitHub a versao mais nova do script e da imagem deste painel."
     }
 }
 
@@ -538,25 +586,51 @@ local function objetoValido(objeto)
     return sucesso and not destruido
 end
 
-local function obterDadoAtaqueAtual()
-    if objetoValido(dadoAtaqueObjeto) then
-        return dadoAtaqueObjeto
+local function obterDadosAtaqueAtuais()
+    local dados = {}
+
+    for _, dado in ipairs(dadosAtaqueObjetos) do
+        if objetoValido(dado) then
+            table.insert(dados, dado)
+        end
     end
 
-    if state.dadoAtaqueGuid ~= nil
+    if #dados == 0 and objetoValido(dadoAtaqueObjeto) then
+        table.insert(dados, dadoAtaqueObjeto)
+    end
+
+    if #dados == 0
+        and type(state.dadoAtaqueGuids) == "table" then
+        for _, guid in ipairs(state.dadoAtaqueGuids) do
+            local dado =
+                getObjectFromGUID(tostring(guid))
+
+            if objetoValido(dado) then
+                table.insert(dados, dado)
+            end
+        end
+    end
+
+    if #dados == 0
+        and state.dadoAtaqueGuid ~= nil
         and state.dadoAtaqueGuid ~= "" then
-        dadoAtaqueObjeto =
+        local dado =
             getObjectFromGUID(state.dadoAtaqueGuid)
+
+        if objetoValido(dado) then
+            table.insert(dados, dado)
+        end
     end
 
-    if objetoValido(dadoAtaqueObjeto) then
-        return dadoAtaqueObjeto
+    dadosAtaqueObjetos = dados
+    dadoAtaqueObjeto = dados[1]
+
+    if #dados == 0 then
+        state.dadoAtaqueGuid = ""
+        state.dadoAtaqueGuids = {}
     end
 
-    dadoAtaqueObjeto = nil
-    state.dadoAtaqueGuid = ""
-
-    return nil
+    return dados
 end
 
 local function pararEsperaDadoAtaque()
@@ -572,25 +646,38 @@ end
 local function destruirDadoAtaqueAtual()
     pararEsperaDadoAtaque()
 
-    local dado =
-        obterDadoAtaqueAtual()
-
-    if dado ~= nil then
+    for _, dado in ipairs(obterDadosAtaqueAtuais()) do
         pcall(function()
             dado.destruct()
         end)
     end
 
     dadoAtaqueObjeto = nil
+    dadosAtaqueObjetos = {}
     state.dadoAtaqueGuid = ""
+    state.dadoAtaqueGuids = {}
 end
 
-local function posicaoSpawnDadoAtaque()
+local function posicaoSpawnDadoAtaque(indice, quantidade)
+    local x =
+        CONFIG.dadoAtaqueOffsetLocal[1]
+
+    if quantidade > 1 then
+        x =
+            x +
+            (indice - ((quantidade + 1) / 2)) *
+            CONFIG.dadoAtaqueEspacamento
+    end
+
+    local offset = {
+        x,
+        CONFIG.dadoAtaqueOffsetLocal[2],
+        CONFIG.dadoAtaqueOffsetLocal[3]
+    }
+
     local sucesso, posicao =
         pcall(function()
-            return self.positionToWorld(
-                CONFIG.dadoAtaqueOffsetLocal
-            )
+            return self.positionToWorld(offset)
         end)
 
     if sucesso then
@@ -601,9 +688,9 @@ local function posicaoSpawnDadoAtaque()
         self.getPosition()
 
     return {
-        posicaoPainel.x,
-        posicaoPainel.y + 2,
-        posicaoPainel.z - 1.35
+        posicaoPainel.x + x,
+        posicaoPainel.y + CONFIG.dadoAtaqueOffsetLocal[2],
+        posicaoPainel.z + CONFIG.dadoAtaqueOffsetLocal[3]
     }
 end
 
@@ -945,6 +1032,12 @@ local function atualizarBotoes()
     })
 
     self.editButton({
+        index = BUTTON.golpePessoal,
+        label = textoToggle(state.golpePessoal),
+        color = corToggle(state.golpePessoal)
+    })
+
+    self.editButton({
         index = BUTTON.rolarAtaque,
         label = "ROLAR\nATAQUE",
         color = {0.45, 0.08, 0.06}
@@ -968,6 +1061,14 @@ local function atualizarBotoes()
             "ROLAR DANO\n" ..
             statusDano,
         color = corBotaoDano()
+    })
+
+    self.editButton({
+        index = BUTTON.updateGithub,
+        label = updateGithubEmAndamento and "..." or "UPDATE",
+        color = updateGithubEmAndamento
+            and {0.35, 0.35, 0.12}
+            or {0.16, 0.16, 0.16}
     })
 
     if preview ~= nil then
@@ -1143,6 +1244,48 @@ local function garantirResultadoGlobalUI()
     return sucessoSetXml
 end
 
+local function mostrarResultadoFallback(mensagem, jogador)
+    if jogador ~= nil and jogador ~= "" then
+        local sucessoBroadcast =
+            pcall(function()
+                broadcastToColor(
+                    mensagem,
+                    jogador,
+                    CONFIG.corChat
+                )
+            end)
+
+        if sucessoBroadcast then
+            return
+        end
+
+        printToColor(
+            mensagem,
+            jogador,
+            CONFIG.corChat
+        )
+
+        return
+    end
+
+    local sucessoBroadcast =
+        pcall(function()
+            broadcastToAll(
+                mensagem,
+                CONFIG.corChat
+            )
+        end)
+
+    if sucessoBroadcast then
+        return
+    end
+
+    printToAll(
+        mensagem,
+        CONFIG.corChat
+    )
+end
+
 local function mostrarResultado(mensagem, jogador)
     garantirResultadoGlobalUI()
 
@@ -1157,18 +1300,7 @@ local function mostrarResultado(mensagem, jogador)
             tostring(erro)
         )
 
-        if jogador ~= nil and jogador ~= "" then
-            printToColor(
-                mensagem,
-                jogador,
-                CONFIG.corChat
-            )
-        else
-            printToAll(
-                mensagem,
-                CONFIG.corChat
-            )
-        end
+        mostrarResultadoFallback(mensagem, jogador)
 
         return
     end
@@ -1191,6 +1323,230 @@ local function mostrarResultado(mensagem, jogador)
 
         esconderResultadoWaitId = nil
     end, CONFIG.tempoResultadoUI)
+end
+
+-- =========================================================
+-- ATUALIZACAO VIA GITHUB
+-- =========================================================
+
+local function notificarGithub(jogador, mensagem, erro)
+    local cor =
+        erro and CONFIG.corErro or CONFIG.corChat
+
+    if jogador ~= nil and jogador ~= "" then
+        printToColor(
+            mensagem,
+            jogador,
+            cor
+        )
+
+        return
+    end
+
+    printToAll(
+        mensagem,
+        cor
+    )
+end
+
+local function urlComCacheBuster(url)
+    local separador = "?"
+
+    if string.find(url, "?", 1, true) ~= nil then
+        separador = "&"
+    end
+
+    local marcador =
+        tostring(math.random(100000, 999999))
+
+    pcall(function()
+        if os ~= nil
+            and os.time ~= nil then
+            marcador =
+                tostring(os.time()) ..
+                "_" ..
+                marcador
+        end
+    end)
+
+    return
+        tostring(url) ..
+        separador ..
+        "tts_update=" ..
+        marcador
+end
+
+local function aplicarImagemGithub(urlImagem)
+    local sucessoObjeto, custom =
+        pcall(function()
+            return self.getCustomObject()
+        end)
+
+    if not sucessoObjeto
+        or type(custom) ~= "table" then
+        return false, "nao foi possivel ler o Custom Object"
+    end
+
+    custom.image = urlImagem
+
+    local sucessoImagem, erroImagem =
+        pcall(function()
+            self.setCustomObject(custom)
+        end)
+
+    if not sucessoImagem then
+        return false, tostring(erroImagem)
+    end
+
+    return true, nil
+end
+
+local function aplicarScriptGithub(script, jogador)
+    if string.find(
+        script,
+        "Edward / Humano Guerreiro",
+        1,
+        true
+    ) == nil then
+        updateGithubEmAndamento = false
+        atualizarBotoes()
+
+        notificarGithub(
+            jogador,
+            "Update cancelado: o arquivo baixado nao parece ser o script do Edward.",
+            true
+        )
+
+        return
+    end
+
+    local urlImagem =
+        urlComCacheBuster(CONFIG.githubImagemUrl)
+
+    local imagemOk, erroImagem =
+        aplicarImagemGithub(urlImagem)
+
+    if not imagemOk then
+        notificarGithub(
+            jogador,
+            "Script baixado, mas a imagem nao foi aplicada: " ..
+            tostring(erroImagem),
+            true
+        )
+    end
+
+    local sucessoScript, erroScript =
+        pcall(function()
+            self.setLuaScript(script)
+        end)
+
+    if not sucessoScript then
+        updateGithubEmAndamento = false
+        atualizarBotoes()
+
+        notificarGithub(
+            jogador,
+            "Update falhou ao aplicar o script: " ..
+            tostring(erroScript),
+            true
+        )
+
+        return
+    end
+
+    notificarGithub(
+        jogador,
+        "Update aplicado. Recarregando o painel do Edward..."
+    )
+
+    Wait.frames(function()
+        pcall(function()
+            self.reload()
+        end)
+    end, 1)
+end
+
+function atualizarViaGithub(
+    objeto,
+    jogador,
+    cliqueAlternativo
+)
+    if updateGithubEmAndamento then
+        notificarGithub(
+            jogador,
+            "Update ja esta em andamento."
+        )
+
+        return
+    end
+
+    if WebRequest == nil
+        or WebRequest.get == nil then
+        notificarGithub(
+            jogador,
+            "Update indisponivel: WebRequest nao esta acessivel nesta mesa.",
+            true
+        )
+
+        return
+    end
+
+    updateGithubEmAndamento = true
+    atualizarBotoes()
+
+    notificarGithub(
+        jogador,
+        "Buscando a versao mais nova do Edward no GitHub..."
+    )
+
+    WebRequest.get(
+        urlComCacheBuster(CONFIG.githubScriptUrl),
+        function(resposta)
+            if resposta == nil
+                or resposta.is_error then
+                updateGithubEmAndamento = false
+                atualizarBotoes()
+
+                local erroResposta = "sem resposta"
+
+                if resposta ~= nil
+                    and resposta.error ~= nil then
+                    erroResposta =
+                        tostring(resposta.error)
+                end
+
+                notificarGithub(
+                    jogador,
+                    "Update falhou ao baixar o script: " ..
+                    erroResposta,
+                    true
+                )
+
+                return
+            end
+
+            local script =
+                tostring(resposta.text or "")
+
+            if script == "" then
+                updateGithubEmAndamento = false
+                atualizarBotoes()
+
+                notificarGithub(
+                    jogador,
+                    "Update falhou: o script baixado veio vazio.",
+                    true
+                )
+
+                return
+            end
+
+            aplicarScriptGithub(
+                script,
+                jogador
+            )
+        end
+    )
 end
 
 -- =========================================================
@@ -1359,6 +1715,37 @@ calcularModificadoresSelecionados = function()
         )
     end
 
+    -- -----------------------------------------------------
+    -- Golpe Pessoal: Passo do Carrasco
+    -- -----------------------------------------------------
+
+    local quantidadeDadosDano =
+        CONFIG.quantidadeDadosDano
+
+    if state.golpePessoal then
+        custoPM =
+            custoPM +
+            CONFIG.golpePessoalCustoPM
+
+        quantidadeDadosDano =
+            quantidadeDadosDano +
+            CONFIG.golpePessoalDadoExtra
+
+        table.insert(
+            efeitos,
+            "Golpe Pessoal: " ..
+            CONFIG.golpePessoalNome ..
+            " (" ..
+            CONFIG.golpePessoalEfeitos ..
+            ", 1 PM)"
+        )
+
+        table.insert(
+            efeitosChat,
+            "Golpe Pessoal 1PM"
+        )
+    end
+
     local listaEfeitos = "Nenhum"
     local resumoEfeitosChat = "Sem modificadores"
 
@@ -1376,6 +1763,8 @@ calcularModificadoresSelecionados = function()
         modificadorAtaque = modificadorAtaque,
         modificadorDano = modificadorDano,
         custoPM = custoPM,
+        quantidadeDadosDano = quantidadeDadosDano,
+        golpePessoal = state.golpePessoal == true,
         listaEfeitos = listaEfeitos,
         resumoEfeitosChat = resumoEfeitosChat
     }
@@ -1388,23 +1777,30 @@ calcularPreviewSelecionado = function()
     local ataqueMin =
         1 + calculo.modificadorAtaque
 
+    local d20Medio =
+        10.5
+
+    if calculo.golpePessoal then
+        d20Medio = 13.825
+    end
+
     local ataqueMedio =
-        10.5 + calculo.modificadorAtaque
+        d20Medio + calculo.modificadorAtaque
 
     local ataqueMax =
         20 + calculo.modificadorAtaque
 
     local danoMin =
-        CONFIG.quantidadeDadosDano +
+        calculo.quantidadeDadosDano +
         calculo.modificadorDano
 
     local danoMedio =
-        CONFIG.quantidadeDadosDano *
+        calculo.quantidadeDadosDano *
         ((CONFIG.ladosDadoDano + 1) / 2) +
         calculo.modificadorDano
 
     local danoMax =
-        CONFIG.quantidadeDadosDano *
+        calculo.quantidadeDadosDano *
         CONFIG.ladosDadoDano +
         calculo.modificadorDano
 
@@ -1429,6 +1825,7 @@ local function resetarSelecoesAposAtaque()
         state.poderoso = false
         state.especialModo = 0
         state.pesado = false
+        state.golpePessoal = false
     end
 
     if CONFIG.resetarModExtraAposAtaque then
@@ -1490,6 +1887,30 @@ local function carregarUltimoAtaque(dados)
     ultimo.d20 =
         tonumber(dados.d20) or 0
 
+    if type(dados.d20Lista) == "table" then
+        ultimo.d20Lista = {}
+
+        for _, valor in ipairs(dados.d20Lista) do
+            local d20 =
+                tonumber(valor)
+
+            if d20 ~= nil
+                and d20 >= 1
+                and d20 <= 20 then
+                table.insert(
+                    ultimo.d20Lista,
+                    math.floor(d20)
+                )
+            end
+        end
+    end
+
+    if #ultimo.d20Lista == 0
+        and ultimo.d20 >= 1
+        and ultimo.d20 <= 20 then
+        ultimo.d20Lista = {ultimo.d20}
+    end
+
     ultimo.totalAtaque =
         tonumber(dados.totalAtaque) or 0
 
@@ -1499,6 +1920,18 @@ local function carregarUltimoAtaque(dados)
     ultimo.modificadorDano =
         tonumber(dados.modificadorDano)
         or CONFIG.bonusDanoBase
+
+    ultimo.quantidadeDadosDano =
+        tonumber(dados.quantidadeDadosDano)
+        or CONFIG.quantidadeDadosDano
+
+    if ultimo.quantidadeDadosDano < CONFIG.quantidadeDadosDano then
+        ultimo.quantidadeDadosDano =
+            CONFIG.quantidadeDadosDano
+    end
+
+    ultimo.golpePessoal =
+        dados.golpePessoal == true
 
     ultimo.custoPM =
         tonumber(dados.custoPM) or 0
@@ -1562,6 +1995,9 @@ function onLoad(savedData)
             state.pesado =
                 dadosSalvos.pesado == true
 
+            state.golpePessoal =
+                dadosSalvos.golpePessoal == true
+
             state.especialModo =
                 limitarInteiro(
                     dadosSalvos.especialModo or 0,
@@ -1588,6 +2024,11 @@ function onLoad(savedData)
 
             state.dadoAtaqueGuid =
                 tostring(dadosSalvos.dadoAtaqueGuid or "")
+
+            state.dadoAtaqueGuids =
+                carregarListaGuids(
+                    dadosSalvos.dadoAtaqueGuids
+                )
 
             state.dadoDanoGuids =
                 carregarListaGuids(
@@ -1636,6 +2077,15 @@ function alternarPesado(
     cliqueAlternativo
 )
     state.pesado = not state.pesado
+    atualizarBotoes()
+end
+
+function alternarGolpePessoal(
+    objeto,
+    jogador,
+    cliqueAlternativo
+)
+    state.golpePessoal = not state.golpePessoal
     atualizarBotoes()
 end
 
@@ -1792,7 +2242,20 @@ end
 -- ROLAR ATAQUE
 -- =========================================================
 
-local function finalizarAtaqueRolado(jogador, calculo, d20)
+local function textoD20Ataque(d20, d20Lista)
+    if type(d20Lista) == "table"
+        and #d20Lista > 1 then
+        return
+            "2d20 [" ..
+            table.concat(d20Lista, ", ") ..
+            "] maior " ..
+            tostring(d20)
+    end
+
+    return "d20 [" .. tostring(d20) .. "]"
+end
+
+local function finalizarAtaqueRolado(jogador, calculo, d20, d20Lista)
     local totalAtaque =
         d20 + calculo.modificadorAtaque
 
@@ -1815,6 +2278,7 @@ local function finalizarAtaqueRolado(jogador, calculo, d20)
         disponivel = true,
         jogador = jogador,
         d20 = d20,
+        d20Lista = d20Lista or {d20},
         totalAtaque = totalAtaque,
 
         modificadorAtaque =
@@ -1822,6 +2286,12 @@ local function finalizarAtaqueRolado(jogador, calculo, d20)
 
         modificadorDano =
             calculo.modificadorDano,
+
+        quantidadeDadosDano =
+            calculo.quantidadeDadosDano,
+
+        golpePessoal =
+            calculo.golpePessoal,
 
         custoPM =
             calculo.custoPM,
@@ -1842,17 +2312,20 @@ local function finalizarAtaqueRolado(jogador, calculo, d20)
 
     local mensagem = string.format(
         "%s atacou com %s" ..
-        "\nAtaque: d20 [%s] %s = %s" ..
+        "\nAtaque: %s %s = %s" ..
         "\nModificador de dano salvo: %s" ..
+        "\nDados de dano salvos: %sd%s" ..
         "\nPM declarado: %s" ..
         "\nModificadores: %s",
 
         tostring(jogador),
         tostring(CONFIG.nomeArma),
-        tostring(d20),
+        textoD20Ataque(d20, d20Lista),
         sinal(calculo.modificadorAtaque),
         tostring(totalAtaque),
         sinal(calculo.modificadorDano),
+        tostring(calculo.quantidadeDadosDano),
+        tostring(CONFIG.ladosDadoDano),
         tostring(calculo.custoPM),
         tostring(calculo.listaEfeitos)
     )
@@ -1880,17 +2353,26 @@ local function finalizarAtaqueRolado(jogador, calculo, d20)
             " no teste para derrubar ou empurrar."
     end
 
+    if calculo.golpePessoal then
+        mensagem =
+            mensagem ..
+            "\n" ..
+            CONFIG.golpePessoalAvisoAvanco ..
+            "\n" ..
+            CONFIG.golpePessoalAvisoTruque
+    end
+
     -- -----------------------------------------------------
     -- Resumo do chat
     -- -----------------------------------------------------
 
     local resumoChat = string.format(
-        "%s | %s | ATAQUE %s (d20 %s %s) | PM %s | %s",
+        "%s | %s | ATAQUE %s (%s %s) | PM %s | %s",
 
         tostring(jogador),
         tostring(CONFIG.nomeArma),
         tostring(totalAtaque),
-        tostring(d20),
+        textoD20Ataque(d20, d20Lista),
         sinal(calculo.modificadorAtaque),
         tostring(calculo.custoPM),
         tostring(calculo.resumoEfeitosChat)
@@ -1944,9 +2426,51 @@ local function lerResultadoD20(dado)
     return math.floor(valor)
 end
 
-local function aguardarDadoAtaque(
+local function todosDadosAtaqueEmRepouso(dados)
+    for _, dado in ipairs(dados) do
+        if not objetoValido(dado) then
+            return false
+        end
+
+        local sucesso, emRepouso =
+            pcall(function()
+                return dado.resting == true
+            end)
+
+        if not sucesso
+            or not emRepouso then
+            return false
+        end
+    end
+
+    return true
+end
+
+local function lerResultadosD20(dados)
+    local resultados = {}
+    local maior = nil
+
+    for _, dado in ipairs(dados) do
+        local valor =
+            lerResultadoD20(dado)
+
+        if valor == nil then
+            return nil, nil
+        end
+
+        if maior == nil or valor > maior then
+            maior = valor
+        end
+
+        table.insert(resultados, valor)
+    end
+
+    return maior, resultados
+end
+
+local function aguardarDadosAtaque(
     rolagemId,
-    dado,
+    dados,
     jogador,
     calculo,
     tempoDecorrido
@@ -1955,33 +2479,30 @@ local function aguardarDadoAtaque(
         return
     end
 
-    if not objetoValido(dado) then
-        dadoAtaqueWaitId = nil
+    for _, dado in ipairs(dados) do
+        if not objetoValido(dado) then
+            dadoAtaqueWaitId = nil
 
-        erroRolagemDado(
-            jogador,
-            "O D20 do ataque foi removido antes de parar."
-        )
+            erroRolagemDado(
+                jogador,
+                "Um D20 do ataque foi removido antes de parar."
+            )
 
-        atualizarBotoes()
-        return
+            atualizarBotoes()
+            return
+        end
     end
 
-    local sucessoRepouso, emRepouso =
-        pcall(function()
-            return dado.resting == true
-        end)
-
-    if sucessoRepouso and emRepouso then
-        local d20 =
-            lerResultadoD20(dado)
+    if todosDadosAtaqueEmRepouso(dados) then
+        local d20, d20Lista =
+            lerResultadosD20(dados)
 
         dadoAtaqueWaitId = nil
 
         if d20 == nil then
             erroRolagemDado(
                 jogador,
-                "Nao foi possivel ler o valor do D20 fisico."
+                "Nao foi possivel ler todos os D20 fisicos."
             )
 
             atualizarBotoes()
@@ -1991,7 +2512,8 @@ local function aguardarDadoAtaque(
         finalizarAtaqueRolado(
             jogador,
             calculo,
-            d20
+            d20,
+            d20Lista
         )
 
         return
@@ -2011,9 +2533,9 @@ local function aguardarDadoAtaque(
 
     dadoAtaqueWaitId =
         Wait.time(function()
-            aguardarDadoAtaque(
+            aguardarDadosAtaque(
                 rolagemId,
-                dado,
+                dados,
                 jogador,
                 calculo,
                 tempoDecorrido +
@@ -2040,48 +2562,80 @@ function rolarAtaque(
     descartarUltimoAtaque()
     atualizarBotoes()
 
-    spawnObject({
-        type = CONFIG.dadoAtaqueTipo,
-        position = posicaoSpawnDadoAtaque(),
-        rotation = {
-            math.random(0, 359),
-            math.random(0, 359),
-            math.random(0, 359)
-        },
-        scale = CONFIG.dadoAtaqueEscala,
-        snap_to_grid = false,
-        callback_function = function(dado)
-            if rolagemId ~= dadoAtaqueRolagemId then
+    local quantidadeD20 = 1
+
+    if calculo.golpePessoal then
+        quantidadeD20 = 2
+    end
+
+    local dados = {}
+    local guids = {}
+    local dadosSpawnados = 0
+
+    for indice = 1, quantidadeD20 do
+        local indiceDado =
+            indice
+
+        spawnObject({
+            type = CONFIG.dadoAtaqueTipo,
+            position =
+                posicaoSpawnDadoAtaque(
+                    indiceDado,
+                    quantidadeD20
+                ),
+            rotation = {
+                math.random(0, 359),
+                math.random(0, 359),
+                math.random(0, 359)
+            },
+            scale = CONFIG.dadoAtaqueEscala,
+            snap_to_grid = false,
+            callback_function = function(dado)
+                if rolagemId ~= dadoAtaqueRolagemId then
+                    pcall(function()
+                        dado.destruct()
+                    end)
+
+                    return
+                end
+
+                dados[indiceDado] = dado
+                dadosSpawnados =
+                    dadosSpawnados + 1
+
+                table.insert(
+                    guids,
+                    dado.getGUID()
+                )
+
                 pcall(function()
-                    dado.destruct()
+                    dado.setName("D20 Ataque Edward")
+                    dado.setColorTint({0.65, 0.08, 0.08})
+                    dado.measure_movement = false
                 end)
 
-                return
+                impulsionarDadoAtaque(dado, jogador)
+
+                if dadosSpawnados == quantidadeD20 then
+                    dadosAtaqueObjetos = dados
+                    dadoAtaqueObjeto = dados[1]
+                    state.dadoAtaqueGuid = guids[1] or ""
+                    state.dadoAtaqueGuids = guids
+
+                    dadoAtaqueWaitId =
+                        Wait.time(function()
+                            aguardarDadosAtaque(
+                                rolagemId,
+                                dados,
+                                jogador,
+                                calculo,
+                                0
+                            )
+                        end, CONFIG.dadoAtaqueIntervaloLeitura)
+                end
             end
-
-            dadoAtaqueObjeto = dado
-            state.dadoAtaqueGuid = dado.getGUID()
-
-            pcall(function()
-                dado.setName("D20 Ataque Edward")
-                dado.setColorTint({0.65, 0.08, 0.08})
-                dado.measure_movement = false
-            end)
-
-            impulsionarDadoAtaque(dado, jogador)
-
-            dadoAtaqueWaitId =
-                Wait.time(function()
-                    aguardarDadoAtaque(
-                        rolagemId,
-                        dado,
-                        jogador,
-                        calculo,
-                        0
-                    )
-                end, CONFIG.dadoAtaqueIntervaloLeitura)
-        end
-    })
+        })
+    end
 end
 
 -- =========================================================
@@ -2125,7 +2679,7 @@ local function finalizarDanoRolado(
     local mensagem = string.format(
         "%s rolou o dano de %s" ..
         "\n%s: %sd%s [%s] %s = %s" ..
-        "\nAtaque relacionado: %s (d20 %s)" ..
+        "\nAtaque relacionado: %s (%s)" ..
         "\nPM declarado no ataque: %s" ..
         "\nModificadores do ataque: %s",
 
@@ -2138,7 +2692,10 @@ local function finalizarDanoRolado(
         sinal(ultimo.modificadorDano),
         tostring(totalDano),
         tostring(ultimo.totalAtaque),
-        tostring(ultimo.d20),
+        textoD20Ataque(
+            ultimo.d20,
+            ultimo.d20Lista
+        ),
         tostring(ultimo.custoPM),
         tostring(ultimo.listaEfeitos)
     )
@@ -2454,7 +3011,13 @@ function rolarDano(
         state.ultimoAtaque
 
     local quantidadeDados =
-        CONFIG.quantidadeDadosDano
+        tonumber(ultimo.quantidadeDadosDano)
+        or CONFIG.quantidadeDadosDano
+
+    if quantidadeDados < CONFIG.quantidadeDadosDano then
+        quantidadeDados =
+            CONFIG.quantidadeDadosDano
+    end
 
     if usarCritico then
         quantidadeDados =

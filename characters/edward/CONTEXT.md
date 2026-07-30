@@ -19,7 +19,7 @@ image_menu/manifest.json
 
 - Nome: Edward
 - Raca: Humano
-- Classe: Guerreiro 4
+- Classe: Guerreiro 5
 - Arma: Espada de execucao
 
 Valores atuais no Lua:
@@ -32,9 +32,11 @@ ladosDadoDano = 6
 bonusDanoBase = 11
 margemCritico = 17
 multiplicadorCritico = 4
-ataqueEspecialMaxPM = 1
+ataqueEspecialMaxPM = 2
 modExtraMin = -20
 modExtraMax = 20
+githubScriptUrl = "https://raw.githubusercontent.com/edumello/tts_prosperata_objects/main/characters/edward/ataque_edward.lua"
+githubImagemUrl = "https://raw.githubusercontent.com/edumello/tts_prosperata_objects/main/characters/edward/assets/edward_attack_panel.png"
 ```
 
 Origem dos valores:
@@ -44,6 +46,32 @@ Origem dos valores:
 - Critico: margem 17-20, multiplicador x4.
 - Dano critico: 8d6 + modificador de dano salvo.
 - Bonus numericos nao sao multiplicados no critico.
+
+## Golpe Pessoal
+
+Edward possui o Golpe Pessoal `Passo do Carrasco`.
+
+Efeitos:
+
+- Avanco;
+- Brutal;
+- Preciso;
+- Truque Secreto.
+
+Custo final: `1 PM`.
+
+Motivo do custo: Avanco `+1 PM`, Brutal `+1 PM`, Preciso `+1 PM`, Truque Secreto `-2 PM`, respeitando custo minimo de `1 PM`.
+
+Regras automatizadas:
+
+- quando `GOLPE PESSOAL` esta ON, o ataque usa Preciso: spawna `2d20`, usa o maior resultado e mostra os dois d20 na mensagem;
+- o maior d20 calcula o total do ataque e verifica ameaca de critico;
+- Brutal adiciona `+1` dado da arma ao dano salvo;
+- dano normal com Golpe Pessoal: `3d6 + modificador de dano salvo`;
+- dano critico com Golpe Pessoal: `12d6 + modificador de dano salvo`;
+- Avanco nao altera numeros, mas aparece na mensagem;
+- Truque Secreto nao altera numeros alem do custo, mas aparece na mensagem como aviso de uso uma vez por alvo por cena;
+- nao ha controle automatico de alvo ou uso por alvo.
 
 ## Fluxo de uso
 
@@ -64,8 +92,9 @@ Para manter o popup compacto, ataques normais nao mostram mais as frases "Ataque
 - `PREPARADA`: sem preparar, a espada sofre -5 no ataque.
 - `PODEROSO`: -2 no ataque e +5 no dano.
 - `PESADO`: custa 1 PM e permite usar o total do ataque para derrubar ou empurrar.
+- `GOLPE PESSOAL`: Passo do Carrasco. Custa 1 PM, usa Preciso, Brutal, Avanco e Truque Secreto.
 - `ESPECIAL`: alterna entre `OFF`, `ATAQUE`, `DANO` e `DIVIDIDO`.
-- `ESPECIAL PM`: no nivel atual fica em 1 PM.
+- `ESPECIAL PM`: no nivel atual alterna entre 1 PM e 2 PM.
 
 ### Mod. Extras
 
@@ -87,8 +116,31 @@ Ao rolar ataque, os valores dos quatro modificadores extras voltam para zero. Os
 - `PM GASTO`: custo total das opcoes selecionadas.
 - `ATAQUE`: minimo / medio / maximo do teste de ataque.
 - `DANO`: minimo / medio / maximo do dano normal.
+- `UPDATE`: baixa do GitHub o Lua e a imagem publicados no branch `main`, aplica no objeto e recarrega o painel.
 
 O preview de dano nao aplica critico automaticamente.
+
+## Atualizacao via GitHub
+
+O botao `UPDATE` usa `WebRequest.get()` para buscar a versao publicada em:
+
+```text
+https://raw.githubusercontent.com/edumello/tts_prosperata_objects/main/characters/edward/ataque_edward.lua
+https://raw.githubusercontent.com/edumello/tts_prosperata_objects/main/characters/edward/assets/edward_attack_panel.png
+```
+
+Fluxo:
+
+1. O jogador clica em `UPDATE`.
+2. O script baixa `ataque_edward.lua` do GitHub.
+3. O script valida que o arquivo parece ser o script do Edward.
+4. O script troca `custom.image` do Custom Tile para a URL raw da imagem com cache buster.
+5. O script chama `self.setLuaScript(scriptBaixado)`.
+6. O script chama `self.reload()`.
+
+Isso permite que um jogador use o botao em uma mesa hospedada pelo mestre, desde que o objeto ja tenha esse script instalado e a mesa permita `WebRequest`. O mestre nao precisa saber usar Git, mas a versao nova precisa estar commitada e enviada para o branch `main` do GitHub antes do clique.
+
+Se o repositorio estiver privado, o raw URL pode nao funcionar dentro do Tabletop Simulator. Para update automatico simples, manter este repo/arquivos acessiveis publicamente.
 
 ## Estado salvo
 
@@ -101,6 +153,7 @@ state = {
     especialModo = 0,
     especialPM = 1,
     pesado = false,
+    golpePessoal = false,
     modExtras = {
         { nome = "EXTRA 1", valor = 0 },
         { nome = "EXTRA 2", valor = 0 },
@@ -111,15 +164,19 @@ state = {
         disponivel = false,
         jogador = "",
         d20 = 0,
+        d20Lista = {},
         totalAtaque = 0,
         modificadorAtaque = 0,
         modificadorDano = 11,
+        quantidadeDadosDano = 2,
+        golpePessoal = false,
         custoPM = 0,
         ameacaCritico = false,
         listaEfeitos = "Nenhum",
         resumoEfeitosChat = "Sem modificadores"
     },
     dadoAtaqueGuid = "",
+    dadoAtaqueGuids = {},
     dadoDanoGuids = {}
 }
 ```
@@ -144,15 +201,17 @@ local BUTTON = {
     especialPM = 3,
     modExtra = 4,
     pesado = 5,
-    rolarAtaque = 6,
-    critico = 7,
-    rolarDano = 8,
-    previewPM = 9,
-    previewAtaque = 10,
-    previewDano = 11,
-    modExtra2 = 12,
-    modExtra3 = 13,
-    modExtra4 = 14
+    golpePessoal = 6,
+    rolarAtaque = 7,
+    critico = 8,
+    rolarDano = 9,
+    previewPM = 10,
+    previewAtaque = 11,
+    previewDano = 12,
+    modExtra2 = 13,
+    modExtra3 = 14,
+    modExtra4 = 15,
+    updateGithub = 16
 }
 ```
 
@@ -160,7 +219,7 @@ local BUTTON = {
 
 ```text
 BUTTON_ORDER == CONTROLES
-COUNT = 15
+COUNT = 17
 ```
 
 Os inputs de nome dos modificadores extras sao criados com `self.createInput()` e nao entram na contagem dos botoes.
@@ -177,12 +236,13 @@ escala = {0.20, 0.20, 0.20}
 Posicoes atuais:
 
 ```lua
-preparada = {-1.30, 0.10, -0.31}
-poderoso = {-1.30, 0.10, -0.10}
-pesado = {-1.30, 0.10, 0.13}
+preparada = {-1.30, 0.10, -0.33}
+poderoso = {-1.30, 0.10, -0.15}
+pesado = {-1.30, 0.10, 0.03}
+golpePessoal = {-1.30, 0.10, 0.21}
 
-especial = {-1.55, 0.10, 0.34}
-especialPM = {-1.18, 0.10, 0.34}
+especial = {-1.55, 0.10, 0.39}
+especialPM = {-1.18, 0.10, 0.39}
 
 modExtraNome1 = {-0.10, 0.10, -0.27}
 modExtraNome2 = {-0.10, 0.10, -0.07}
@@ -201,6 +261,7 @@ previewDano = {2.25, 0.10, 0.33}
 rolarAtaque = {-1.18, 0.10, 0.68}
 critico = {0.12, 0.10, 0.68}
 rolarDano = {1.40, 0.10, 0.68}
+updateGithub = {2.18, 0.10, -0.66}
 ```
 
 Inputs dos nomes:
@@ -213,13 +274,14 @@ font_size = 180
 
 ## D20 fisico de ataque
 
-`ROLAR ATAQUE` usa um D20 fisico do Tabletop Simulator.
+`ROLAR ATAQUE` usa D20 fisico do Tabletop Simulator. Normalmente e `1d20`; com `GOLPE PESSOAL` ON, o script spawna `2d20`, le os dois resultados e usa o maior.
 
 Configuracao no `CONFIG`:
 
 ```lua
 dadoAtaqueTipo = "Die_20"
 dadoAtaqueOffsetLocal = {0, 2.0, -1.35}
+dadoAtaqueEspacamento = 0.55
 dadoAtaqueEscala = {1.25, 1.25, 1.25}
 dadoAtaqueForcaMinima = {-3, 14, -3}
 dadoAtaqueForcaMaxima = {3, 18, 3}
@@ -231,11 +293,11 @@ dadoAtaqueIntervaloLeitura = 0.25
 
 Comportamento:
 
-- ao clicar em `ROLAR ATAQUE`, o D20 gerado anteriormente e destruido;
-- um novo D20 e spawnado perto do painel;
+- ao clicar em `ROLAR ATAQUE`, os D20 gerados anteriormente sao destruidos;
+- um novo D20 e spawnado perto do painel, ou dois D20 se `GOLPE PESSOAL` estiver ON;
 - depois de um frame, o dado recebe `randomize(jogador)`, impulso com `addForce` e giro com `addTorque`;
-- quando `dado.resting == true`, o script le `dado.getRotationValue()`;
-- esse valor substitui a rolagem interna de `math.random(1, 20)`;
+- quando todos os dados estao em repouso, o script le `getRotationValue()` de cada um;
+- o maior valor substitui a rolagem interna de `math.random(1, 20)`;
 - se o dado for removido ou nao parar a tempo, o ataque nao e salvo e o jogador recebe mensagem de erro.
 - o dado spawnado recebe `measure_movement = false` para evitar rastro laranja/amarelo do Line Tool.
 
@@ -264,9 +326,9 @@ dadoDanoIntervaloLeitura = 0.25
 Comportamento:
 
 - ao clicar em `ROLAR DANO`, os D6 de dano anteriores sao destruidos;
-- um dano normal spawna `2d6`;
+- um dano normal spawna a quantidade de dados salva no ataque: `2d6` sem Golpe Pessoal ou `3d6` com Golpe Pessoal;
 - ao clicar em `ROLAR ATAQUE CRITICO`, os D6 de dano anteriores sao destruidos;
-- um dano critico spawna `8d6`;
+- um dano critico spawna os dados salvos multiplicados por x4: `8d6` sem Golpe Pessoal ou `12d6` com Golpe Pessoal;
 - depois de um frame, cada dado recebe `randomize(jogador)`, impulso com `addForce` e giro com `addTorque`;
 - quando todos os dados estao com `dado.resting == true`, o script le cada face com `dado.getRotationValue()`;
 - o total dos D6 fisicos substitui a rolagem interna antiga de dano;
@@ -275,8 +337,10 @@ Comportamento:
 
 Regras numericas mantidas nesta feature:
 
-- dano normal: `2d6 + modificador de dano salvo`;
-- dano critico: `8d6 + modificador de dano salvo`;
+- dano normal sem Golpe Pessoal: `2d6 + modificador de dano salvo`;
+- dano normal com Golpe Pessoal: `3d6 + modificador de dano salvo`;
+- dano critico sem Golpe Pessoal: `8d6 + modificador de dano salvo`;
+- dano critico com Golpe Pessoal: `12d6 + modificador de dano salvo`;
 - bonus numericos continuam nao sendo multiplicados no critico.
 
 Se precisar ajustar onde os D6 aparecem, alterar `dadoDanoOffsetLocal` e `dadoDanoEspacamento`.
@@ -367,3 +431,4 @@ O canvas do PNG e `2048x640`.
 - Se mexer no PNG em posicoes clicaveis, ajustar tambem `LAYOUT`.
 - Dano deve sempre usar `state.ultimoAtaque`.
 - Manter `ataque_edward.lua` como script Lua completo para Tabletop Simulator.
+- Antes de usar `UPDATE` no TTS, garantir que `ataque_edward.lua` e `assets/edward_attack_panel.png` foram enviados para o branch `main` do GitHub.

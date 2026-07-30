@@ -131,7 +131,11 @@ function DrawSmallPlusCircle($cx, $cy) {
 function DrawSlot($x, $y, $w, $h, $icon, $title, $controlText, $extraControlText = $null) {
     FillRound $x $y $w $h 8 "#171510" $null 0
     DrawIconCircle ($x + 48) ($y + ($h / 2)) $icon
-    DrawText $title $fontTitle "#FFF5D7" ($x + 98) $y 300 $h "Near" $true
+    $titleFont = $fontTitle
+    if ($title.Length -gt 11) {
+        $titleFont = $fontSmall
+    }
+    DrawText $title $titleFont "#FFF5D7" ($x + 98) $y 300 $h "Near" $true
 
     $controlY = $y + (($h - 46) / 2)
     if ($extraControlText -eq $null) {
@@ -178,6 +182,8 @@ $g.DrawLine((Pen "#C39B3B" 3), 56, 150, 1992, 150)
 
 DrawText "EDWARD" $fontHero "#F3D987" 118 82 420 62 "Near" $true
 DrawText "ESPADA DE EXECUCAO" $fontHeader "#FFF2D4" 600 88 560 54 "Center" $true
+FillRound 1710 86 220 48 10 "#101211" "#8F8A78" 2
+DrawText "UPDATE" $fontSmall "#D8D2C0" 1710 86 220 48 "Center" $false
 
 # Column background areas. Left and center have one section border each; the
 # internal rows stay borderless to preserve spacing around the attack names.
@@ -189,10 +195,11 @@ DrawText "ATAQUES" $fontSection "#BDB7A8" 130 160 300 34 "Near" $false
 DrawText "MOD. EXTRAS" $fontSection "#BDB7A8" 766 160 300 34 "Near" $false
 DrawText "PREVIA" $fontSection "#BDB7A8" 1402 160 300 34 "Near" $false
 
-DrawSlot 128 188 570 64 "swords" "PREPARADA" "OFF"
-DrawSlot 128 258 570 64 "power" "PODEROSO" "OFF"
-DrawSlot 128 328 570 64 "weight" "PESADO" "OFF"
-DrawSlot 128 398 570 64 "star" "ESPECIAL" "MODO" "1 PM"
+DrawSlot 128 184 570 52 "swords" "PREPARADA" "OFF"
+DrawSlot 128 240 570 52 "power" "PODEROSO" "OFF"
+DrawSlot 128 296 570 52 "weight" "PESADO" "OFF"
+DrawSlot 128 352 570 52 "d20" "GOLPE PESSOAL" "OFF"
+DrawSlot 128 408 570 52 "star" "ESPECIAL" "MODO" "1 PM"
 
 DrawExtraSlot 764 204 570 52
 DrawExtraSlot 764 268 570 52
