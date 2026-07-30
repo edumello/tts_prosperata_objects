@@ -369,6 +369,8 @@ O script gera uma copia embutida de `ui.xml` com `criarResultadoXml()` e chama `
 
 O conteudo enviado para `textoAtaque` deve ser o mesmo resumo curto enviado ao chat (`resumoChat`), nao a mensagem detalhada. Isso evita que o popup ocupe a tela toda durante o jogo.
 
+O primeiro campo do `resumoChat` deve usar `Player[cor].steam_name` quando disponivel. A cor do jogador (`White`, `Blue`, etc.) fica apenas como fallback se o nome Steam nao puder ser lido.
+
 A copia embutida e gerada a partir dos campos `CONFIG.resultadoUI*`. Para mudar o tamanho do popup, alterar no topo de `ataque_edward.lua`:
 
 ```lua

@@ -486,6 +486,33 @@ local function limitarTexto(texto, maximo)
     return texto
 end
 
+local function nomeJogador(jogador)
+    local cor =
+        tostring(jogador or "")
+
+    if cor ~= ""
+        and Player ~= nil
+        and Player[cor] ~= nil then
+        local sucesso, nome =
+            pcall(function()
+                return Player[cor].steam_name
+            end)
+
+        nome =
+            limitarTexto(nome, 40)
+
+        if sucesso and nome ~= nil then
+            return nome
+        end
+    end
+
+    if cor ~= "" then
+        return cor
+    end
+
+    return "Jogador"
+end
+
 local function garantirModExtras()
     if type(state.modExtras) ~= "table" then
         state.modExtras = criarModExtrasPadrao()
@@ -2256,6 +2283,9 @@ local function textoD20Ataque(d20, d20Lista)
 end
 
 local function finalizarAtaqueRolado(jogador, calculo, d20, d20Lista)
+    local nomeDoJogador =
+        nomeJogador(jogador)
+
     local totalAtaque =
         d20 + calculo.modificadorAtaque
 
@@ -2276,7 +2306,7 @@ local function finalizarAtaqueRolado(jogador, calculo, d20, d20Lista)
     -- Salva uma fotografia dos modificadores deste ataque
     state.ultimoAtaque = {
         disponivel = true,
-        jogador = jogador,
+        jogador = nomeDoJogador,
         d20 = d20,
         d20Lista = d20Lista or {d20},
         totalAtaque = totalAtaque,
@@ -2313,7 +2343,7 @@ local function finalizarAtaqueRolado(jogador, calculo, d20, d20Lista)
     local resumoChat = string.format(
         "%s | %s | ATAQUE %s (%s %s) | PM %s | %s",
 
-        tostring(jogador),
+        tostring(nomeDoJogador),
         tostring(CONFIG.nomeArma),
         tostring(totalAtaque),
         textoD20Ataque(d20, d20Lista),
