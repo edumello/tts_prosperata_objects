@@ -105,9 +105,9 @@ local CONFIG = {
     -- Atualizacao automatica via GitHub.
     -- Estes arquivos precisam estar publicados no branch main.
     githubScriptUrl =
-        "https://raw.githubusercontent.com/edumello/tts_prosperata_objects/main/characters/edward/ataque_edward.lua",
+        "https://raw.githubusercontent.com/edumello/tts_prosperata_objects/refs/heads/main/characters/edward/ataque_edward.lua",
     githubImagemUrl =
-        "https://raw.githubusercontent.com/edumello/tts_prosperata_objects/main/characters/edward/assets/edward_attack_panel.png"
+        "https://raw.githubusercontent.com/edumello/tts_prosperata_objects/refs/heads/main/characters/edward/assets/edward_attack_panel.png"
 }
 
 -- =========================================================

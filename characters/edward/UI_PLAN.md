@@ -223,8 +223,8 @@ COUNT = 17
 O botao `UPDATE` fica no topo direito do painel e usa:
 
 ```text
-https://raw.githubusercontent.com/edumello/tts_prosperata_objects/main/characters/edward/ataque_edward.lua
-https://raw.githubusercontent.com/edumello/tts_prosperata_objects/main/characters/edward/assets/edward_attack_panel.png
+https://raw.githubusercontent.com/edumello/tts_prosperata_objects/refs/heads/main/characters/edward/ataque_edward.lua
+https://raw.githubusercontent.com/edumello/tts_prosperata_objects/refs/heads/main/characters/edward/assets/edward_attack_panel.png
 ```
 
 Antes de usar o botao no Tabletop Simulator, garantir que as mudancas foram commitadas e enviadas para o branch `main`. O botao nao le arquivos locais: ele sempre baixa a versao publicada no GitHub.

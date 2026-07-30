@@ -35,8 +35,8 @@ multiplicadorCritico = 4
 ataqueEspecialMaxPM = 2
 modExtraMin = -20
 modExtraMax = 20
-githubScriptUrl = "https://raw.githubusercontent.com/edumello/tts_prosperata_objects/main/characters/edward/ataque_edward.lua"
-githubImagemUrl = "https://raw.githubusercontent.com/edumello/tts_prosperata_objects/main/characters/edward/assets/edward_attack_panel.png"
+githubScriptUrl = "https://raw.githubusercontent.com/edumello/tts_prosperata_objects/refs/heads/main/characters/edward/ataque_edward.lua"
+githubImagemUrl = "https://raw.githubusercontent.com/edumello/tts_prosperata_objects/refs/heads/main/characters/edward/assets/edward_attack_panel.png"
 ```
 
 Origem dos valores:
@@ -125,8 +125,8 @@ O preview de dano nao aplica critico automaticamente.
 O botao `UPDATE` usa `WebRequest.get()` para buscar a versao publicada em:
 
 ```text
-https://raw.githubusercontent.com/edumello/tts_prosperata_objects/main/characters/edward/ataque_edward.lua
-https://raw.githubusercontent.com/edumello/tts_prosperata_objects/main/characters/edward/assets/edward_attack_panel.png
+https://raw.githubusercontent.com/edumello/tts_prosperata_objects/refs/heads/main/characters/edward/ataque_edward.lua
+https://raw.githubusercontent.com/edumello/tts_prosperata_objects/refs/heads/main/characters/edward/assets/edward_attack_panel.png
 ```
 
 Fluxo:
