@@ -224,6 +224,8 @@ COUNT = 17
 
 Os inputs de nome dos modificadores extras sao criados com `self.createInput()` e nao entram na contagem dos botoes.
 
+No PNG, os icones da coluna `ATAQUES` usam uma versao compacta (`DrawSlotIconCircle`, 50px). Os icones grandes (`DrawIconCircle`, 68px) ficam reservados aos botoes de acao da parte inferior.
+
 ## Layout calibrado
 
 Altura e escala:

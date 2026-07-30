@@ -50,6 +50,8 @@ O PNG contem:
 - nomes fixos dos ataques;
 - caixas vazias para valores dinamicos.
 
+Na coluna `ATAQUES`, os icones de linha usam circulos compactos de `50px`. Nao usar os icones grandes de acao (`68px`) nessa coluna, porque eles se sobrepoem entre as linhas.
+
 O PNG nao deve conter:
 
 - `ON` / `OFF`;

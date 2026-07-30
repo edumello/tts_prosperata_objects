@@ -128,9 +128,48 @@ function DrawSmallPlusCircle($cx, $cy) {
     $penGold.Dispose()
 }
 
+function DrawSlotIconCircle($cx, $cy, $kind) {
+    FillRound ($cx - 25) ($cy - 25) 50 50 25 "#0D0D0B" "#D8B857" 3
+    $penGold = Pen "#EACB6D" 4
+    $penDark = Pen "#44320E" 2
+
+    if ($kind -eq "swords") {
+        $g.DrawLine($penGold, $cx - 14, $cy - 15, $cx + 15, $cy + 14)
+        $g.DrawLine($penGold, $cx + 14, $cy - 15, $cx - 15, $cy + 14)
+        $g.DrawLine($penDark, $cx - 18, $cy - 19, $cx - 9, $cy - 10)
+        $g.DrawLine($penDark, $cx + 18, $cy - 19, $cx + 9, $cy - 10)
+    } elseif ($kind -eq "power") {
+        $g.FillPie((Brush "#EACB6D"), $cx - 15, $cy - 6, 30, 23, 195, 150)
+        $g.FillRectangle((Brush "#EACB6D"), $cx - 2, $cy - 13, 10, 20)
+        $g.DrawArc($penDark, $cx - 18, $cy - 13, 32, 26, 20, 150)
+    } elseif ($kind -eq "weight") {
+        FillRound ($cx - 15) ($cy - 1) 30 18 4 "#EACB6D" $null 0
+        $g.DrawArc($penGold, $cx - 10, $cy - 18, 20, 20, 180, 180)
+    } elseif ($kind -eq "star") {
+        $g.DrawLine($penGold, $cx, $cy - 19, $cx, $cy + 19)
+        $g.DrawLine($penGold, $cx - 19, $cy, $cx + 19, $cy)
+        $g.DrawLine($penGold, $cx - 13, $cy - 13, $cx + 13, $cy + 13)
+        $g.DrawLine($penGold, $cx + 13, $cy - 13, $cx - 13, $cy + 13)
+    } elseif ($kind -eq "d20") {
+        $points = @(
+            [System.Drawing.Point]::new($cx, $cy - 21),
+            [System.Drawing.Point]::new($cx + 21, $cy - 6),
+            [System.Drawing.Point]::new($cx + 14, $cy + 18),
+            [System.Drawing.Point]::new($cx - 14, $cy + 18),
+            [System.Drawing.Point]::new($cx - 21, $cy - 6)
+        )
+        $g.DrawPolygon($penGold, $points)
+        $g.DrawLine($penGold, $cx, $cy - 21, $cx - 14, $cy + 18)
+        $g.DrawLine($penGold, $cx, $cy - 21, $cx + 14, $cy + 18)
+    }
+
+    $penGold.Dispose()
+    $penDark.Dispose()
+}
+
 function DrawSlot($x, $y, $w, $h, $icon, $title, $controlText, $extraControlText = $null) {
     FillRound $x $y $w $h 8 "#171510" $null 0
-    DrawIconCircle ($x + 48) ($y + ($h / 2)) $icon
+    DrawSlotIconCircle ($x + 48) ($y + ($h / 2)) $icon
     $titleFont = $fontTitle
     if ($title.Length -gt 11) {
         $titleFont = $fontSmall
