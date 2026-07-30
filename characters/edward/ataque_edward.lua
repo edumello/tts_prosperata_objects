@@ -2363,7 +2363,7 @@ local function finalizarAtaqueRolado(jogador, calculo, d20, d20Lista)
     end
 
     -- -----------------------------------------------------
-    -- Resumo do chat
+    -- Resumo do chat e do popup global
     -- -----------------------------------------------------
 
     local resumoChat = string.format(
@@ -2397,7 +2397,7 @@ local function finalizarAtaqueRolado(jogador, calculo, d20, d20Lista)
     )
 
     mostrarResultado(
-        mensagem,
+        resumoChat,
         jogador
     )
 
@@ -2709,7 +2709,7 @@ local function finalizarDanoRolado(
     end
 
     -- -----------------------------------------------------
-    -- Resumo do chat
+    -- Resumo do chat e do popup global
     -- -----------------------------------------------------
 
     local resumoChat = string.format(
@@ -2733,7 +2733,7 @@ local function finalizarDanoRolado(
     )
 
     mostrarResultado(
-        mensagem,
+        resumoChat,
         jogador
     )
 

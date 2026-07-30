@@ -367,6 +367,8 @@ Motivo: quando este XML fica na Object UI do painel e o Lua usa `self.UI`, o pop
 
 O script gera uma copia embutida de `ui.xml` com `criarResultadoXml()` e chama `garantirResultadoGlobalUI()` no `onLoad` e antes de mostrar o resultado. Se o Global UI da mesa ainda nao tiver `id="resultadoAtaque"`, o script adiciona esse XML automaticamente.
 
+O conteudo enviado para `textoAtaque` deve ser o mesmo resumo curto enviado ao chat (`resumoChat`), nao a mensagem detalhada. Isso evita que o popup ocupe a tela toda durante o jogo.
+
 A copia embutida e gerada a partir dos campos `CONFIG.resultadoUI*`. Para mudar o tamanho do popup, alterar no topo de `ataque_edward.lua`:
 
 ```lua
