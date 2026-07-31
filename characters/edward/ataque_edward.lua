@@ -75,7 +75,8 @@ local CONFIG = {
     dadoDanoEsperaMaxima = 8,
     dadoDanoIntervaloLeitura = 0.25,
 
-    -- Cor verde do texto no chat
+    -- Cor usada apenas para mensagens de erro.
+    -- Mensagens normais ficam na cor padrao do TTS para evitar bug visual no chat.
     corChat = {
         r = 0.35,
         g = 1.00,
@@ -1273,43 +1274,16 @@ end
 
 local function mostrarResultadoFallback(mensagem, jogador)
     if jogador ~= nil and jogador ~= "" then
-        local sucessoBroadcast =
-            pcall(function()
-                broadcastToColor(
-                    mensagem,
-                    jogador,
-                    CONFIG.corChat
-                )
-            end)
-
-        if sucessoBroadcast then
-            return
-        end
-
         printToColor(
             mensagem,
-            jogador,
-            CONFIG.corChat
+            jogador
         )
 
         return
     end
 
-    local sucessoBroadcast =
-        pcall(function()
-            broadcastToAll(
-                mensagem,
-                CONFIG.corChat
-            )
-        end)
-
-    if sucessoBroadcast then
-        return
-    end
-
     printToAll(
-        mensagem,
-        CONFIG.corChat
+        mensagem
     )
 end
 
@@ -1357,23 +1331,33 @@ end
 -- =========================================================
 
 local function notificarGithub(jogador, mensagem, erro)
-    local cor =
-        erro and CONFIG.corErro or CONFIG.corChat
-
     if jogador ~= nil and jogador ~= "" then
-        printToColor(
-            mensagem,
-            jogador,
-            cor
-        )
+        if erro then
+            printToColor(
+                mensagem,
+                jogador,
+                CONFIG.corErro
+            )
+        else
+            printToColor(
+                mensagem,
+                jogador
+            )
+        end
 
         return
     end
 
-    printToAll(
-        mensagem,
-        cor
-    )
+    if erro then
+        printToAll(
+            mensagem,
+            CONFIG.corErro
+        )
+    else
+        printToAll(
+            mensagem
+        )
+    end
 end
 
 local function urlComCacheBuster(url)
@@ -2366,8 +2350,7 @@ local function finalizarAtaqueRolado(jogador, calculo, d20, d20Lista)
     end
 
     printToAll(
-        resumoChat,
-        CONFIG.corChat
+        resumoChat
     )
 
     mostrarResultado(
@@ -2673,8 +2656,7 @@ local function finalizarDanoRolado(
     end
 
     printToAll(
-        resumoChat,
-        CONFIG.corChat
+        resumoChat
     )
 
     mostrarResultado(

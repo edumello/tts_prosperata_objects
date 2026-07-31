@@ -373,6 +373,8 @@ O conteudo enviado para `textoAtaque` deve ser o mesmo resumo curto enviado ao c
 
 O primeiro campo do `resumoChat` deve usar `Player[cor].steam_name` quando disponivel. A cor do jogador (`White`, `Blue`, etc.) fica apenas como fallback se o nome Steam nao puder ser lido.
 
+Mensagens normais de ataque, dano e update devem usar `printToAll(mensagem)` ou `printToColor(mensagem, jogador)` sem parametro de cor. Evitar `CONFIG.corChat` nessas mensagens, porque tint customizado pode deixar o chat do TTS visualmente bugado/cinza para mensagens posteriores. `CONFIG.corErro` continua reservado para erros.
+
 A copia embutida e gerada a partir dos campos `CONFIG.resultadoUI*`. Para mudar o tamanho do popup, alterar no topo de `ataque_edward.lua`:
 
 ```lua
