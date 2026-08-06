@@ -348,61 +348,13 @@ Regras numericas mantidas nesta feature:
 Se precisar ajustar onde os D6 aparecem, alterar `dadoDanoOffsetLocal` e `dadoDanoEspacamento`.
 Se precisar ajustar o salto/giro dos D6, alterar `dadoDanoForca*` e `dadoDanoTorque*`.
 
-## UI XML
-
-O XML global usa estes IDs:
-
-```xml
-id="resultadoAtaque"
-id="textoAtaque"
-```
-
-O Lua deve usar a Global UI para este overlay:
-
-```lua
-UI.setValue("textoAtaque", mensagem)
-UI.show("resultadoAtaque")
-UI.hide("resultadoAtaque")
-```
-
-Motivo: quando este XML fica na Object UI do painel e o Lua usa `self.UI`, o popup e renderizado preso ao objeto em 3D, podendo aparecer atras/embaixo do tile. Para manter o comportamento original de popup na tela, usar Global UI.
-
-O script gera uma copia embutida de `ui.xml` com `criarResultadoXml()` e chama `garantirResultadoGlobalUI()` no `onLoad` e antes de mostrar o resultado. Se o Global UI da mesa ainda nao tiver `id="resultadoAtaque"`, o script adiciona esse XML automaticamente.
-
-O conteudo enviado para `textoAtaque` deve ser o mesmo resumo curto enviado ao chat (`resumoChat`), nao a mensagem detalhada. Isso evita que o popup ocupe a tela toda durante o jogo.
+## Resultados no chat
 
 O primeiro campo do `resumoChat` deve usar `Player[cor].steam_name` quando disponivel. A cor do jogador (`White`, `Blue`, etc.) fica apenas como fallback se o nome Steam nao puder ser lido.
 
-Mensagens normais de ataque, dano e update devem usar `printToAll(mensagem)` ou `printToColor(mensagem, jogador)` sem parametro de cor. Evitar `CONFIG.corChat` nessas mensagens, porque tint customizado pode deixar o chat do TTS visualmente bugado/cinza para mensagens posteriores. `CONFIG.corErro` continua reservado para erros.
+Mensagens normais de ataque, dano e update devem usar `printToAll(mensagem)` ou `printToColor(mensagem, jogador)` sem parametro de cor. Antes de enviar resultados com dados, os colchetes ASCII devem ser convertidos para `［` e `］`, pois o parser de BBCode do chat do TTS pode interpretar valores como `[18]` como marcacao e corromper mensagens posteriores. `CONFIG.corErro` continua reservado para erros.
 
-A copia embutida e gerada a partir dos campos `CONFIG.resultadoUI*`. Para mudar o tamanho do popup, alterar no topo de `ataque_edward.lua`:
-
-```lua
-resultadoUILargura = 460
-resultadoUIAltura = 190
-resultadoUIPosicao = "0 70"
-resultadoUITextoLargura = 420
-resultadoUITextoAltura = 150
-resultadoUIFonteMinima = 9
-resultadoUIFonteMaxima = 14
-```
-
-Quando o id `resultadoAtaque` ja existe no Global UI, `garantirResultadoGlobalUI()` reaplica esses atributos com `UI.setAttributes()` no `onLoad`.
-
-Tamanho calibrado do overlay de resultado:
-
-```xml
-width="460"
-height="190"
-position="0 70"
-color="rgba(0,0,0,0.86)"
-textoAtaque width="420"
-textoAtaque height="150"
-resizeTextMinSize="9"
-resizeTextMaxSize="14"
-```
-
-Para exportar o objeto com `Save Object`, nao colocar este XML na aba UI/XML do objeto. O objeto salvo leva a copia do XML dentro do Lua e instala o painel no Global UI ao carregar.
+Ataques e danos nao devem criar ou mostrar Global UI. O resultado aparece somente no chat, sem popup no centro da tela. O `ui.xml` permanece no repositorio apenas como referencia legada.
 
 ## Asset do painel
 

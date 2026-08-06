@@ -75,33 +75,11 @@ local CONFIG = {
     dadoDanoEsperaMaxima = 8,
     dadoDanoIntervaloLeitura = 0.25,
 
-    -- Cor usada apenas para mensagens de erro.
-    -- Mensagens normais ficam na cor padrao do TTS para evitar bug visual no chat.
-    corChat = {
-        r = 0.35,
-        g = 1.00,
-        b = 0.35
-    },
-
     corErro = {
         r = 1.00,
         g = 0.35,
         b = 0.35
     },
-
-    -- Tempo de exibição no painel XML
-    tempoResultadoUI = 8,
-
-    -- Popup Global UI do resultado.
-    -- Ajuste estes valores para calibrar o tamanho na tela.
-    resultadoUILargura = 460,
-    resultadoUIAltura = 190,
-    resultadoUIPosicao = "0 70",
-    resultadoUICor = "rgba(0,0,0,0.86)",
-    resultadoUITextoLargura = 420,
-    resultadoUITextoAltura = 150,
-    resultadoUIFonteMinima = 9,
-    resultadoUIFonteMaxima = 14,
 
     -- Atualizacao automatica via GitHub.
     -- Estes arquivos precisam estar publicados no branch main.
@@ -253,7 +231,6 @@ end
 
 local state = criarEstadoPadrao()
 
-local esconderResultadoWaitId = nil
 local dadoAtaqueObjeto = nil
 local dadosAtaqueObjetos = {}
 local dadoAtaqueWaitId = nil
@@ -1165,165 +1142,38 @@ local function construirBotoes()
 end
 
 -- =========================================================
--- PAINEL XML
+-- CHAT
 -- =========================================================
 
-local function criarResultadoXml()
-    return
-        '<Panel ' ..
-        'id="resultadoAtaque" ' ..
-        'active="false" ' ..
-        'width="' .. tostring(CONFIG.resultadoUILargura) .. '" ' ..
-        'height="' .. tostring(CONFIG.resultadoUIAltura) .. '" ' ..
-        'position="' .. tostring(CONFIG.resultadoUIPosicao) .. '" ' ..
-        'color="' .. tostring(CONFIG.resultadoUICor) .. '">' ..
-        '<Text ' ..
-        'id="textoAtaque" ' ..
-        'width="' .. tostring(CONFIG.resultadoUITextoLargura) .. '" ' ..
-        'height="' .. tostring(CONFIG.resultadoUITextoAltura) .. '" ' ..
-        'position="0 0" ' ..
-        'resizeTextForBestFit="true" ' ..
-        'resizeTextMinSize="' .. tostring(CONFIG.resultadoUIFonteMinima) .. '" ' ..
-        'resizeTextMaxSize="' .. tostring(CONFIG.resultadoUIFonteMaxima) .. '" ' ..
-        'horizontalOverflow="Wrap" ' ..
-        'verticalOverflow="Truncate" ' ..
-        'color="#FFFFFF" ' ..
-        'fontStyle="Bold" ' ..
-        'alignment="MiddleCenter">' ..
-        'Resultado do ataque' ..
-        '</Text>' ..
-        '</Panel>'
+local function mensagemSeguraParaChat(mensagem)
+    -- O chat do TTS interpreta colchetes ASCII como BBCode. Resultados como
+    -- d20 [18] podem ocultar a mensagem atual e corromper as seguintes.
+    -- Mantemos o texto legivel usando os equivalentes Unicode apenas no chat.
+    local segura = tostring(mensagem)
+    segura = string.gsub(segura, "%[", "［")
+    segura = string.gsub(segura, "%]", "］")
+
+    return segura
 end
 
-local function atualizarAtributosResultadoGlobalUI()
-    pcall(function()
-        UI.setAttributes(
-            "resultadoAtaque",
-            {
-                width = CONFIG.resultadoUILargura,
-                height = CONFIG.resultadoUIAltura,
-                position = CONFIG.resultadoUIPosicao,
-                color = CONFIG.resultadoUICor
-            }
-        )
-    end)
-
-    pcall(function()
-        UI.setAttributes(
-            "textoAtaque",
-            {
-                width = CONFIG.resultadoUITextoLargura,
-                height = CONFIG.resultadoUITextoAltura,
-                resizeTextMinSize = CONFIG.resultadoUIFonteMinima,
-                resizeTextMaxSize = CONFIG.resultadoUIFonteMaxima
-            }
-        )
-    end)
-end
-
-local function garantirResultadoGlobalUI()
-    local sucessoXmlAtual, xmlAtual =
-        pcall(function()
-            return UI.getXml()
-        end)
-
-    if sucessoXmlAtual
-        and type(xmlAtual) == "string"
-        and string.find(
-            xmlAtual,
-            'id="resultadoAtaque"',
-            1,
-            true
-        ) ~= nil then
-        atualizarAtributosResultadoGlobalUI()
-        return true
-    end
-
-    local resultadoXml =
-        criarResultadoXml()
-
-    local novoXml = resultadoXml
-
-    if sucessoXmlAtual
-        and type(xmlAtual) == "string"
-        and xmlAtual ~= "" then
-        novoXml =
-            xmlAtual ..
-            "\n" ..
-            resultadoXml
-    end
-
-    local sucessoSetXml, erroSetXml =
-        pcall(function()
-            UI.setXml(novoXml)
-        end)
-
-    if not sucessoSetXml then
-        print(
-            "Erro ao preparar Global UI de resultado: " ..
-            tostring(erroSetXml)
-        )
-    end
-
-    if sucessoSetXml then
-        atualizarAtributosResultadoGlobalUI()
-    end
-
-    return sucessoSetXml
-end
-
-local function mostrarResultadoFallback(mensagem, jogador)
-    if jogador ~= nil and jogador ~= "" then
-        printToColor(
-            mensagem,
-            jogador
-        )
-
-        return
-    end
-
-    printToAll(
-        mensagem
-    )
-end
-
-local function mostrarResultado(mensagem, jogador)
-    garantirResultadoGlobalUI()
-
+local function enviarResumoParaChat(mensagem)
     local sucesso, erro = pcall(function()
-        UI.setValue("textoAtaque", mensagem)
-        UI.show("resultadoAtaque")
+        printToAll(mensagemSeguraParaChat(mensagem))
     end)
 
     if not sucesso then
         print(
-            "Erro ao mostrar resultado na UI: " ..
+            "Erro ao enviar resumo para o chat: " ..
             tostring(erro)
         )
-
-        mostrarResultadoFallback(mensagem, jogador)
-
-        return
     end
+end
 
-    if esconderResultadoWaitId ~= nil then
-        Wait.stop(esconderResultadoWaitId)
-    end
-
-    esconderResultadoWaitId = Wait.time(function()
-        local sucessoEsconder, erroEsconder = pcall(function()
-            UI.hide("resultadoAtaque")
-        end)
-
-        if not sucessoEsconder then
-            print(
-                "Erro ao esconder resultado na UI: " ..
-                tostring(erroEsconder)
-            )
-        end
-
-        esconderResultadoWaitId = nil
-    end, CONFIG.tempoResultadoUI)
+local function ocultarResultadoGlobalLegado()
+    -- Objetos atualizados podem ter deixado o antigo popup no Global UI.
+    pcall(function()
+        UI.hide("resultadoAtaque")
+    end)
 end
 
 -- =========================================================
@@ -2052,7 +1902,7 @@ function onLoad(savedData)
         descartarUltimoAtaque()
     end
 
-    garantirResultadoGlobalUI()
+    ocultarResultadoGlobalLegado()
     construirBotoes()
 end
 
@@ -2349,14 +2199,7 @@ local function finalizarAtaqueRolado(jogador, calculo, d20, d20Lista)
             " | AMEAÇA DE CRÍTICO"
     end
 
-    printToAll(
-        resumoChat
-    )
-
-    mostrarResultado(
-        resumoChat,
-        jogador
-    )
+    enviarResumoParaChat(resumoChat)
 
     resetarSelecoesAposAtaque()
     atualizarBotoes()
@@ -2655,14 +2498,7 @@ local function finalizarDanoRolado(
             " | CRITICO MANUAL"
     end
 
-    printToAll(
-        resumoChat
-    )
-
-    mostrarResultado(
-        resumoChat,
-        jogador
-    )
+    enviarResumoParaChat(resumoChat)
 
     -- -----------------------------------------------------
     -- Limpeza do último ataque

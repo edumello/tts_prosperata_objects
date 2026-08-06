@@ -25,4 +25,4 @@ Cada personagem deve ficar em sua propria pasta dentro de `characters/`, com scr
 
 - Use nomes de pastas sem espaco e sem acento para facilitar URLs publicas no GitHub.
 - Mantenha `CONTEXT.md` atualizado dentro da pasta do personagem sempre que mudar regras, layout ou fluxo de exportacao.
-- O popup de resultado do Edward usa Global UI gerada pelo Lua. Nao cole `ui.xml` na Object UI do painel.
+- Resultados de ataque e dano do Edward sao publicados somente no chat do TTS.

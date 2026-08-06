@@ -5,7 +5,7 @@ Painel/script de Tabletop Simulator para automatizar ataques do personagem Edwar
 ## Arquivos principais
 
 - `ataque_edward.lua`: script do objeto no Tabletop Simulator.
-- `ui.xml`: referencia do popup de resultado via Global UI.
+- `ui.xml`: referencia legada do antigo popup de resultado (nao e mais usada pelo script).
 - `assets/edward_attack_panel.png`: imagem oficial usada no painel.
 - `image_menu/build_panel.ps1`: gerador da imagem do painel.
 - `image_menu/manifest.json`: posicoes e metadados da UI.
@@ -32,4 +32,4 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File characters\edward\image_
 
 ## Observacoes
 
-O popup de resultado deve usar Global UI. Nao cole `ui.xml` na Object UI do painel, pois isso prende o popup ao objeto em 3D.
+Resultados de ataque e dano aparecem somente no chat. O script converte os colchetes dos dados para caracteres Unicode antes de publicar, evitando que o parser de BBCode do TTS corrompa o chat.
