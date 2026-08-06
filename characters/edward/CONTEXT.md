@@ -7,7 +7,9 @@
 - Ataque Poderoso: `-2 ataque`, `+5 dano`.
 - Golpe Pessoal Passo do Carrasco: Preciso, Brutal, Avanco e Truque Secreto, custo `1 PM`.
 - Ataque Especial: ate `2 PM` no nivel 5.
-- Todas as selecoes e modificadores permanecem ativos ate o usuario desativa-los.
+- Preparada, Poderoso, Pesado, Golpe Pessoal e Especial resetam depois de cada
+  ataque concluido. Somente os quatro modificadores extras permanecem ativos
+  entre rolagens.
 - Dano e critico usam a fotografia do ultimo ataque salvo.
 - Resultados aparecem somente no chat, no verde original de Edward.
 

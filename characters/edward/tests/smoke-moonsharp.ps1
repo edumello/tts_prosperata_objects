@@ -168,16 +168,17 @@ uiDispatch(whitePlayer, '-1', 'roll_damage')
 assert(#publicChat == 2)
 assert(string.find(publicChat[2].message, 'DANO NORMAL', 1, true) ~= nil)
 assert(attributes['label_poderoso:text'] == 'PODEROSO')
-assert(attributes['state_poderoso:text'] == 'ON')
-assert(attributes['state_poderoso:color'] == '#9BE6B1')
+assert(attributes['state_poderoso:text'] == 'OFF')
+assert(attributes['state_poderoso:color'] == '#C8CBD0')
 assert(attributes['mod_1_value:text'] == '+1')
 
--- As tres opcoes de rolagem continuam funcionando com modificadores ativos.
+-- As tres opcoes continuam funcionando; selecoes de ataque resetam, mas o
+-- modificador extra permanece ativo entre as rolagens.
 uiDispatch(whitePlayer, '-1', 'roll_attack')
 uiDispatch(whitePlayer, '-1', 'roll_critical')
 assert(#publicChat == 4)
 assert(string.find(publicChat[4].message, 'DANO CRÍTICO', 1, true) ~= nil)
-assert(attributes['state_poderoso:text'] == 'ON')
+assert(attributes['state_poderoso:text'] == 'OFF')
 assert(attributes['mod_1_value:text'] == '+1')
 
 -- Limpar durante um spawn pendente invalida o callback; quando ele chega,

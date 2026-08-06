@@ -42,8 +42,9 @@ local CONFIG = {
     modExtraMin = -20,
     modExtraMax = 20,
 
-    -- Mantem poderes e selecoes ativos entre todos os tipos de ataque.
-    resetarAposAtaque = false,
+    -- Preparada, Poderoso, Pesado, Golpe Pessoal e Especial sao escolhas do
+    -- ataque atual e voltam ao estado inativo depois que o d20 e resolvido.
+    resetarAposAtaque = true,
 
     -- Mantem modificadores extras entre ataques para efeitos de varios turnos.
     resetarModExtraAposAtaque = false,

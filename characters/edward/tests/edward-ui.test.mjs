@@ -215,6 +215,18 @@ test("limpeza cancela rolagens sem consumir o ataque salvo", async () => {
   assert.doesNotMatch(clearBlock[0], /descartarUltimoAtaque\(\)/);
 });
 
+test("ataque reseta selecoes e preserva os quatro modificadores extras", async () => {
+  const lua = normalize(await readFile(luaPath, "utf8"));
+  assert.match(lua, /resetarAposAtaque\s*=\s*true/);
+  assert.match(lua, /resetarModExtraAposAtaque\s*=\s*false/);
+  const resetBlock = lua.match(/local function resetarSelecoesAposAtaque\(\)[\s\S]*?\nend\n\n-- =+\n-- CARREGAMENTO/);
+  assert.ok(resetBlock, "funcao de reset das selecoes ausente");
+  for (const field of ["preparada", "poderoso", "pesado", "golpePessoal"])
+    assert.match(resetBlock[0], new RegExp(`state\\.${field} = false`));
+  assert.match(resetBlock[0], /state\.especialModo = 0/);
+  assert.match(resetBlock[0], /if CONFIG\.resetarModExtraAposAtaque then/);
+});
+
 test("dados recebem proveniencia e so passam pela limpeza do painel proprietario", async () => {
   const lua = normalize(await readFile(luaPath, "utf8"));
   assert.match(lua, /DICE_OWNER_PRODUCER\s*=\s*\n?\s*"edumello\/tts_prosperata_objects:edward"/);
@@ -232,7 +244,7 @@ test("manifesto, fonte medieval e imagem correspondem ao canvas 1792x1024", asyn
     readFile(sourceImagePath),
   ]);
   const manifest = JSON.parse(manifestText);
-  assert.equal(manifest.version, "3.2.0");
+  assert.equal(manifest.version, "3.2.1");
   assert.deepEqual(manifest.canvas, { width: 1792, height: 1024 });
   assert.deepEqual(manifest.objectUi.scale, [0.19, 0.2, 1]);
   assert.equal(png.toString("ascii", 1, 4), "PNG");
