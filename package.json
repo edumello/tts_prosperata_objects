@@ -1,0 +1,9 @@
+{
+  "name": "tts-prosperata-objects",
+  "private": true,
+  "scripts": {
+    "build:edward": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File characters/edward/build.ps1",
+    "test": "node --test characters/edward/tests/*.test.mjs",
+    "test:smoke": "pwsh -NoProfile -File characters/edward/tests/smoke-moonsharp.ps1"
+  }
+}

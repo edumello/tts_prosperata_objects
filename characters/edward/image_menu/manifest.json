@@ -1,69 +1,42 @@
 {
-  "version": "1.0.0",
+  "version": "3.2.1",
   "canvas": {
-    "width": 2048,
-    "height": 640
+    "width": 1792,
+    "height": 1024
   },
   "export": {
     "tts_panel": "assets/edward_attack_panel.png",
     "preview": "image_menu/exports/edward_attack_panel_v1.png",
     "builder": "image_menu/build_panel.ps1"
   },
-  "tts": {
-    "recommended_thickness": 0.1,
-    "button_y": 0.1,
-    "button_scale": [0.2, 0.2, 0.2]
+  "uiSprites": {
+    "controlRow": "assets/ui/edward_control_row.png",
+    "attack": "assets/ui/edward_action_attack.png",
+    "critical": "assets/ui/edward_action_critical.png",
+    "damage": "assets/ui/edward_action_damage.png",
+    "clear": "assets/ui/edward_action_clear.png"
   },
-  "positions": {
-    "preparada": [-1.30, 0.10, -0.33],
-    "poderoso": [-1.30, 0.10, -0.15],
-    "pesado": [-1.30, 0.10, 0.03],
-    "golpePessoal": [-1.30, 0.10, 0.21],
-    "especial": [-1.55, 0.10, 0.39],
-    "especialPM": [-1.18, 0.10, 0.39],
-    "modExtraNome1": [-0.10, 0.10, -0.27],
-    "modExtraNome2": [-0.10, 0.10, -0.07],
-    "modExtraNome3": [-0.10, 0.10, 0.13],
-    "modExtraNome4": [-0.10, 0.10, 0.33],
-    "modExtra": [0.70, 0.10, -0.28],
-    "modExtra2": [0.70, 0.10, -0.08],
-    "modExtra3": [0.70, 0.10, 0.12],
-    "modExtra4": [0.70, 0.10, 0.32],
-    "previewPM": [2.25, 0.10, -0.27],
-    "previewAtaque": [2.25, 0.10, 0.03],
-    "previewDano": [2.25, 0.10, 0.33],
-    "rolarAtaque": [-1.18, 0.10, 0.68],
-    "critico": [0.12, 0.10, 0.68],
-    "rolarDano": [1.40, 0.10, 0.68],
-    "updateGithub": [2.18, 0.10, -0.66]
+  "objectUi": {
+    "source": "ui.xml",
+    "runtime": "ataque_edward.lua",
+    "scale": [0.19, 0.20, 1],
+    "rotation": [0, 0, 180],
+    "position": [0, 0, -50]
   },
-  "buttons": {
-    "order": [
-      "preparada",
-      "poderoso",
-      "especial",
-      "especialPM",
-      "modExtra",
-      "pesado",
-      "golpePessoal",
-      "rolarAtaque",
-      "critico",
-      "rolarDano",
-      "previewPM",
-      "previewAtaque",
-      "previewDano",
-      "modExtra2",
-      "modExtra3",
-      "modExtra4",
-      "updateGithub"
-    ],
-    "count": 17
+  "controls": {
+    "toggleButtons": 5,
+    "modifierInputs": 4,
+    "modifierStepButtons": 8,
+    "specialPmStepButtons": 2,
+    "actionButtons": 4,
+    "updateButtons": 1,
+    "readouts": 7
   },
-  "inputs": {
-    "modExtraNames": 4,
-    "width": 760,
-    "height": 320,
-    "font_size": 180
+  "diceOwnership": {
+    "schema": 1,
+    "producer": "edumello/tts_prosperata_objects:edward",
+    "storage": "GMNotes",
+    "owner": "panel GUID"
   },
   "attackDie": {
     "type": "Die_20",
