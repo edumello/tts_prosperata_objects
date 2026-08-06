@@ -56,6 +56,30 @@ function tagForId(xml, id) {
   return match?.[1] ?? null;
 }
 
+function tagSourceForId(xml, id) {
+  const escaped = id.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return xml.match(new RegExp(`<[A-Za-z][\\w]*\\b[^>]*\\bid="${escaped}"[^>]*>`))?.[0] ?? null;
+}
+
+function numericAttribute(tag, name) {
+  const value = tag?.match(new RegExp(`\\b${name}="([0-9]+)"`))?.[1];
+  assert.ok(value, `${name} ausente em ${tag}`);
+  return Number(value);
+}
+
+function positionForId(xml, id) {
+  const tag = tagSourceForId(xml, id);
+  assert.ok(tag, `${id} ausente`);
+  const offset = tag.match(/\boffsetXY="([0-9]+) -([0-9]+)"/);
+  assert.ok(offset, `offsetXY invalido em ${id}`);
+  return {
+    x: Number(offset[1]),
+    y: Number(offset[2]),
+    width: numericAttribute(tag, "width"),
+    height: numericAttribute(tag, "height"),
+  };
+}
+
 function validateXmlShape(xml) {
   const withoutComments = xml.replace(/<!--[\s\S]*?-->/g, "");
   const tags = withoutComments.match(/<[^>]+>/g) ?? [];
@@ -106,6 +130,40 @@ test("runtime incorpora exatamente a UI canonica e remove criacao Classic UI", a
   assert.doesNotMatch(lua, /broadcastToAll\s*\(/);
 });
 
+test("grade mantem controles dentro dos cards e acoes em faixa propria", async () => {
+  const ui = normalize(await readFile(uiPath, "utf8"));
+  const inside = (id, bounds) => {
+    const item = positionForId(ui, id);
+    assert.ok(item.x >= bounds.left, `${id} invade a margem esquerda`);
+    assert.ok(item.x + item.width <= bounds.right, `${id} invade a margem direita`);
+    assert.ok(item.y >= bounds.top, `${id} invade o titulo da secao`);
+    assert.ok(item.y + item.height <= bounds.bottom, `${id} invade a area inferior`);
+  };
+
+  for (const id of ["toggle_preparada", "toggle_poderoso", "toggle_pesado", "toggle_golpe_pessoal", "especial_mode", "especial_pm_plus"])
+    inside(id, { left: 128, right: 698, top: 195, bottom: 455 });
+
+  for (const id of ["mod_name_1", "mod_1_minus", "mod_1_value", "mod_1_plus", "mod_name_4", "mod_4_plus"])
+    inside(id, { left: 764, right: 1334, top: 195, bottom: 455 });
+
+  for (const id of ["preview_pm", "preview_attack", "preview_damage"])
+    assert.equal(tagForId(ui, id), "Text");
+
+  for (const id of ["roll_attack", "roll_critical", "roll_damage", "clear_dice"])
+    inside(id, { left: 108, right: 1935, top: 486, bottom: 596 });
+});
+
+test("estados inativos usam fundo medio e texto claro fixado pelo runtime", async () => {
+  const [ui, lua] = await Promise.all([
+    readFile(uiPath, "utf8").then(normalize),
+    readFile(luaPath, "utf8").then(normalize),
+  ]);
+  assert.match(ui, /class="toggleButton"[\s\S]*?textColor="#FFFDF5"[\s\S]*?colors="#3A3D40\|#50555A\|#272A2D\|#202326CC"/);
+  assert.match(lua, /uiSet\(id, "textColor", "#FFFDF5"\)/);
+  assert.match(lua, /return "INATIVO"/);
+  assert.match(lua, /return "ATIVO"/);
+});
+
 test("limpeza cancela rolagens sem consumir o ataque salvo", async () => {
   const lua = normalize(await readFile(luaPath, "utf8"));
   const clearBlock = lua.match(/function limparDados\([\s\S]*?\nend\n\n-- =+\n-- ROLAR ATAQUE/);
@@ -133,7 +191,7 @@ test("manifesto e imagem correspondem ao canvas 2048x640", async () => {
     readFile(imagePath),
   ]);
   const manifest = JSON.parse(manifestText);
-  assert.equal(manifest.version, "2.0.0");
+  assert.equal(manifest.version, "2.1.0");
   assert.deepEqual(manifest.canvas, { width: 2048, height: 640 });
   assert.equal(png.toString("ascii", 1, 4), "PNG");
   assert.equal(png.readUInt32BE(16), 2048);

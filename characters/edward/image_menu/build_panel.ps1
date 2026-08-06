@@ -228,6 +228,10 @@ FillRound 108 165 610 300 16 "#11100D" "#8D762D" 2
 FillRound 744 165 610 300 16 "#11100D" "#8D762D" 2
 FillRound 1380 165 555 300 16 "#10130F" $null 0
 
+# Faixa visual exclusiva para as acoes. O recuo deixa claro que esses botoes
+# nao pertencem aos cards superiores e cria uma margem segura no TTS.
+FillRound 108 486 1827 110 14 "#0E0E0C" "#5C512F" 2
+
 DrawText "ATAQUES" $fontSection "#BDB7A8" 130 160 300 34 "Near" $false
 DrawText "MOD. EXTRAS" $fontSection "#BDB7A8" 766 160 300 34 "Near" $false
 DrawText "PREVIA" $fontSection "#BDB7A8" 1402 160 300 34 "Near" $false

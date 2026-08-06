@@ -113,45 +113,45 @@ local OBJECT_UI_XML = [==[
     <Panel class="card" color="#11120FF2" outline="#8D762D" outlineSize="2 2" />
     <Panel class="readout" color="#0E1D18F4" outline="#3AAE67" outlineSize="2 2" />
 
-    <Button class="baseButton" fontSize="23" fontStyle="Bold" textColor="#FFF5D7"
+    <Button class="baseButton" fontSize="22" fontStyle="Bold" textColor="#FFF5D7"
             textAlignment="MiddleCenter" resizeTextForBestFit="true"
-            resizeTextMinSize="14" resizeTextMaxSize="25"
-            colors="#171510|#2A261B|#0B0B09|#09090988"
-            outline="#716441" outlineSize="2 2" padding="9 9 5 5" />
-    <Button class="toggleButton" fontSize="25" fontStyle="Bold" textColor="#FFF5D7"
+            resizeTextMinSize="15" resizeTextMaxSize="24"
+            colors="#34312A|#504936|#25231E|#22201BCC"
+            outline="#A98D49" outlineSize="2 2" padding="9 9 5 5" />
+    <Button class="toggleButton" fontSize="22" fontStyle="Bold" textColor="#FFFDF5"
             textAlignment="MiddleLeft" resizeTextForBestFit="true"
-            resizeTextMinSize="16" resizeTextMaxSize="27"
-            colors="#171510|#2B271B|#0C0B09|#09090988"
-            outline="#716441" outlineSize="2 2" padding="24 20 6 6" />
-    <Button class="miniButton" fontSize="27" fontStyle="Bold" textColor="#F5DE96"
+            resizeTextMinSize="15" resizeTextMaxSize="24"
+            colors="#3A3D40|#50555A|#272A2D|#202326CC"
+            outline="#A99B78" outlineSize="2 2" padding="22 18 5 5" />
+    <Button class="miniButton" fontSize="25" fontStyle="Bold" textColor="#FFF3C7"
             textAlignment="MiddleCenter" resizeTextForBestFit="true"
-            resizeTextMinSize="18" resizeTextMaxSize="28"
-            colors="#1B1912|#39301C|#0D0C09|#09090988"
-            outline="#8D762D" outlineSize="2 2" padding="2 2 2 2" />
+            resizeTextMinSize="18" resizeTextMaxSize="26"
+            colors="#3A3528|#574A2A|#272319|#211E17CC"
+            outline="#B99A45" outlineSize="2 2" padding="2 2 2 2" />
     <Button class="blueAction" fontSize="25" fontStyle="Bold" textColor="#F3F8FF"
             textAlignment="MiddleCenter" resizeTextForBestFit="true"
-            resizeTextMinSize="16" resizeTextMaxSize="28"
+            resizeTextMinSize="15" resizeTextMaxSize="26"
             colors="#24527F|#3674A8|#183751|#0B1B2888"
             outline="#E0BC5B" outlineSize="4 4" padding="10 10 6 6" />
     <Button class="orangeAction" fontSize="25" fontStyle="Bold" textColor="#FFF1DA"
             textAlignment="MiddleCenter" resizeTextForBestFit="true"
-            resizeTextMinSize="16" resizeTextMaxSize="28"
+            resizeTextMinSize="15" resizeTextMaxSize="26"
             colors="#713512|#A4511D|#48210B|#25100688"
             outline="#E0BC5B" outlineSize="4 4" padding="10 10 6 6" />
     <Button class="redAction" fontSize="25" fontStyle="Bold" textColor="#FFE7E1"
             textAlignment="MiddleCenter" resizeTextForBestFit="true"
-            resizeTextMinSize="16" resizeTextMaxSize="28"
+            resizeTextMinSize="15" resizeTextMaxSize="26"
             colors="#681B17|#943027|#42110E|#21090888"
             outline="#E0BC5B" outlineSize="4 4" padding="10 10 6 6" />
     <Button class="clearAction" fontSize="25" fontStyle="Bold" textColor="#EFE9DE"
             textAlignment="MiddleCenter" resizeTextForBestFit="true"
-            resizeTextMinSize="16" resizeTextMaxSize="28"
+            resizeTextMinSize="15" resizeTextMaxSize="26"
             colors="#292C2E|#444A4D|#17191A|#0C0D0E88"
             outline="#9A8A63" outlineSize="4 4" padding="10 10 6 6" />
 
-    <InputField class="nameInput" fontSize="22" fontStyle="Bold"
+    <InputField class="nameInput" fontSize="20" fontStyle="Bold"
                 textColor="#E5F2E7" color="#090C0B"
-                colors="#090C0B|#16211B|#050706|#05070688"
+                colors="#20231F|#30382F|#161815|#151714CC"
                 alignment="MiddleCenter" lineType="SingleLine"
                 characterValidation="None" characterLimit="18"
                 caretColor="#E0BC5B" selectionColor="#826A35AA"
@@ -164,107 +164,107 @@ local OBJECT_UI_XML = [==[
        position="0 0 -50" rotation="0 0 180" scale="0.25 0.25 1"
        color="#00000000" raycastTarget="false">
 
-    <Button id="update" class="baseButton" text="UPDATE"
-            onClick="uiDispatch" width="220" height="48"
-            rectAlignment="UpperLeft" offsetXY="1710 -86" />
+    <Button id="update" class="baseButton" text="ATUALIZAR"
+            onClick="uiDispatch" width="220" height="50"
+            rectAlignment="UpperLeft" offsetXY="1690 -82" />
 
     <!-- Ataques: o card inteiro e o botao. -->
-    <Button id="toggle_preparada" class="toggleButton" text="PREPARADA     OFF"
-            onClick="uiDispatch" width="570" height="52"
-            rectAlignment="UpperLeft" offsetXY="128 -184" />
-    <Button id="toggle_poderoso" class="toggleButton" text="PODEROSO     OFF"
-            onClick="uiDispatch" width="570" height="52"
-            rectAlignment="UpperLeft" offsetXY="128 -240" />
-    <Button id="toggle_pesado" class="toggleButton" text="PESADO     OFF"
-            onClick="uiDispatch" width="570" height="52"
-            rectAlignment="UpperLeft" offsetXY="128 -296" />
-    <Button id="toggle_golpe_pessoal" class="toggleButton" text="GOLPE PESSOAL     OFF"
-            onClick="uiDispatch" width="570" height="52"
-            rectAlignment="UpperLeft" offsetXY="128 -352" />
+    <Button id="toggle_preparada" class="toggleButton" text="PREPARADA  —  INATIVO"
+            onClick="uiDispatch" width="526" height="44"
+            rectAlignment="UpperLeft" offsetXY="150 -204" />
+    <Button id="toggle_poderoso" class="toggleButton" text="PODEROSO  —  INATIVO"
+            onClick="uiDispatch" width="526" height="44"
+            rectAlignment="UpperLeft" offsetXY="150 -254" />
+    <Button id="toggle_pesado" class="toggleButton" text="PESADO  —  INATIVO"
+            onClick="uiDispatch" width="526" height="44"
+            rectAlignment="UpperLeft" offsetXY="150 -304" />
+    <Button id="toggle_golpe_pessoal" class="toggleButton" text="GOLPE PESSOAL  —  INATIVO"
+            onClick="uiDispatch" width="526" height="44"
+            rectAlignment="UpperLeft" offsetXY="150 -354" />
 
-    <Button id="especial_mode" class="toggleButton" text="ESPECIAL     OFF"
-            onClick="uiDispatch" width="360" height="52"
-            rectAlignment="UpperLeft" offsetXY="128 -408" />
+    <Button id="especial_mode" class="toggleButton" text="ESPECIAL  —  INATIVO"
+            onClick="uiDispatch" width="318" height="44"
+            rectAlignment="UpperLeft" offsetXY="150 -404" />
     <Button id="especial_pm_minus" class="miniButton" text="−"
-            onClick="uiDispatch" width="50" height="52"
-            rectAlignment="UpperLeft" offsetXY="496 -408" />
-    <Text id="especial_pm_value" text="1 PM" width="86" height="52"
-          rectAlignment="UpperLeft" offsetXY="552 -408"
+            onClick="uiDispatch" width="44" height="44"
+            rectAlignment="UpperLeft" offsetXY="478 -404" />
+    <Text id="especial_pm_value" text="1 PM" width="82" height="44"
+          rectAlignment="UpperLeft" offsetXY="528 -404"
           color="#F5DE96" outline="#090909" outlineSize="1 1" />
     <Button id="especial_pm_plus" class="miniButton" text="+"
-            onClick="uiDispatch" width="52" height="52"
-            rectAlignment="UpperLeft" offsetXY="646 -408" />
+            onClick="uiDispatch" width="44" height="44"
+            rectAlignment="UpperLeft" offsetXY="618 -404" />
 
     <!-- Modificadores extras: input e controles explicitos. -->
     <InputField id="mod_name_1" class="nameInput" text="EXTRA 1" onEndEdit="uiEditModName"
-                width="344" height="52" rectAlignment="UpperLeft" offsetXY="780 -204" />
+                width="318" height="44" rectAlignment="UpperLeft" offsetXY="782 -204" />
     <Button id="mod_1_minus" class="miniButton" text="−" onClick="uiDispatch"
-            width="48" height="52" rectAlignment="UpperLeft" offsetXY="1132 -204" />
-    <Text id="mod_1_value" text="+0" width="72" height="52"
-          rectAlignment="UpperLeft" offsetXY="1188 -204" color="#F5DE96" />
+            width="44" height="44" rectAlignment="UpperLeft" offsetXY="1110 -204" />
+    <Text id="mod_1_value" text="+0" width="66" height="44"
+          rectAlignment="UpperLeft" offsetXY="1160 -204" color="#F5DE96" />
     <Button id="mod_1_plus" class="miniButton" text="+" onClick="uiDispatch"
-            width="48" height="52" rectAlignment="UpperLeft" offsetXY="1268 -204" />
+            width="44" height="44" rectAlignment="UpperLeft" offsetXY="1232 -204" />
 
     <InputField id="mod_name_2" class="nameInput" text="EXTRA 2" onEndEdit="uiEditModName"
-                width="344" height="52" rectAlignment="UpperLeft" offsetXY="780 -268" />
+                width="318" height="44" rectAlignment="UpperLeft" offsetXY="782 -264" />
     <Button id="mod_2_minus" class="miniButton" text="−" onClick="uiDispatch"
-            width="48" height="52" rectAlignment="UpperLeft" offsetXY="1132 -268" />
-    <Text id="mod_2_value" text="+0" width="72" height="52"
-          rectAlignment="UpperLeft" offsetXY="1188 -268" color="#F5DE96" />
+            width="44" height="44" rectAlignment="UpperLeft" offsetXY="1110 -264" />
+    <Text id="mod_2_value" text="+0" width="66" height="44"
+          rectAlignment="UpperLeft" offsetXY="1160 -264" color="#F5DE96" />
     <Button id="mod_2_plus" class="miniButton" text="+" onClick="uiDispatch"
-            width="48" height="52" rectAlignment="UpperLeft" offsetXY="1268 -268" />
+            width="44" height="44" rectAlignment="UpperLeft" offsetXY="1232 -264" />
 
     <InputField id="mod_name_3" class="nameInput" text="EXTRA 3" onEndEdit="uiEditModName"
-                width="344" height="52" rectAlignment="UpperLeft" offsetXY="780 -332" />
+                width="318" height="44" rectAlignment="UpperLeft" offsetXY="782 -324" />
     <Button id="mod_3_minus" class="miniButton" text="−" onClick="uiDispatch"
-            width="48" height="52" rectAlignment="UpperLeft" offsetXY="1132 -332" />
-    <Text id="mod_3_value" text="+0" width="72" height="52"
-          rectAlignment="UpperLeft" offsetXY="1188 -332" color="#F5DE96" />
+            width="44" height="44" rectAlignment="UpperLeft" offsetXY="1110 -324" />
+    <Text id="mod_3_value" text="+0" width="66" height="44"
+          rectAlignment="UpperLeft" offsetXY="1160 -324" color="#F5DE96" />
     <Button id="mod_3_plus" class="miniButton" text="+" onClick="uiDispatch"
-            width="48" height="52" rectAlignment="UpperLeft" offsetXY="1268 -332" />
+            width="44" height="44" rectAlignment="UpperLeft" offsetXY="1232 -324" />
 
     <InputField id="mod_name_4" class="nameInput" text="EXTRA 4" onEndEdit="uiEditModName"
-                width="344" height="52" rectAlignment="UpperLeft" offsetXY="780 -396" />
+                width="318" height="44" rectAlignment="UpperLeft" offsetXY="782 -384" />
     <Button id="mod_4_minus" class="miniButton" text="−" onClick="uiDispatch"
-            width="48" height="52" rectAlignment="UpperLeft" offsetXY="1132 -396" />
-    <Text id="mod_4_value" text="+0" width="72" height="52"
-          rectAlignment="UpperLeft" offsetXY="1188 -396" color="#F5DE96" />
+            width="44" height="44" rectAlignment="UpperLeft" offsetXY="1110 -384" />
+    <Text id="mod_4_value" text="+0" width="66" height="44"
+          rectAlignment="UpperLeft" offsetXY="1160 -384" color="#F5DE96" />
     <Button id="mod_4_plus" class="miniButton" text="+" onClick="uiDispatch"
-            width="48" height="52" rectAlignment="UpperLeft" offsetXY="1268 -396" />
+            width="44" height="44" rectAlignment="UpperLeft" offsetXY="1232 -384" />
 
     <!-- Previa: somente leitura. -->
-    <Panel class="readout" width="510" height="70" rectAlignment="UpperLeft" offsetXY="1400 -198">
-        <Text text="PM GASTO" width="180" height="60" rectAlignment="MiddleLeft"
-              offsetXY="18 0" alignment="MiddleLeft" color="#CFFFE0" />
-        <Text id="preview_pm" text="0 PM" width="250" height="60" rectAlignment="MiddleRight"
-              offsetXY="-18 0" alignment="MiddleRight" color="#FFFFFF" />
+    <Panel class="readout" width="490" height="62" rectAlignment="UpperLeft" offsetXY="1404 -202">
+        <Text text="PM GASTO" width="170" height="54" rectAlignment="MiddleLeft"
+              offsetXY="18 0" alignment="MiddleLeft" color="#CFFFE0" fontSize="21" />
+        <Text id="preview_pm" text="0 PM" width="236" height="54" rectAlignment="MiddleRight"
+              offsetXY="-18 0" alignment="MiddleRight" color="#FFFFFF" fontSize="21" />
     </Panel>
-    <Panel class="readout" width="510" height="70" rectAlignment="UpperLeft" offsetXY="1400 -294">
-        <Text text="ATAQUE" width="180" height="60" rectAlignment="MiddleLeft"
-              offsetXY="18 0" alignment="MiddleLeft" color="#CFFFE0" />
-        <Text id="preview_attack" text="0 / 0 / 0" width="280" height="60" rectAlignment="MiddleRight"
-              offsetXY="-18 0" alignment="MiddleRight" color="#FFFFFF" />
+    <Panel class="readout" width="490" height="62" rectAlignment="UpperLeft" offsetXY="1404 -284">
+        <Text text="ATAQUE" width="170" height="54" rectAlignment="MiddleLeft"
+              offsetXY="18 0" alignment="MiddleLeft" color="#CFFFE0" fontSize="21" />
+        <Text id="preview_attack" text="0 / 0 / 0" width="266" height="54" rectAlignment="MiddleRight"
+              offsetXY="-18 0" alignment="MiddleRight" color="#FFFFFF" fontSize="21" />
     </Panel>
-    <Panel class="readout" width="510" height="70" rectAlignment="UpperLeft" offsetXY="1400 -390">
-        <Text text="DANO" width="180" height="60" rectAlignment="MiddleLeft"
-              offsetXY="18 0" alignment="MiddleLeft" color="#CFFFE0" />
-        <Text id="preview_damage" text="0 / 0 / 0" width="280" height="60" rectAlignment="MiddleRight"
-              offsetXY="-18 0" alignment="MiddleRight" color="#FFFFFF" />
+    <Panel class="readout" width="490" height="62" rectAlignment="UpperLeft" offsetXY="1404 -366">
+        <Text text="DANO" width="170" height="54" rectAlignment="MiddleLeft"
+              offsetXY="18 0" alignment="MiddleLeft" color="#CFFFE0" fontSize="21" />
+        <Text id="preview_damage" text="0 / 0 / 0" width="266" height="54" rectAlignment="MiddleRight"
+              offsetXY="-18 0" alignment="MiddleRight" color="#FFFFFF" fontSize="21" />
     </Panel>
 
     <!-- Acoes: quatro hitboxes completas e independentes. -->
     <Button id="roll_attack" class="blueAction" text="ROLAR ATAQUE&#10;d20 + modificadores"
-            onClick="uiDispatch" width="390" height="76"
-            rectAlignment="UpperLeft" offsetXY="208 -500" />
+            onClick="uiDispatch" width="360" height="70"
+            rectAlignment="UpperLeft" offsetXY="210 -516" />
     <Button id="roll_critical" class="orangeAction" text="CRÍTICO&#10;dano x4 salvo"
-            onClick="uiDispatch" width="390" height="76"
-            rectAlignment="UpperLeft" offsetXY="622 -500" />
+            onClick="uiDispatch" width="360" height="70"
+            rectAlignment="UpperLeft" offsetXY="626 -516" />
     <Button id="roll_damage" class="redAction" text="ROLAR DANO&#10;aguardando ataque"
-            onClick="uiDispatch" width="390" height="76"
-            rectAlignment="UpperLeft" offsetXY="1036 -500" />
+            onClick="uiDispatch" width="360" height="70"
+            rectAlignment="UpperLeft" offsetXY="1042 -516" />
     <Button id="clear_dice" class="clearAction" text="LIMPAR DADOS&#10;somente deste painel"
-            onClick="uiDispatch" width="390" height="76"
-            rectAlignment="UpperLeft" offsetXY="1450 -500" />
+            onClick="uiDispatch" width="360" height="70"
+            rectAlignment="UpperLeft" offsetXY="1458 -516" />
 </Panel>
 ]==]
 -- END EMBEDDED OBJECT UI
@@ -498,10 +498,10 @@ end
 
 local function textoToggle(ativo)
     if ativo then
-        return "ON"
+        return "ATIVO"
     end
 
-    return "OFF"
+    return "INATIVO"
 end
 
 local function formatarMedia(valor)
@@ -876,60 +876,89 @@ end
 
 local function coresToggle(ativo)
     if ativo then
-        return "#24552C|#357640|#17371D|#0B1C0F88"
+        return "#296B39|#3D8B50|#1C4D28|#173A20CC"
     end
 
-    return "#171510|#2B271B|#0C0B09|#09090988"
+    return "#3A3D40|#50555A|#272A2D|#202326CC"
+end
+
+local function aplicarEstiloToggle(id, ativo)
+    uiSet(id, "colors", coresToggle(ativo))
+    uiSet(id, "textColor", "#FFFDF5")
+    uiSet(
+        id,
+        "outline",
+        ativo and "#70C77F" or "#A99B78"
+    )
 end
 
 local function atualizarBotoes()
     garantirModExtras()
 
+    -- O TTS pode reaplicar a cor padrao escura do tema ao reconstruir a UI.
+    -- Fixar a cor em runtime mantem todos os rotulos legiveis em qualquer
+    -- tema, inclusive botoes ainda indisponiveis.
+    local botoesComTextoClaro = {
+        "update",
+        "especial_pm_minus",
+        "especial_pm_plus",
+        "mod_1_minus",
+        "mod_1_plus",
+        "mod_2_minus",
+        "mod_2_plus",
+        "mod_3_minus",
+        "mod_3_plus",
+        "mod_4_minus",
+        "mod_4_plus",
+        "roll_attack",
+        "roll_critical",
+        "roll_damage",
+        "clear_dice"
+    }
+
+    for _, id in ipairs(botoesComTextoClaro) do
+        uiSet(id, "textColor", "#FFFDF5")
+    end
+
     uiSet(
         "toggle_preparada",
         "text",
-        "PREPARADA     " .. textoToggle(state.preparada)
+        "PREPARADA  —  " .. textoToggle(state.preparada)
     )
-    uiSet("toggle_preparada", "colors", coresToggle(state.preparada))
+    aplicarEstiloToggle("toggle_preparada", state.preparada)
 
     uiSet(
         "toggle_poderoso",
         "text",
-        "PODEROSO     " .. textoToggle(state.poderoso)
+        "PODEROSO  —  " .. textoToggle(state.poderoso)
     )
-    uiSet("toggle_poderoso", "colors", coresToggle(state.poderoso))
+    aplicarEstiloToggle("toggle_poderoso", state.poderoso)
 
     uiSet(
         "toggle_pesado",
         "text",
-        "PESADO     " .. textoToggle(state.pesado)
+        "PESADO  —  " .. textoToggle(state.pesado)
     )
-    uiSet("toggle_pesado", "colors", coresToggle(state.pesado))
+    aplicarEstiloToggle("toggle_pesado", state.pesado)
 
     uiSet(
         "toggle_golpe_pessoal",
         "text",
-        "GOLPE PESSOAL     " .. textoToggle(state.golpePessoal)
+        "GOLPE PESSOAL  —  " .. textoToggle(state.golpePessoal)
     )
-    uiSet(
-        "toggle_golpe_pessoal",
-        "colors",
-        coresToggle(state.golpePessoal)
-    )
+    aplicarEstiloToggle("toggle_golpe_pessoal", state.golpePessoal)
 
     local modoEspecial =
-        ESPECIAL_NOMES[state.especialModo] or "OFF"
+        state.especialModo == 0 and
+            "INATIVO" or
+            (ESPECIAL_NOMES[state.especialModo] or "INATIVO")
 
     uiSet(
         "especial_mode",
         "text",
-        "ESPECIAL     " .. modoEspecial
+        "ESPECIAL  —  " .. modoEspecial
     )
-    uiSet(
-        "especial_mode",
-        "colors",
-        coresToggle(state.especialModo ~= 0)
-    )
+    aplicarEstiloToggle("especial_mode", state.especialModo ~= 0)
     uiSet(
         "especial_pm_value",
         "text",
@@ -963,7 +992,7 @@ local function atualizarBotoes()
     uiSet(
         "update",
         "text",
-        updateGithubEmAndamento and "..." or "UPDATE"
+        updateGithubEmAndamento and "ATUALIZANDO..." or "ATUALIZAR"
     )
     uiSet(
         "update",

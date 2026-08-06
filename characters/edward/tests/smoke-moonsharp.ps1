@@ -147,7 +147,9 @@ $harnessSuffix = @'
 
 onLoad('')
 assert(string.find(uiXml, 'id="clear_dice"', 1, true) ~= nil)
-assert(attributes['toggle_preparada:text'] == 'PREPARADA     OFF')
+assert(attributes['toggle_preparada:text'] == 'PREPARADA  —  INATIVO')
+assert(attributes['toggle_preparada:textColor'] == '#FFFDF5')
+assert(attributes['toggle_preparada:colors'] == '#3A3D40|#50555A|#272A2D|#202326CC')
 
 uiDispatch(whitePlayer, '-1', 'toggle_poderoso')
 uiDispatch(whitePlayer, '-1', 'mod_1_plus')
@@ -165,7 +167,9 @@ assert(attackDie.wasDestroyed())
 uiDispatch(whitePlayer, '-1', 'roll_damage')
 assert(#publicChat == 2)
 assert(string.find(publicChat[2].message, 'DANO NORMAL', 1, true) ~= nil)
-assert(attributes['toggle_poderoso:text'] == 'PODEROSO     ON')
+assert(attributes['toggle_poderoso:text'] == 'PODEROSO  —  ATIVO')
+assert(attributes['toggle_poderoso:textColor'] == '#FFFDF5')
+assert(attributes['toggle_poderoso:colors'] == '#296B39|#3D8B50|#1C4D28|#173A20CC')
 assert(attributes['mod_1_value:text'] == '+1')
 
 -- As tres opcoes de rolagem continuam funcionando com modificadores ativos.
@@ -173,7 +177,7 @@ uiDispatch(whitePlayer, '-1', 'roll_attack')
 uiDispatch(whitePlayer, '-1', 'roll_critical')
 assert(#publicChat == 4)
 assert(string.find(publicChat[4].message, 'DANO CRÍTICO', 1, true) ~= nil)
-assert(attributes['toggle_poderoso:text'] == 'PODEROSO     ON')
+assert(attributes['toggle_poderoso:text'] == 'PODEROSO  —  ATIVO')
 assert(attributes['mod_1_value:text'] == '+1')
 
 -- Limpar durante um spawn pendente invalida o callback; quando ele chega,
