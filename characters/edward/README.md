@@ -34,4 +34,4 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File characters\edward\image_
 
 Resultados de ataque e dano aparecem somente no chat, usando o verde original do Edward. O script converte os colchetes dos dados para caracteres Unicode antes de publicar, evitando que o parser de BBCode do TTS corrompa o chat.
 
-Os quatro modificadores extras permanecem ativos entre ataques; poderes e selecoes temporarias continuam sendo limpos automaticamente depois da rolagem.
+Todos os modificadores permanecem ativos entre ataques, incluindo poderes, selecoes temporarias e os quatro modificadores extras. O usuario os desativa manualmente quando o efeito terminar.

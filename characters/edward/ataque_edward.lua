@@ -42,8 +42,8 @@ local CONFIG = {
     modExtraMin = -20,
     modExtraMax = 20,
 
-    -- Reseta os poderes depois de rolar o ataque
-    resetarAposAtaque = true,
+    -- Mantem poderes e selecoes ativos entre todos os tipos de ataque.
+    resetarAposAtaque = false,
 
     -- Mantem modificadores extras entre ataques para efeitos de varios turnos.
     resetarModExtraAposAtaque = false,

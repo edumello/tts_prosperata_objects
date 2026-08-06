@@ -109,7 +109,7 @@ Cada linha tem:
 
 Os quatro valores somam no teste de ataque. Os nomes aparecem no chat e no painel de resultado quando o valor e diferente de zero.
 
-Ao rolar ataque, os valores e nomes dos quatro modificadores extras permanecem ativos. Isso permite representar bonus ou penalidades com duracao de varios turnos; o usuario os remove manualmente quando o efeito terminar.
+Ao rolar qualquer ataque, todas as selecoes permanecem ativas: Preparada, Poderoso, Ataque Especial, Pesado, Golpe Pessoal e os valores/nomes dos quatro modificadores extras. Isso permite representar efeitos com duracao de varios turnos; o usuario desativa ou zera cada modificador manualmente quando o efeito terminar.
 
 ### Previa
 
