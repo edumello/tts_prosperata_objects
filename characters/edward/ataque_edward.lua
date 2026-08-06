@@ -45,8 +45,8 @@ local CONFIG = {
     -- Reseta os poderes depois de rolar o ataque
     resetarAposAtaque = true,
 
-    -- Reseta o modificador manual depois do ataque
-    resetarModExtraAposAtaque = true,
+    -- Mantem modificadores extras entre ataques para efeitos de varios turnos.
+    resetarModExtraAposAtaque = false,
 
     -- Depois de rolar o dano, consome o último ataque armazenado
     consumirAtaqueAposDano = true,

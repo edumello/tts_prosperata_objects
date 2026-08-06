@@ -121,7 +121,7 @@ font_size = 180
 
 Os valores usam clique esquerdo para `+1` e clique alternativo para `-1`.
 
-Os valores sao zerados depois de rolar ataque. Os nomes permanecem.
+Os valores e nomes permanecem depois de rolar ataque para representar efeitos com duracao de varios turnos. O usuario zera o valor manualmente quando o efeito terminar.
 
 ## D20 fisico
 
