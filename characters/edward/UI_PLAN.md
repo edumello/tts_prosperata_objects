@@ -2,14 +2,17 @@
 
 ## Canvas e orientacao
 
-- Canvas logico: `2048x640`.
+- Canvas logico: `1792x1024` (`7:4`), proximo ao painel de referencia.
 - Escala: `0.25 0.25 1`.
 - Rotacao: `0 0 180`, compensando o `rotY=180` do Saved Object.
-- O PNG contem somente moldura, cabecalho e secoes estaticas.
+- O PNG contem somente fundo e moldura. Cabecalho, divisores e secoes usam o
+  mesmo canvas da Object UI para evitar desalinhamento.
 
 ## Controles
 
-- Ataques e acoes usam `<Button>` com hitbox igual ao card visivel.
+- Cada linha de ataque e um `<Button>` completo; o pill `ON/OFF` e apenas um
+  indicador sem raycast sobre a mesma hitbox.
+- As quatro acoes usam cards altos e independentes na faixa inferior.
 - Nomes dos quatro extras usam `<InputField>`.
 - Modificadores e PM usam botoes explicitos `-` e `+` com um `<Text>` de valor.
 - Previews usam `<Text>` e nunca botoes sem acao.

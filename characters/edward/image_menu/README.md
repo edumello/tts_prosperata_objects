@@ -1,8 +1,10 @@
 # Fundo visual do painel Edward
 
-`build_panel.ps1` gera o fundo `2048x640` usado pelo Custom Tile.
+`build_panel.ps1` gera o fundo `1792x1024` (`7:4`) usado pelo Custom Tile.
 
-O PNG deve conter apenas elementos estaticos: fundo, moldura, cabecalho, divisorias e nomes das secoes. Botoes, inputs, estados, previews e textos de acao pertencem exclusivamente ao `ui.xml`.
+O PNG deve conter somente o fundo e a moldura. Cabecalho, divisorias, nomes das
+secoes, botoes, inputs, estados, previews e textos pertencem exclusivamente ao
+`ui.xml`, evitando que a textura e os controles usem grades diferentes.
 
 Geracao isolada:
 

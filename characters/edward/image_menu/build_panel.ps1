@@ -6,8 +6,8 @@ $ErrorActionPreference = "Stop"
 
 Add-Type -AssemblyName System.Drawing
 
-$width = 2048
-$height = 640
+$width = 1792
+$height = 1024
 
 $exports = Join-Path $Root "image_menu\exports"
 $assetPath = Join-Path $Root "assets\edward_attack_panel.png"
@@ -213,32 +213,23 @@ $fontReadoutTitle = New-Object System.Drawing.Font("Bahnschrift", 24, [System.Dr
 $fontReadoutValue = New-Object System.Drawing.Font("Bahnschrift", 25, [System.Drawing.FontStyle]::Bold)
 $fontSubtle = New-Object System.Drawing.Font("Bahnschrift", 15, [System.Drawing.FontStyle]::Regular)
 
-# Main panel expanded close to the image edge. This keeps the same 2048x640
-# canvas for TTS alignment, but removes the empty outer margin from the asset.
-FillRound 8 8 2032 624 28 "#13120F" "#4B4A43" 6
-FillRound 28 28 1992 584 8 "#17150F" "#D8B857" 3
-$g.DrawLine((Pen "#C39B3B" 3), 56, 150, 1992, 150)
+# A imagem agora e apenas a superficie e a moldura. Cabecalho, divisores,
+# cards e controles sao desenhados pela Object UI no mesmo canvas 7:4,
+# eliminando desalinhamento entre a textura e os elementos clicaveis.
+FillRound 6 6 1780 1012 24 "#08090A" "#3B3D3C" 6
+FillRound 18 18 1756 988 10 "#08090A" "#D0AD32" 3
 
-DrawText "EDWARD" $fontHero "#F3D987" 118 82 420 62 "Near" $true
-DrawText "ESPADA DE EXECUCAO" $fontHeader "#FFF2D4" 600 88 560 54 "Center" $true
-
-# Column background areas. Left and center have one section border each; the
-# internal rows stay borderless to preserve spacing around the attack names.
-FillRound 108 165 610 300 16 "#11100D" "#8D762D" 2
-FillRound 744 165 610 300 16 "#11100D" "#8D762D" 2
-FillRound 1380 165 555 300 16 "#10130F" $null 0
-
-# Faixa visual exclusiva para as acoes. O recuo deixa claro que esses botoes
-# nao pertencem aos cards superiores e cria uma margem segura no TTS.
-FillRound 108 486 1827 110 14 "#0E0E0C" "#5C512F" 2
-
-DrawText "ATAQUES" $fontSection "#BDB7A8" 130 160 300 34 "Near" $false
-DrawText "MOD. EXTRAS" $fontSection "#BDB7A8" 766 160 300 34 "Near" $false
-DrawText "PREVIA" $fontSection "#BDB7A8" 1402 160 300 34 "Near" $false
-
-# Os controles, valores e cards clicaveis sao desenhados integralmente pela
-# Object UI XML. A imagem fica deliberadamente livre de labels duplicadas,
-# hitboxes falsas e valores que possam ficar dessincronizados.
+# Cantos dourados discretos inspirados na referencia.
+$cornerPen = Pen "#D0AD32" 3
+$g.DrawLine($cornerPen, 28, 68, 28, 30)
+$g.DrawLine($cornerPen, 28, 30, 72, 30)
+$g.DrawLine($cornerPen, 1764, 68, 1764, 30)
+$g.DrawLine($cornerPen, 1764, 30, 1720, 30)
+$g.DrawLine($cornerPen, 28, 956, 28, 994)
+$g.DrawLine($cornerPen, 28, 994, 72, 994)
+$g.DrawLine($cornerPen, 1764, 956, 1764, 994)
+$g.DrawLine($cornerPen, 1764, 994, 1720, 994)
+$cornerPen.Dispose()
 
 $bmp.Save($exportPath, [System.Drawing.Imaging.ImageFormat]::Png)
 $bmp.Save($assetPath, [System.Drawing.Imaging.ImageFormat]::Png)

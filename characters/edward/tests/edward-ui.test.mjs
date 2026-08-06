@@ -36,6 +36,10 @@ const requiredButtons = [
 
 const requiredInputs = ["mod_name_1", "mod_name_2", "mod_name_3", "mod_name_4"];
 const requiredReadouts = [
+  "state_preparada",
+  "state_poderoso",
+  "state_pesado",
+  "state_golpe_pessoal",
   "especial_pm_value",
   "mod_1_value",
   "mod_2_value",
@@ -130,8 +134,9 @@ test("runtime incorpora exatamente a UI canonica e remove criacao Classic UI", a
   assert.doesNotMatch(lua, /broadcastToAll\s*\(/);
 });
 
-test("grade mantem controles dentro dos cards e acoes em faixa propria", async () => {
+test("grade 7:4 mantem controles dentro das colunas e acoes em faixa propria", async () => {
   const ui = normalize(await readFile(uiPath, "utf8"));
+  assert.match(ui, /id="edwardConsole" width="1792" height="1024"/);
   const inside = (id, bounds) => {
     const item = positionForId(ui, id);
     assert.ok(item.x >= bounds.left, `${id} invade a margem esquerda`);
@@ -141,27 +146,29 @@ test("grade mantem controles dentro dos cards e acoes em faixa propria", async (
   };
 
   for (const id of ["toggle_preparada", "toggle_poderoso", "toggle_pesado", "toggle_golpe_pessoal", "especial_mode", "especial_pm_plus"])
-    inside(id, { left: 128, right: 698, top: 195, bottom: 455 });
+    inside(id, { left: 30, right: 600, top: 195, bottom: 600 });
 
   for (const id of ["mod_name_1", "mod_1_minus", "mod_1_value", "mod_1_plus", "mod_name_4", "mod_4_plus"])
-    inside(id, { left: 764, right: 1334, top: 195, bottom: 455 });
+    inside(id, { left: 625, right: 1150, top: 195, bottom: 600 });
 
   for (const id of ["preview_pm", "preview_attack", "preview_damage"])
     assert.equal(tagForId(ui, id), "Text");
 
   for (const id of ["roll_attack", "roll_critical", "roll_damage", "clear_dice"])
-    inside(id, { left: 108, right: 1935, top: 486, bottom: 596 });
+    inside(id, { left: 30, right: 1762, top: 730, bottom: 990 });
 });
 
-test("estados inativos usam fundo medio e texto claro fixado pelo runtime", async () => {
+test("estados usam pills legiveis e cores fixadas pelo runtime", async () => {
   const [ui, lua] = await Promise.all([
     readFile(uiPath, "utf8").then(normalize),
     readFile(luaPath, "utf8").then(normalize),
   ]);
-  assert.match(ui, /class="toggleButton"[\s\S]*?textColor="#FFFDF5"[\s\S]*?colors="#3A3D40\|#50555A\|#272A2D\|#202326CC"/);
-  assert.match(lua, /uiSet\(id, "textColor", "#FFFDF5"\)/);
-  assert.match(lua, /return "INATIVO"/);
-  assert.match(lua, /return "ATIVO"/);
+  assert.match(ui, /class="statePill" color="#292C30" outline="#555A60"/);
+  assert.match(ui, /id="state_preparada" text="OFF"[\s\S]*?color="#C8CBD0"/);
+  assert.match(lua, /uiSet\(textoId, "text", textoToggle\(ativo\)\)/);
+  assert.match(lua, /ativo and "#9BE6B1" or "#C8CBD0"/);
+  assert.match(lua, /return "OFF"/);
+  assert.match(lua, /return "ON"/);
 });
 
 test("limpeza cancela rolagens sem consumir o ataque salvo", async () => {
@@ -185,15 +192,15 @@ test("dados recebem proveniencia e so passam pela limpeza do painel proprietario
   assert.doesNotMatch(lua, /getObjects\(\)[\s\S]{0,300}(?:D20 Ataque Edward|D6 Dano Edward)/);
 });
 
-test("manifesto e imagem correspondem ao canvas 2048x640", async () => {
+test("manifesto e imagem correspondem ao canvas 1792x1024", async () => {
   const [manifestText, png] = await Promise.all([
     readFile(manifestPath, "utf8"),
     readFile(imagePath),
   ]);
   const manifest = JSON.parse(manifestText);
-  assert.equal(manifest.version, "2.1.0");
-  assert.deepEqual(manifest.canvas, { width: 2048, height: 640 });
+  assert.equal(manifest.version, "3.0.0");
+  assert.deepEqual(manifest.canvas, { width: 1792, height: 1024 });
   assert.equal(png.toString("ascii", 1, 4), "PNG");
-  assert.equal(png.readUInt32BE(16), 2048);
-  assert.equal(png.readUInt32BE(20), 640);
+  assert.equal(png.readUInt32BE(16), 1792);
+  assert.equal(png.readUInt32BE(20), 1024);
 });

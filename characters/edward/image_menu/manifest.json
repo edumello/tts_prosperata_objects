@@ -1,8 +1,8 @@
 {
-  "version": "2.1.0",
+  "version": "3.0.0",
   "canvas": {
-    "width": 2048,
-    "height": 640
+    "width": 1792,
+    "height": 1024
   },
   "export": {
     "tts_panel": "assets/edward_attack_panel.png",
