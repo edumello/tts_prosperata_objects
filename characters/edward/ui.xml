@@ -11,7 +11,7 @@
            outlineSize="1 1" raycastTarget="false" />
     <Panel class="statePill" color="#292C30" outline="#6A604A"
            outlineSize="2 2" raycastTarget="false" />
-    <Panel class="previewCard" color="#0B2518F6" outline="#1E6D43"
+    <Panel class="previewCard" color="#0D3422F4" outline="#3B9363"
            outlineSize="2 2" raycastTarget="false" />
 
     <Button class="headerButton" fontSize="17" fontStyle="Bold"
@@ -20,53 +20,38 @@
             resizeTextMaxSize="19"
             colors="#201D13|#3A3218|#15130E|#12110ECC"
             outline="#8F7425" outlineSize="2 2" padding="8 8 4 4" />
-    <Button class="rowButton" fontSize="23" fontStyle="Bold"
-            textColor="#E0E1E3" textAlignment="MiddleLeft"
-            resizeTextForBestFit="true" resizeTextMinSize="16"
-            resizeTextMaxSize="24"
-            colors="#171613EE|#2B261D|#0F0F0DEE|#0F0F0DCC"
-            outline="#5B4A29" outlineSize="2 2" padding="24 125 5 5" />
+    <Button class="rowButton" image="https://raw.githubusercontent.com/edumello/tts_prosperata_objects/refs/heads/agent/edward-panel-ui/characters/edward/assets/ui/edward_control_row.png?ui=3.2.0"
+            type="Simple" preserveAspect="false" transition="ColorTint"
+            colors="#E7E7E7|#FFFFFF|#BABABA|#77777799" />
     <Button class="modeButton" fontSize="20" fontStyle="Bold"
             textColor="#E7C84A" textAlignment="MiddleLeft"
             resizeTextForBestFit="true" resizeTextMinSize="14"
             resizeTextMaxSize="21"
-            colors="#201C0D|#393015|#151208|#121008CC"
-            outline="#8F7425" outlineSize="2 2" padding="22 12 5 5" />
+            colors="#3E3214|#5A481B|#281F0B|#201908CC"
+            outline="#B0903A" outlineSize="2 2" padding="22 12 5 5" />
     <Button class="miniButton" fontSize="26" fontStyle="Bold"
             textColor="#F0F0F2" textAlignment="MiddleCenter"
             resizeTextForBestFit="true" resizeTextMinSize="17"
             resizeTextMaxSize="27"
-            colors="#28251F|#474033|#181612|#16140FCC"
-            outline="#8B7440" outlineSize="2 2" padding="2 2 2 2" />
+            colors="#403A2F|#615642|#29251E|#211E18CC"
+            outline="#B49651" outlineSize="2 2" padding="2 2 2 2" />
 
-    <Button class="blueAction" fontSize="31" fontStyle="Bold"
-            textColor="#8BB9DF" textAlignment="MiddleCenter"
-            resizeTextForBestFit="true" resizeTextMinSize="18"
-            resizeTextMaxSize="33"
-            colors="#163B5E|#245882|#0F2942|#0C2136CC"
-            outline="#3E79A4" outlineSize="3 3" padding="16 16 12 12" />
-    <Button class="orangeAction" fontSize="31" fontStyle="Bold"
-            textColor="#D8A34F" textAlignment="MiddleCenter"
-            resizeTextForBestFit="true" resizeTextMinSize="18"
-            resizeTextMaxSize="33"
-            colors="#4D2705|#72410D|#331A04|#2C1603CC"
-            outline="#986018" outlineSize="3 3" padding="16 16 12 12" />
-    <Button class="redAction" fontSize="31" fontStyle="Bold"
-            textColor="#D98380" textAlignment="MiddleCenter"
-            resizeTextForBestFit="true" resizeTextMinSize="18"
-            resizeTextMaxSize="33"
-            colors="#521010|#74201F|#350A0A|#2E0909CC"
-            outline="#8B302E" outlineSize="3 3" padding="16 16 12 12" />
-    <Button class="clearAction" fontSize="29" fontStyle="Bold"
-            textColor="#AAA8BF" textAlignment="MiddleCenter"
-            resizeTextForBestFit="true" resizeTextMinSize="17"
-            resizeTextMaxSize="31"
-            colors="#171723|#29293A|#101018|#0E0E16CC"
-            outline="#47475E" outlineSize="3 3" padding="16 16 12 12" />
+    <Button class="blueAction" image="https://raw.githubusercontent.com/edumello/tts_prosperata_objects/refs/heads/agent/edward-panel-ui/characters/edward/assets/ui/edward_action_attack.png?ui=3.2.0"
+            type="Simple" preserveAspect="false" transition="ColorTint"
+            colors="#E9E9E9|#FFFFFF|#B8B8B8|#77777799" />
+    <Button class="orangeAction" image="https://raw.githubusercontent.com/edumello/tts_prosperata_objects/refs/heads/agent/edward-panel-ui/characters/edward/assets/ui/edward_action_critical.png?ui=3.2.0"
+            type="Simple" preserveAspect="false" transition="ColorTint"
+            colors="#E9E9E9|#FFFFFF|#B8B8B8|#77777799" />
+    <Button class="redAction" image="https://raw.githubusercontent.com/edumello/tts_prosperata_objects/refs/heads/agent/edward-panel-ui/characters/edward/assets/ui/edward_action_damage.png?ui=3.2.0"
+            type="Simple" preserveAspect="false" transition="ColorTint"
+            colors="#E9E9E9|#FFFFFF|#B8B8B8|#77777799" />
+    <Button class="clearAction" image="https://raw.githubusercontent.com/edumello/tts_prosperata_objects/refs/heads/agent/edward-panel-ui/characters/edward/assets/ui/edward_action_clear.png?ui=3.2.0"
+            type="Simple" preserveAspect="false" transition="ColorTint"
+            colors="#E9E9E9|#FFFFFF|#B8B8B8|#77777799" />
 
     <InputField class="nameInput" fontSize="21" fontStyle="Bold"
-                textColor="#C8C9CC" color="#1A1C1E"
-                colors="#1A1C1E|#292C30|#111315|#101214CC"
+                textColor="#F0EEE7" color="#262722"
+                colors="#262722|#3B3A31|#181916|#151613CC"
                 alignment="MiddleLeft" lineType="SingleLine"
                 characterValidation="None" characterLimit="18"
                 caretColor="#E4C75E" selectionColor="#776624AA"
@@ -105,9 +90,12 @@
     <Text text="P R É V I A" width="250" height="36"
           rectAlignment="UpperLeft" offsetXY="1165 -174"
           alignment="MiddleLeft" color="#C3A743" fontSize="18" />
-    <Button id="update" class="headerButton" text="ATUALIZAR"
+    <Button id="update" class="headerButton" text=""
             onClick="uiDispatch" width="170" height="38"
             rectAlignment="UpperLeft" offsetXY="1515 -174" />
+    <Text id="update_label" text="ATUALIZAR" width="170" height="38"
+          rectAlignment="UpperLeft" offsetXY="1515 -174"
+          color="#F1D36A" fontSize="17" raycastTarget="false" />
     <Panel class="line" width="490" height="1"
            rectAlignment="UpperLeft" offsetXY="100 -210" color="#4C3D21" />
     <Panel class="line" width="500" height="1"
@@ -116,9 +104,13 @@
            rectAlignment="UpperLeft" offsetXY="1165 -210" color="#4C3D21" />
 
     <!-- Condicoes. Cada linha inteira e um botao; o pill e apenas indicador. -->
-    <Button id="toggle_preparada" class="rowButton" text="PREPARADA"
+    <Button id="toggle_preparada" class="rowButton" text=""
             onClick="uiDispatch" width="490" height="56"
             rectAlignment="UpperLeft" offsetXY="100 -224" />
+    <Text id="label_preparada" text="PREPARADA" width="330" height="56"
+          rectAlignment="UpperLeft" offsetXY="122 -224"
+          alignment="MiddleLeft" color="#FFF8E8" fontSize="22"
+          outline="#000000" outlineSize="1 1" raycastTarget="false" />
     <Panel id="state_preparada_pill" class="statePill" width="96" height="34"
            rectAlignment="UpperLeft" offsetXY="476 -235">
         <Text id="state_preparada" text="OFF" width="96" height="34"
@@ -126,9 +118,13 @@
               raycastTarget="false" />
     </Panel>
 
-    <Button id="toggle_poderoso" class="rowButton" text="PODEROSO"
+    <Button id="toggle_poderoso" class="rowButton" text=""
             onClick="uiDispatch" width="490" height="56"
             rectAlignment="UpperLeft" offsetXY="100 -291" />
+    <Text id="label_poderoso" text="PODEROSO" width="330" height="56"
+          rectAlignment="UpperLeft" offsetXY="122 -291"
+          alignment="MiddleLeft" color="#FFF8E8" fontSize="22"
+          outline="#000000" outlineSize="1 1" raycastTarget="false" />
     <Panel id="state_poderoso_pill" class="statePill" width="96" height="34"
            rectAlignment="UpperLeft" offsetXY="476 -302">
         <Text id="state_poderoso" text="OFF" width="96" height="34"
@@ -136,9 +132,13 @@
               raycastTarget="false" />
     </Panel>
 
-    <Button id="toggle_pesado" class="rowButton" text="PESADO"
+    <Button id="toggle_pesado" class="rowButton" text=""
             onClick="uiDispatch" width="490" height="56"
             rectAlignment="UpperLeft" offsetXY="100 -358" />
+    <Text id="label_pesado" text="PESADO" width="330" height="56"
+          rectAlignment="UpperLeft" offsetXY="122 -358"
+          alignment="MiddleLeft" color="#FFF8E8" fontSize="22"
+          outline="#000000" outlineSize="1 1" raycastTarget="false" />
     <Panel id="state_pesado_pill" class="statePill" width="96" height="34"
            rectAlignment="UpperLeft" offsetXY="476 -369">
         <Text id="state_pesado" text="OFF" width="96" height="34"
@@ -146,9 +146,13 @@
               raycastTarget="false" />
     </Panel>
 
-    <Button id="toggle_golpe_pessoal" class="rowButton" text="G. PESSOAL"
+    <Button id="toggle_golpe_pessoal" class="rowButton" text=""
             onClick="uiDispatch" width="490" height="56"
             rectAlignment="UpperLeft" offsetXY="100 -425" />
+    <Text id="label_golpe_pessoal" text="G. PESSOAL" width="330" height="56"
+          rectAlignment="UpperLeft" offsetXY="122 -425"
+          alignment="MiddleLeft" color="#FFF8E8" fontSize="22"
+          outline="#000000" outlineSize="1 1" raycastTarget="false" />
     <Panel id="state_golpe_pessoal_pill" class="statePill" width="96" height="34"
            rectAlignment="UpperLeft" offsetXY="476 -436">
         <Text id="state_golpe_pessoal" text="OFF" width="96" height="34"
@@ -245,16 +249,43 @@
     <!-- Acoes -->
     <Panel class="line" width="1590" height="2"
            rectAlignment="UpperLeft" offsetXY="100 -642" color="#6A5427" />
-    <Button id="roll_attack" class="blueAction" text="ROLAR ATAQUE&#10;d20 + modificadores"
+    <Button id="roll_attack" class="blueAction" text=""
             onClick="uiDispatch" width="390" height="132"
             rectAlignment="UpperLeft" offsetXY="100 -665" />
-    <Button id="roll_critical" class="orangeAction" text="CRÍTICO&#10;dano x4 salvo"
+    <Text id="roll_attack_title" text="ROLAR ATAQUE" width="350" height="48"
+          rectAlignment="UpperLeft" offsetXY="120 -683" color="#F2FAFF"
+          fontSize="28" outline="#08131C" outlineSize="2 2" raycastTarget="false" />
+    <Text id="roll_attack_subtitle" text="d20 + modificadores" width="350" height="34"
+          rectAlignment="UpperLeft" offsetXY="120 -731" color="#9ED1F3"
+          fontSize="18" raycastTarget="false" />
+
+    <Button id="roll_critical" class="orangeAction" text=""
             onClick="uiDispatch" width="390" height="132"
             rectAlignment="UpperLeft" offsetXY="500 -665" />
-    <Button id="roll_damage" class="redAction" text="ROLAR DANO&#10;aguardando ataque"
+    <Text id="roll_critical_title" text="CRÍTICO" width="350" height="48"
+          rectAlignment="UpperLeft" offsetXY="520 -683" color="#FFF3D2"
+          fontSize="28" outline="#241304" outlineSize="2 2" raycastTarget="false" />
+    <Text id="roll_critical_subtitle" text="dano x4 salvo" width="350" height="34"
+          rectAlignment="UpperLeft" offsetXY="520 -731" color="#E7BD6B"
+          fontSize="18" raycastTarget="false" />
+
+    <Button id="roll_damage" class="redAction" text=""
             onClick="uiDispatch" width="390" height="132"
             rectAlignment="UpperLeft" offsetXY="900 -665" />
-    <Button id="clear_dice" class="clearAction" text="LIMPAR DADOS&#10;somente deste painel"
+    <Text id="roll_damage_title" text="ROLAR DANO" width="350" height="48"
+          rectAlignment="UpperLeft" offsetXY="920 -683" color="#FFE4DE"
+          fontSize="28" outline="#250807" outlineSize="2 2" raycastTarget="false" />
+    <Text id="roll_damage_subtitle" text="aguardando ataque" width="350" height="34"
+          rectAlignment="UpperLeft" offsetXY="920 -731" color="#ECA394"
+          fontSize="18" raycastTarget="false" />
+
+    <Button id="clear_dice" class="clearAction" text=""
             onClick="uiDispatch" width="390" height="132"
             rectAlignment="UpperLeft" offsetXY="1300 -665" />
+    <Text id="clear_dice_title" text="LIMPAR DADOS" width="350" height="48"
+          rectAlignment="UpperLeft" offsetXY="1320 -683" color="#F2EEF8"
+          fontSize="27" outline="#090811" outlineSize="2 2" raycastTarget="false" />
+    <Text id="clear_dice_subtitle" text="somente deste painel" width="350" height="34"
+          rectAlignment="UpperLeft" offsetXY="1320 -731" color="#BFB8CF"
+          fontSize="18" raycastTarget="false" />
 </Panel>

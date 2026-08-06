@@ -13,7 +13,11 @@
 
 - Cada linha de ataque e um `<Button>` completo; o pill `ON/OFF` e apenas um
   indicador sem raycast sobre a mesma hitbox.
-- As quatro acoes usam cards altos e independentes na faixa inferior.
+- As linhas usam sprites arredondados de bronze e carvao, com `ColorTint` para
+  hover e pressionamento.
+- As quatro acoes usam sprites arredondados independentes na faixa inferior.
+- Rotulos sao `<Text raycastTarget="false">` sobre a hitbox real. Isso impede
+  que o tema do TTS substitua a cor do texto e preserva o clique no card todo.
 - Nomes dos quatro extras usam `<InputField>`.
 - Modificadores e PM usam botoes explicitos `-` e `+` com um `<Text>` de valor.
 - Previews usam `<Text>` e nunca botoes sem acao.

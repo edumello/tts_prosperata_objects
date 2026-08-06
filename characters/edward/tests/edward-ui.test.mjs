@@ -37,6 +37,11 @@ const requiredButtons = [
 
 const requiredInputs = ["mod_name_1", "mod_name_2", "mod_name_3", "mod_name_4"];
 const requiredReadouts = [
+  "update_label",
+  "label_preparada",
+  "label_poderoso",
+  "label_pesado",
+  "label_golpe_pessoal",
   "state_preparada",
   "state_poderoso",
   "state_pesado",
@@ -49,6 +54,14 @@ const requiredReadouts = [
   "preview_pm",
   "preview_attack",
   "preview_damage",
+  "roll_attack_title",
+  "roll_attack_subtitle",
+  "roll_critical_title",
+  "roll_critical_subtitle",
+  "roll_damage_title",
+  "roll_damage_subtitle",
+  "clear_dice_title",
+  "clear_dice_subtitle",
 ];
 
 function normalize(value) {
@@ -173,6 +186,24 @@ test("estados usam pills legiveis e cores fixadas pelo runtime", async () => {
   assert.match(lua, /return "ON"/);
 });
 
+test("acoes usam sprites arredondados e rotulos sem bloquear a hitbox", async () => {
+  const ui = normalize(await readFile(uiPath, "utf8"));
+  const actionClasses = {
+    roll_attack: "blueAction",
+    roll_critical: "orangeAction",
+    roll_damage: "redAction",
+    clear_dice: "clearAction",
+  };
+  for (const [id, className] of Object.entries(actionClasses)) {
+    const tag = tagSourceForId(ui, id);
+    assert.match(tag, new RegExp(`\\bclass="${className}"`));
+    assert.match(tag, /\btext=""/);
+    assert.match(ui, new RegExp(`<Button class="${className}"[^>]*image="https://raw\\.githubusercontent\\.com/[^"]+"[\\s\\S]*?transition="ColorTint"`));
+  }
+  for (const id of ["roll_attack_title", "roll_attack_subtitle", "roll_critical_title", "roll_critical_subtitle", "roll_damage_title", "roll_damage_subtitle", "clear_dice_title", "clear_dice_subtitle"])
+    assert.match(tagSourceForId(ui, id), /\braycastTarget="false"/);
+});
+
 test("limpeza cancela rolagens sem consumir o ataque salvo", async () => {
   const lua = normalize(await readFile(luaPath, "utf8"));
   const clearBlock = lua.match(/function limparDados\([\s\S]*?\nend\n\n-- =+\n-- ROLAR ATAQUE/);
@@ -201,7 +232,7 @@ test("manifesto, fonte medieval e imagem correspondem ao canvas 1792x1024", asyn
     readFile(sourceImagePath),
   ]);
   const manifest = JSON.parse(manifestText);
-  assert.equal(manifest.version, "3.1.0");
+  assert.equal(manifest.version, "3.2.0");
   assert.deepEqual(manifest.canvas, { width: 1792, height: 1024 });
   assert.deepEqual(manifest.objectUi.scale, [0.19, 0.2, 1]);
   assert.equal(png.toString("ascii", 1, 4), "PNG");

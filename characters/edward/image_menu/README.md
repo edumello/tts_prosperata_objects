@@ -8,6 +8,10 @@ A arte contem fundo de couro, moldura de aco e filigranas de bronze, mas nenhum
 texto ou controle. Cabecalho, divisorias, nomes das secoes, botoes, inputs,
 estados e previews pertencem exclusivamente ao `ui.xml`.
 
+O mesmo build gera em `assets/ui/` os sprites arredondados das condições e das
+quatro ações. Eles têm transparência nos cantos e são usados diretamente pelos
+`Button` XML com transição `ColorTint` para hover e clique.
+
 Geracao isolada:
 
 ```powershell
