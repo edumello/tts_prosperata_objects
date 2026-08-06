@@ -96,72 +96,182 @@ local CONFIG = {
         "https://raw.githubusercontent.com/edumello/tts_prosperata_objects/refs/heads/main/characters/edward/assets/edward_attack_panel.png"
 }
 
--- =========================================================
--- LAYOUT DOS BOTÕES
---
--- Estas posições foram pensadas para um tile horizontal.
--- Ajuste principalmente x e z para encaixar no seu painel.
--- =========================================================
-
-local ALTURA_BOTAO = 0.10
 local QUANTIDADE_MOD_EXTRAS = 4
 
-local LAYOUT = {
-    altura = ALTURA_BOTAO,
-    escala = {0.20, 0.20, 0.20},
+-- O XML abaixo e sincronizado a partir de ui.xml por build.ps1. Manter os
+-- marcadores intactos para que o runtime publicado continue autocontido.
+-- BEGIN EMBEDDED OBJECT UI
+local OBJECT_UI_XML = [==[
+<!-- Object UI do painel Edward. Este arquivo e a fonte canonica do XML
+     incorporado em ataque_edward.lua pelo script de build. -->
+<Defaults>
+    <Text color="#EEE6D4" fontSize="23" fontStyle="Bold"
+          alignment="MiddleCenter" resizeTextForBestFit="true"
+          resizeTextMinSize="13" resizeTextMaxSize="26"
+          horizontalOverflow="Wrap" verticalOverflow="Truncate" />
 
-    -- Thickness recomendado no Custom Tile: 0.10.
-    preparada = {-1.30, ALTURA_BOTAO, -0.33},
-    poderoso = {-1.30, ALTURA_BOTAO, -0.15},
-    pesado = {-1.30, ALTURA_BOTAO, 0.03},
-    golpePessoal = {-1.30, ALTURA_BOTAO, 0.21},
+    <Panel class="card" color="#11120FF2" outline="#8D762D" outlineSize="2 2" />
+    <Panel class="readout" color="#0E1D18F4" outline="#3AAE67" outlineSize="2 2" />
 
-    especial = {-1.55, ALTURA_BOTAO, 0.39},
-    especialPM = {-1.18, ALTURA_BOTAO, 0.39},
-    modExtraNome1 = {-0.10, ALTURA_BOTAO, -0.27},
-    modExtraNome2 = {-0.10, ALTURA_BOTAO, -0.07},
-    modExtraNome3 = {-0.10, ALTURA_BOTAO, 0.13},
-    modExtraNome4 = {-0.10, ALTURA_BOTAO, 0.33},
-    modExtra = {0.70, ALTURA_BOTAO, -0.28},
-    modExtra2 = {0.70, ALTURA_BOTAO, -0.08},
-    modExtra3 = {0.70, ALTURA_BOTAO, 0.12},
-    modExtra4 = {0.70, ALTURA_BOTAO, 0.32},
-    critico = {0.12, ALTURA_BOTAO, 0.68},
+    <Button class="baseButton" fontSize="23" fontStyle="Bold" textColor="#FFF5D7"
+            textAlignment="MiddleCenter" resizeTextForBestFit="true"
+            resizeTextMinSize="14" resizeTextMaxSize="25"
+            colors="#171510|#2A261B|#0B0B09|#09090988"
+            outline="#716441" outlineSize="2 2" padding="9 9 5 5" />
+    <Button class="toggleButton" fontSize="25" fontStyle="Bold" textColor="#FFF5D7"
+            textAlignment="MiddleLeft" resizeTextForBestFit="true"
+            resizeTextMinSize="16" resizeTextMaxSize="27"
+            colors="#171510|#2B271B|#0C0B09|#09090988"
+            outline="#716441" outlineSize="2 2" padding="24 20 6 6" />
+    <Button class="miniButton" fontSize="27" fontStyle="Bold" textColor="#F5DE96"
+            textAlignment="MiddleCenter" resizeTextForBestFit="true"
+            resizeTextMinSize="18" resizeTextMaxSize="28"
+            colors="#1B1912|#39301C|#0D0C09|#09090988"
+            outline="#8D762D" outlineSize="2 2" padding="2 2 2 2" />
+    <Button class="blueAction" fontSize="25" fontStyle="Bold" textColor="#F3F8FF"
+            textAlignment="MiddleCenter" resizeTextForBestFit="true"
+            resizeTextMinSize="16" resizeTextMaxSize="28"
+            colors="#24527F|#3674A8|#183751|#0B1B2888"
+            outline="#E0BC5B" outlineSize="4 4" padding="10 10 6 6" />
+    <Button class="orangeAction" fontSize="25" fontStyle="Bold" textColor="#FFF1DA"
+            textAlignment="MiddleCenter" resizeTextForBestFit="true"
+            resizeTextMinSize="16" resizeTextMaxSize="28"
+            colors="#713512|#A4511D|#48210B|#25100688"
+            outline="#E0BC5B" outlineSize="4 4" padding="10 10 6 6" />
+    <Button class="redAction" fontSize="25" fontStyle="Bold" textColor="#FFE7E1"
+            textAlignment="MiddleCenter" resizeTextForBestFit="true"
+            resizeTextMinSize="16" resizeTextMaxSize="28"
+            colors="#681B17|#943027|#42110E|#21090888"
+            outline="#E0BC5B" outlineSize="4 4" padding="10 10 6 6" />
+    <Button class="clearAction" fontSize="25" fontStyle="Bold" textColor="#EFE9DE"
+            textAlignment="MiddleCenter" resizeTextForBestFit="true"
+            resizeTextMinSize="16" resizeTextMaxSize="28"
+            colors="#292C2E|#444A4D|#17191A|#0C0D0E88"
+            outline="#9A8A63" outlineSize="4 4" padding="10 10 6 6" />
 
-    previewPM = {2.25, ALTURA_BOTAO, -0.27},
-    previewAtaque = {2.25, ALTURA_BOTAO, 0.03},
-    previewDano = {2.25, ALTURA_BOTAO, 0.33},
+    <InputField class="nameInput" fontSize="22" fontStyle="Bold"
+                textColor="#E5F2E7" color="#090C0B"
+                colors="#090C0B|#16211B|#050706|#05070688"
+                alignment="MiddleCenter" lineType="SingleLine"
+                characterValidation="None" characterLimit="18"
+                caretColor="#E0BC5B" selectionColor="#826A35AA"
+                outline="#716441" outlineSize="2 2" />
+</Defaults>
 
-    rolarAtaque = {-1.18, ALTURA_BOTAO, 0.68},
-    rolarDano = {1.40, ALTURA_BOTAO, 0.68},
-    updateGithub = {2.18, ALTURA_BOTAO, -0.66}
-}
+<!-- A UI acompanha a face superior do Custom_Tile. A rotacao compensa o
+     rotY=180 usado pelo Saved Object oficial. -->
+<Panel id="edwardConsole" width="2048" height="640" rectAlignment="MiddleCenter"
+       position="0 0 -50" rotation="0 0 180" scale="0.25 0.25 1"
+       color="#00000000" raycastTarget="false">
 
--- =========================================================
--- ÍNDICES DOS BOTÕES
---
--- Os índices começam em zero e seguem a ordem de criação.
--- =========================================================
+    <Button id="update" class="baseButton" text="UPDATE"
+            onClick="uiDispatch" width="220" height="48"
+            rectAlignment="UpperLeft" offsetXY="1710 -86" />
 
-local BUTTON = {
-    preparada = 0,
-    poderoso = 1,
-    especial = 2,
-    especialPM = 3,
-    modExtra = 4,
-    pesado = 5,
-    golpePessoal = 6,
-    rolarAtaque = 7,
-    critico = 8,
-    rolarDano = 9,
-    previewPM = 10,
-    previewAtaque = 11,
-    previewDano = 12,
-    modExtra2 = 13,
-    modExtra3 = 14,
-    modExtra4 = 15,
-    updateGithub = 16
-}
+    <!-- Ataques: o card inteiro e o botao. -->
+    <Button id="toggle_preparada" class="toggleButton" text="PREPARADA     OFF"
+            onClick="uiDispatch" width="570" height="52"
+            rectAlignment="UpperLeft" offsetXY="128 -184" />
+    <Button id="toggle_poderoso" class="toggleButton" text="PODEROSO     OFF"
+            onClick="uiDispatch" width="570" height="52"
+            rectAlignment="UpperLeft" offsetXY="128 -240" />
+    <Button id="toggle_pesado" class="toggleButton" text="PESADO     OFF"
+            onClick="uiDispatch" width="570" height="52"
+            rectAlignment="UpperLeft" offsetXY="128 -296" />
+    <Button id="toggle_golpe_pessoal" class="toggleButton" text="GOLPE PESSOAL     OFF"
+            onClick="uiDispatch" width="570" height="52"
+            rectAlignment="UpperLeft" offsetXY="128 -352" />
+
+    <Button id="especial_mode" class="toggleButton" text="ESPECIAL     OFF"
+            onClick="uiDispatch" width="360" height="52"
+            rectAlignment="UpperLeft" offsetXY="128 -408" />
+    <Button id="especial_pm_minus" class="miniButton" text="−"
+            onClick="uiDispatch" width="50" height="52"
+            rectAlignment="UpperLeft" offsetXY="496 -408" />
+    <Text id="especial_pm_value" text="1 PM" width="86" height="52"
+          rectAlignment="UpperLeft" offsetXY="552 -408"
+          color="#F5DE96" outline="#090909" outlineSize="1 1" />
+    <Button id="especial_pm_plus" class="miniButton" text="+"
+            onClick="uiDispatch" width="52" height="52"
+            rectAlignment="UpperLeft" offsetXY="646 -408" />
+
+    <!-- Modificadores extras: input e controles explicitos. -->
+    <InputField id="mod_name_1" class="nameInput" text="EXTRA 1" onEndEdit="uiEditModName"
+                width="344" height="52" rectAlignment="UpperLeft" offsetXY="780 -204" />
+    <Button id="mod_1_minus" class="miniButton" text="−" onClick="uiDispatch"
+            width="48" height="52" rectAlignment="UpperLeft" offsetXY="1132 -204" />
+    <Text id="mod_1_value" text="+0" width="72" height="52"
+          rectAlignment="UpperLeft" offsetXY="1188 -204" color="#F5DE96" />
+    <Button id="mod_1_plus" class="miniButton" text="+" onClick="uiDispatch"
+            width="48" height="52" rectAlignment="UpperLeft" offsetXY="1268 -204" />
+
+    <InputField id="mod_name_2" class="nameInput" text="EXTRA 2" onEndEdit="uiEditModName"
+                width="344" height="52" rectAlignment="UpperLeft" offsetXY="780 -268" />
+    <Button id="mod_2_minus" class="miniButton" text="−" onClick="uiDispatch"
+            width="48" height="52" rectAlignment="UpperLeft" offsetXY="1132 -268" />
+    <Text id="mod_2_value" text="+0" width="72" height="52"
+          rectAlignment="UpperLeft" offsetXY="1188 -268" color="#F5DE96" />
+    <Button id="mod_2_plus" class="miniButton" text="+" onClick="uiDispatch"
+            width="48" height="52" rectAlignment="UpperLeft" offsetXY="1268 -268" />
+
+    <InputField id="mod_name_3" class="nameInput" text="EXTRA 3" onEndEdit="uiEditModName"
+                width="344" height="52" rectAlignment="UpperLeft" offsetXY="780 -332" />
+    <Button id="mod_3_minus" class="miniButton" text="−" onClick="uiDispatch"
+            width="48" height="52" rectAlignment="UpperLeft" offsetXY="1132 -332" />
+    <Text id="mod_3_value" text="+0" width="72" height="52"
+          rectAlignment="UpperLeft" offsetXY="1188 -332" color="#F5DE96" />
+    <Button id="mod_3_plus" class="miniButton" text="+" onClick="uiDispatch"
+            width="48" height="52" rectAlignment="UpperLeft" offsetXY="1268 -332" />
+
+    <InputField id="mod_name_4" class="nameInput" text="EXTRA 4" onEndEdit="uiEditModName"
+                width="344" height="52" rectAlignment="UpperLeft" offsetXY="780 -396" />
+    <Button id="mod_4_minus" class="miniButton" text="−" onClick="uiDispatch"
+            width="48" height="52" rectAlignment="UpperLeft" offsetXY="1132 -396" />
+    <Text id="mod_4_value" text="+0" width="72" height="52"
+          rectAlignment="UpperLeft" offsetXY="1188 -396" color="#F5DE96" />
+    <Button id="mod_4_plus" class="miniButton" text="+" onClick="uiDispatch"
+            width="48" height="52" rectAlignment="UpperLeft" offsetXY="1268 -396" />
+
+    <!-- Previa: somente leitura. -->
+    <Panel class="readout" width="510" height="70" rectAlignment="UpperLeft" offsetXY="1400 -198">
+        <Text text="PM GASTO" width="180" height="60" rectAlignment="MiddleLeft"
+              offsetXY="18 0" alignment="MiddleLeft" color="#CFFFE0" />
+        <Text id="preview_pm" text="0 PM" width="250" height="60" rectAlignment="MiddleRight"
+              offsetXY="-18 0" alignment="MiddleRight" color="#FFFFFF" />
+    </Panel>
+    <Panel class="readout" width="510" height="70" rectAlignment="UpperLeft" offsetXY="1400 -294">
+        <Text text="ATAQUE" width="180" height="60" rectAlignment="MiddleLeft"
+              offsetXY="18 0" alignment="MiddleLeft" color="#CFFFE0" />
+        <Text id="preview_attack" text="0 / 0 / 0" width="280" height="60" rectAlignment="MiddleRight"
+              offsetXY="-18 0" alignment="MiddleRight" color="#FFFFFF" />
+    </Panel>
+    <Panel class="readout" width="510" height="70" rectAlignment="UpperLeft" offsetXY="1400 -390">
+        <Text text="DANO" width="180" height="60" rectAlignment="MiddleLeft"
+              offsetXY="18 0" alignment="MiddleLeft" color="#CFFFE0" />
+        <Text id="preview_damage" text="0 / 0 / 0" width="280" height="60" rectAlignment="MiddleRight"
+              offsetXY="-18 0" alignment="MiddleRight" color="#FFFFFF" />
+    </Panel>
+
+    <!-- Acoes: quatro hitboxes completas e independentes. -->
+    <Button id="roll_attack" class="blueAction" text="ROLAR ATAQUE&#10;d20 + modificadores"
+            onClick="uiDispatch" width="390" height="76"
+            rectAlignment="UpperLeft" offsetXY="208 -500" />
+    <Button id="roll_critical" class="orangeAction" text="CRÍTICO&#10;dano x4 salvo"
+            onClick="uiDispatch" width="390" height="76"
+            rectAlignment="UpperLeft" offsetXY="622 -500" />
+    <Button id="roll_damage" class="redAction" text="ROLAR DANO&#10;aguardando ataque"
+            onClick="uiDispatch" width="390" height="76"
+            rectAlignment="UpperLeft" offsetXY="1036 -500" />
+    <Button id="clear_dice" class="clearAction" text="LIMPAR DADOS&#10;somente deste painel"
+            onClick="uiDispatch" width="390" height="76"
+            rectAlignment="UpperLeft" offsetXY="1450 -500" />
+</Panel>
+]==]
+-- END EMBEDDED OBJECT UI
+
+local DICE_OWNER_SCHEMA = 1
+local DICE_OWNER_PRODUCER =
+    "edumello/tts_prosperata_objects:edward"
 
 local ESPECIAL_NOMES = {
     [0] = "OFF",
@@ -246,165 +356,6 @@ local dadosDanoObjetos = {}
 local dadoDanoWaitId = nil
 local dadoDanoRolagemId = 0
 local updateGithubEmAndamento = false
-
-local BUTTON_ORDER = {
-    "preparada",
-    "poderoso",
-    "especial",
-    "especialPM",
-    "modExtra",
-    "pesado",
-    "golpePessoal",
-    "rolarAtaque",
-    "critico",
-    "rolarDano",
-    "previewPM",
-    "previewAtaque",
-    "previewDano",
-    "modExtra2",
-    "modExtra3",
-    "modExtra4",
-    "updateGithub"
-}
-
-local CONTROLES = {
-    {
-        id = "preparada",
-        click = "alternarPreparada",
-        labelInicial = "OFF",
-        layout = "preparada",
-        largura = 640,
-        tooltip = "Espada de execucao: sem preparar, sofre -5 no ataque."
-    },
-    {
-        id = "poderoso",
-        click = "alternarPoderoso",
-        labelInicial = "OFF",
-        layout = "poderoso",
-        largura = 640,
-        tooltip = "Ataque Poderoso: -2 no ataque e +5 no dano."
-    },
-    {
-        id = "especial",
-        click = "alternarEspecial",
-        labelInicial = "OFF",
-        layout = "especial",
-        largura = 650,
-        tooltip = "Clique esquerdo: OFF, ATAQUE, DANO e DIVIDIDO. Clique alternativo volta."
-    },
-    {
-        id = "especialPM",
-        click = "alterarEspecialPM",
-        labelInicial = "1 PM",
-        layout = "especialPM",
-        largura = 360,
-        tooltip = "Clique esquerdo aumenta PM. Clique alternativo diminui."
-    },
-    {
-        id = "modExtra",
-        click = "alterarModExtra",
-        labelInicial = "+0",
-        layout = "modExtra",
-        largura = 360,
-        tooltip = "Modificador extra 1 no ataque. Clique esquerdo +1. Clique alternativo -1."
-    },
-    {
-        id = "pesado",
-        click = "alternarPesado",
-        labelInicial = "OFF",
-        layout = "pesado",
-        largura = 640,
-        tooltip = "Ataque Pesado: custa 1 PM. Se acertar, derruba ou empurra."
-    },
-    {
-        id = "golpePessoal",
-        click = "alternarGolpePessoal",
-        labelInicial = "OFF",
-        layout = "golpePessoal",
-        largura = 640,
-        tooltip = "Passo do Carrasco: Avanço + Brutal + Preciso + Truque Secreto. Custa 1 PM. Uma vez por alvo por cena."
-    },
-    {
-        id = "rolarAtaque",
-        click = "rolarAtaque",
-        labelInicial = "ROLAR\nATAQUE",
-        layout = "rolarAtaque",
-        largura = 1500,
-        tooltip = "Rola somente o ataque e salva os modificadores para o dano."
-    },
-    {
-        id = "critico",
-        click = "rolarAtaqueCritico",
-        labelInicial = "ROLAR ATAQUE\nCRITICO",
-        layout = "critico",
-        largura = 1500,
-        tooltip = "Rola o dano critico usando os modificadores salvos no ultimo ataque."
-    },
-    {
-        id = "rolarDano",
-        click = "rolarDano",
-        labelInicial = "ROLAR DANO\nSEM ATAQUE",
-        layout = "rolarDano",
-        largura = 1500,
-        tooltip = "Rola o dano usando os modificadores salvos no ultimo ataque."
-    },
-    {
-        id = "previewPM",
-        click = "semAcao",
-        labelInicial = "0 PM",
-        layout = "previewPM",
-        largura = 1350,
-        tooltip = "Preview do custo de PM das opcoes selecionadas."
-    },
-    {
-        id = "previewAtaque",
-        click = "semAcao",
-        labelInicial = "0 / 0 / 0",
-        layout = "previewAtaque",
-        largura = 1350,
-        tooltip = "Preview minimo, medio e maximo do teste de ataque."
-    },
-    {
-        id = "previewDano",
-        click = "semAcao",
-        labelInicial = "0 / 0 / 0",
-        layout = "previewDano",
-        largura = 1350,
-        tooltip = "Preview minimo, medio e maximo do dano normal com as opcoes selecionadas."
-    },
-    {
-        id = "modExtra2",
-        click = "alterarModExtra2",
-        labelInicial = "+0",
-        layout = "modExtra2",
-        largura = 360,
-        tooltip = "Modificador extra 2 no ataque. Clique esquerdo +1. Clique alternativo -1."
-    },
-    {
-        id = "modExtra3",
-        click = "alterarModExtra3",
-        labelInicial = "+0",
-        layout = "modExtra3",
-        largura = 360,
-        tooltip = "Modificador extra 3 no ataque. Clique esquerdo +1. Clique alternativo -1."
-    },
-    {
-        id = "modExtra4",
-        click = "alterarModExtra4",
-        labelInicial = "+0",
-        layout = "modExtra4",
-        largura = 360,
-        tooltip = "Modificador extra 4 no ataque. Clique esquerdo +1. Clique alternativo -1."
-    },
-    {
-        id = "updateGithub",
-        click = "atualizarViaGithub",
-        labelInicial = "UPDATE",
-        layout = "updateGithub",
-        largura = 820,
-        tooltip = "Baixa do GitHub a versao mais nova do script e da imagem deste painel."
-    }
-}
 
 local calcularModificadoresSelecionados = nil
 local calcularPreviewSelecionado = nil
@@ -545,30 +496,6 @@ local function nomeModExtra(indice)
         or "EXTRA " .. tostring(indice)
 end
 
-local function corBotao(ativo)
-    if ativo then
-        return {0.20, 0.55, 0.25}
-    end
-
-    return {0.25, 0.25, 0.25}
-end
-
-local function corBotaoDano()
-    if ultimoAtaqueValido(state.ultimoAtaque) then
-        return {0.20, 0.45, 0.65}
-    end
-
-    return {0.25, 0.25, 0.25}
-end
-
-local function corToggle(ativo)
-    if ativo then
-        return {0.22, 0.46, 0.26}
-    end
-
-    return {0.12, 0.13, 0.13}
-end
-
 local function textoToggle(ativo)
     if ativo then
         return "ON"
@@ -598,16 +525,82 @@ local function objetoValido(objeto)
     return sucesso and not destruido
 end
 
+local function guidDoPainel()
+    local sucesso, guid = pcall(function()
+        return self.getGUID()
+    end)
+
+    if sucesso then
+        return tostring(guid or "")
+    end
+
+    return ""
+end
+
+local function metadadosDado(tipo)
+    return {
+        schema = DICE_OWNER_SCHEMA,
+        producer = DICE_OWNER_PRODUCER,
+        ownerGuid = guidDoPainel(),
+        kind = tostring(tipo or "")
+    }
+end
+
+local function marcarDadoComoProprio(dado, tipo)
+    if not objetoValido(dado) then
+        return false
+    end
+
+    local sucesso = pcall(function()
+        dado.setGMNotes(
+            JSON.encode(metadadosDado(tipo))
+        )
+    end)
+
+    return sucesso
+end
+
+local function dadoPertenceAoPainel(dado, tipoEsperado)
+    if not objetoValido(dado) then
+        return false
+    end
+
+    local sucessoNotas, notas = pcall(function()
+        return dado.getGMNotes()
+    end)
+
+    if not sucessoNotas
+        or notas == nil
+        or notas == "" then
+        return false
+    end
+
+    local sucessoJson, dados =
+        pcall(JSON.decode, tostring(notas))
+
+    if not sucessoJson
+        or type(dados) ~= "table" then
+        return false
+    end
+
+    return tonumber(dados.schema) == DICE_OWNER_SCHEMA
+        and dados.producer == DICE_OWNER_PRODUCER
+        and tostring(dados.ownerGuid or "") == guidDoPainel()
+        and (tipoEsperado == nil
+            or tostring(dados.kind or "") == tipoEsperado)
+end
+
 local function obterDadosAtaqueAtuais()
     local dados = {}
 
     for _, dado in ipairs(dadosAtaqueObjetos) do
-        if objetoValido(dado) then
+        if dadoPertenceAoPainel(dado, "attack") then
             table.insert(dados, dado)
         end
     end
 
-    if #dados == 0 and objetoValido(dadoAtaqueObjeto) then
+    if #dados == 0
+        and dadoPertenceAoPainel(dadoAtaqueObjeto, "attack") then
         table.insert(dados, dadoAtaqueObjeto)
     end
 
@@ -617,7 +610,7 @@ local function obterDadosAtaqueAtuais()
             local dado =
                 getObjectFromGUID(tostring(guid))
 
-            if objetoValido(dado) then
+            if dadoPertenceAoPainel(dado, "attack") then
                 table.insert(dados, dado)
             end
         end
@@ -629,7 +622,7 @@ local function obterDadosAtaqueAtuais()
         local dado =
             getObjectFromGUID(state.dadoAtaqueGuid)
 
-        if objetoValido(dado) then
+        if dadoPertenceAoPainel(dado, "attack") then
             table.insert(dados, dado)
         end
     end
@@ -744,7 +737,7 @@ local function obterDadosDanoAtuais()
     local dados = {}
 
     for _, dado in ipairs(dadosDanoObjetos) do
-        if objetoValido(dado) then
+        if dadoPertenceAoPainel(dado, "damage") then
             table.insert(dados, dado)
         end
     end
@@ -754,7 +747,7 @@ local function obterDadosDanoAtuais()
             local dado =
                 getObjectFromGUID(tostring(guid))
 
-            if objetoValido(dado) then
+            if dadoPertenceAoPainel(dado, "damage") then
                 table.insert(dados, dado)
             end
         end
@@ -867,285 +860,263 @@ local function erroRolagemDado(jogador, mensagem)
     )
 end
 
-local function criarBotao(
-    funcao,
-    texto,
-    posicao,
-    largura,
-    tooltip
-)
-    self.createButton({
-        click_function = funcao,
-        function_owner = self,
-        label = texto,
+-- =========================================================
+-- OBJECT UI
+-- =========================================================
 
-        position = posicao,
-        rotation = {0, 0, 0},
-        scale = LAYOUT.escala,
-
-        width = largura,
-        height = 360,
-        font_size = 145,
-
-        color = {0.25, 0.25, 0.25},
-        font_color = {1, 1, 1},
-        hover_color = {0.40, 0.40, 0.40},
-        press_color = {0.15, 0.15, 0.15},
-
-        tooltip = tooltip
-    })
-end
-
-local function criarInput(
-    funcao,
-    valor,
-    posicao,
-    largura,
-    tooltip
-)
-    self.createInput({
-        input_function = funcao,
-        function_owner = self,
-        label = "",
-        value = valor,
-
-        position = posicao,
-        rotation = {0, 0, 0},
-        scale = LAYOUT.escala,
-
-        width = largura,
-        height = 320,
-        font_size = 180,
-
-        alignment = 3,
-        validation = 1,
-
-        color = {0.04, 0.05, 0.05},
-        font_color = {0.88, 1.00, 0.88},
-
-        tooltip = tooltip
-    })
-end
-
-function semAcao(
-    objeto,
-    jogador,
-    cliqueAlternativo
-)
-end
-
-local function validarOrdemBotoes()
-    local botoes = self.getButtons() or {}
-
-    if #botoes ~= #BUTTON_ORDER then
-        print(
-            "Aviso: quantidade inesperada de botoes. Esperado " ..
-            tostring(#BUTTON_ORDER) ..
-            ", encontrado " ..
-            tostring(#botoes) ..
-            ". Verifique BUTTON e a ordem de criacao."
+local function uiSet(id, atributo, valor)
+    pcall(function()
+        self.UI.setAttribute(
+            tostring(id),
+            tostring(atributo),
+            tostring(valor)
         )
-    end
-
-    for indiceEsperado, nome in ipairs(BUTTON_ORDER) do
-        local indiceZeroBased = indiceEsperado - 1
-
-        if BUTTON[nome] ~= indiceZeroBased then
-            print(
-                "Aviso: indice inconsistente para o botao " ..
-                tostring(nome) ..
-                ". Esperado " ..
-                tostring(indiceZeroBased) ..
-                ", configurado " ..
-                tostring(BUTTON[nome]) ..
-                "."
-            )
-        end
-
-        if CONTROLES[indiceEsperado] == nil
-            or CONTROLES[indiceEsperado].id ~= nome then
-            print(
-                "Aviso: ordem inconsistente em CONTROLES para o indice " ..
-                tostring(indiceZeroBased) ..
-                ". Esperado " ..
-                tostring(nome) ..
-                "."
-            )
-        end
-    end
+    end)
 end
 
--- =========================================================
--- ATUALIZAÇÃO DOS BOTÕES
--- =========================================================
+local function coresToggle(ativo)
+    if ativo then
+        return "#24552C|#357640|#17371D|#0B1C0F88"
+    end
+
+    return "#171510|#2B271B|#0C0B09|#09090988"
+end
 
 local function atualizarBotoes()
     garantirModExtras()
 
-    local preview = nil
+    uiSet(
+        "toggle_preparada",
+        "text",
+        "PREPARADA     " .. textoToggle(state.preparada)
+    )
+    uiSet("toggle_preparada", "colors", coresToggle(state.preparada))
 
-    if calcularPreviewSelecionado ~= nil then
-        preview = calcularPreviewSelecionado()
+    uiSet(
+        "toggle_poderoso",
+        "text",
+        "PODEROSO     " .. textoToggle(state.poderoso)
+    )
+    uiSet("toggle_poderoso", "colors", coresToggle(state.poderoso))
+
+    uiSet(
+        "toggle_pesado",
+        "text",
+        "PESADO     " .. textoToggle(state.pesado)
+    )
+    uiSet("toggle_pesado", "colors", coresToggle(state.pesado))
+
+    uiSet(
+        "toggle_golpe_pessoal",
+        "text",
+        "GOLPE PESSOAL     " .. textoToggle(state.golpePessoal)
+    )
+    uiSet(
+        "toggle_golpe_pessoal",
+        "colors",
+        coresToggle(state.golpePessoal)
+    )
+
+    local modoEspecial =
+        ESPECIAL_NOMES[state.especialModo] or "OFF"
+
+    uiSet(
+        "especial_mode",
+        "text",
+        "ESPECIAL     " .. modoEspecial
+    )
+    uiSet(
+        "especial_mode",
+        "colors",
+        coresToggle(state.especialModo ~= 0)
+    )
+    uiSet(
+        "especial_pm_value",
+        "text",
+        tostring(state.especialPM) .. " PM"
+    )
+
+    for indice = 1, QUANTIDADE_MOD_EXTRAS do
+        uiSet(
+            "mod_name_" .. tostring(indice),
+            "text",
+            nomeModExtra(indice)
+        )
+        uiSet(
+            "mod_" .. tostring(indice) .. "_value",
+            "text",
+            sinal(state.modExtras[indice].valor)
+        )
     end
 
-    self.editButton({
-        index = BUTTON.preparada,
-        label = textoToggle(state.preparada),
-        color = corToggle(state.preparada)
-    })
-
-    self.editButton({
-        index = BUTTON.poderoso,
-        label = textoToggle(state.poderoso),
-        color = corToggle(state.poderoso)
-    })
-
-    self.editButton({
-        index = BUTTON.especial,
-        label = ESPECIAL_NOMES[state.especialModo] or "OFF",
-        color = corBotao(state.especialModo ~= 0)
-    })
-
-    self.editButton({
-        index = BUTTON.especialPM,
-        label =
-            tostring(state.especialPM) ..
-            " PM"
-    })
-
-    self.editButton({
-        index = BUTTON.modExtra,
-        label = sinal(state.modExtras[1].valor),
-        color = corBotao(state.modExtras[1].valor ~= 0)
-    })
-
-    self.editButton({
-        index = BUTTON.modExtra2,
-        label = sinal(state.modExtras[2].valor),
-        color = corBotao(state.modExtras[2].valor ~= 0)
-    })
-
-    self.editButton({
-        index = BUTTON.modExtra3,
-        label = sinal(state.modExtras[3].valor),
-        color = corBotao(state.modExtras[3].valor ~= 0)
-    })
-
-    self.editButton({
-        index = BUTTON.modExtra4,
-        label = sinal(state.modExtras[4].valor),
-        color = corBotao(state.modExtras[4].valor ~= 0)
-    })
-
-    self.editButton({
-        index = BUTTON.pesado,
-        label = textoToggle(state.pesado),
-        color = corToggle(state.pesado)
-    })
-
-    self.editButton({
-        index = BUTTON.golpePessoal,
-        label = textoToggle(state.golpePessoal),
-        color = corToggle(state.golpePessoal)
-    })
-
-    self.editButton({
-        index = BUTTON.rolarAtaque,
-        label = "ROLAR\nATAQUE",
-        color = {0.45, 0.08, 0.06}
-    })
-
-    self.editButton({
-        index = BUTTON.critico,
-        label = "ROLAR ATAQUE\nCRITICO",
-        color = {0.55, 0.22, 0.08}
-    })
-
-    local statusDano = "SEM ATAQUE"
+    local statusDano = "aguardando ataque"
 
     if ultimoAtaqueValido(state.ultimoAtaque) then
-        statusDano = "PRONTO"
+        statusDano = "ataque salvo"
     end
 
-    self.editButton({
-        index = BUTTON.rolarDano,
-        label =
-            "ROLAR DANO\n" ..
-            statusDano,
-        color = corBotaoDano()
-    })
+    uiSet(
+        "roll_damage",
+        "text",
+        "ROLAR DANO\n" .. statusDano
+    )
+    uiSet(
+        "update",
+        "text",
+        updateGithubEmAndamento and "..." or "UPDATE"
+    )
+    uiSet(
+        "update",
+        "interactable",
+        updateGithubEmAndamento and "false" or "true"
+    )
 
-    self.editButton({
-        index = BUTTON.updateGithub,
-        label = updateGithubEmAndamento and "..." or "UPDATE",
-        color = updateGithubEmAndamento
-            and {0.35, 0.35, 0.12}
-            or {0.16, 0.16, 0.16}
-    })
+    if calcularPreviewSelecionado ~= nil then
+        local preview = calcularPreviewSelecionado()
 
-    if preview ~= nil then
-        self.editButton({
-            index = BUTTON.previewPM,
-            label =
-                tostring(preview.custoPM) ..
-                " PM",
-            color = {0.10, 0.11, 0.12}
-        })
-
-        self.editButton({
-            index = BUTTON.previewAtaque,
-            label =
-                tostring(preview.ataqueMin) ..
+        uiSet(
+            "preview_pm",
+            "text",
+            tostring(preview.custoPM) .. " PM"
+        )
+        uiSet(
+            "preview_attack",
+            "text",
+            tostring(preview.ataqueMin) ..
                 " / " ..
                 formatarMedia(preview.ataqueMedio) ..
                 " / " ..
-                tostring(preview.ataqueMax),
-            color = {0.10, 0.11, 0.12}
-        })
-
-        self.editButton({
-            index = BUTTON.previewDano,
-            label =
-                tostring(preview.danoMin) ..
+                tostring(preview.ataqueMax)
+        )
+        uiSet(
+            "preview_damage",
+            "text",
+            tostring(preview.danoMin) ..
                 " / " ..
                 formatarMedia(preview.danoMedio) ..
                 " / " ..
-                tostring(preview.danoMax),
-            color = {0.10, 0.11, 0.12}
-        })
+                tostring(preview.danoMax)
+        )
     end
 end
 
--- =========================================================
--- CRIAÇÃO DOS BOTÕES
--- =========================================================
+local function instalarObjectUI()
+    -- Remove os controles Classic UI de objetos atualizados a partir da
+    -- versao anterior. A transformacao fisica do painel nao e alterada.
+    pcall(function()
+        self.clearButtons()
+    end)
+    pcall(function()
+        self.clearInputs()
+    end)
 
-local function construirBotoes()
-    self.clearButtons()
-    self.clearInputs()
+    local sucesso, erro = pcall(function()
+        self.UI.setXml(OBJECT_UI_XML)
+    end)
 
-    for _, controle in ipairs(CONTROLES) do
-        criarBotao(
-            controle.click,
-            controle.labelInicial,
-            LAYOUT[controle.layout],
-            controle.largura,
-            controle.tooltip
+    if not sucesso then
+        print(
+            "Edward: falha ao instalar Object UI: " ..
+            tostring(erro)
         )
+        return
     end
 
-    for indice = 1, QUANTIDADE_MOD_EXTRAS do
-        criarInput(
-            "nomearModExtra" .. tostring(indice),
-            nomeModExtra(indice),
-            LAYOUT["modExtraNome" .. tostring(indice)],
-            760,
-            "Nome do modificador extra " .. tostring(indice) .. "."
-        )
+    local function finalizarCarregamento()
+        atualizarBotoes()
     end
 
+    local function terminouCarregamento()
+        local ok, carregando = pcall(function()
+            return self.UI.loading
+        end)
+
+        return ok and carregando == false
+    end
+
+    pcall(function()
+        Wait.frames(function()
+            Wait.condition(
+                finalizarCarregamento,
+                terminouCarregamento,
+                5,
+                function()
+                    print("Edward: a Object UI nao terminou de carregar.")
+                end
+            )
+        end, 2)
+    end)
+end
+
+local function corDoJogadorUI(player)
+    if player == nil then
+        return ""
+    end
+
+    local sucesso, cor = pcall(function()
+        return player.color
+    end)
+
+    if sucesso and cor ~= nil then
+        return tostring(cor)
+    end
+
+    return tostring(player or "")
+end
+
+function uiDispatch(player, valor, id)
+    local jogador = corDoJogadorUI(player)
+
+    if id == "toggle_preparada" then
+        alternarPreparada(self, jogador, false)
+    elseif id == "toggle_poderoso" then
+        alternarPoderoso(self, jogador, false)
+    elseif id == "toggle_pesado" then
+        alternarPesado(self, jogador, false)
+    elseif id == "toggle_golpe_pessoal" then
+        alternarGolpePessoal(self, jogador, false)
+    elseif id == "especial_mode" then
+        alternarEspecial(self, jogador, false)
+    elseif id == "especial_pm_minus" then
+        alterarEspecialPM(self, jogador, true)
+    elseif id == "especial_pm_plus" then
+        alterarEspecialPM(self, jogador, false)
+    elseif id == "roll_attack" then
+        rolarAtaque(self, jogador, false)
+    elseif id == "roll_critical" then
+        rolarAtaqueCritico(self, jogador, false)
+    elseif id == "roll_damage" then
+        rolarDano(self, jogador, false)
+    elseif id == "clear_dice" then
+        limparDados(self, jogador, false)
+    elseif id == "update" then
+        atualizarViaGithub(self, jogador, false)
+    else
+        local indice, direcao =
+            tostring(id or ""):match("^mod_(%d+)_(%a+)$")
+
+        if indice ~= nil
+            and (direcao == "minus" or direcao == "plus") then
+            alterarModExtraPorIndice(
+                tonumber(indice),
+                direcao == "minus"
+            )
+        end
+    end
+end
+
+function uiEditModName(player, valor, id)
+    local indice =
+        tonumber(tostring(id or ""):match("^mod_name_(%d+)$"))
+
+    if indice == nil
+        or indice < 1
+        or indice > QUANTIDADE_MOD_EXTRAS then
+        return
+    end
+
+    nomearModExtraPorIndice(indice, valor)
     atualizarBotoes()
-    validarOrdemBotoes()
 end
 
 -- =========================================================
@@ -1912,8 +1883,13 @@ function onLoad(savedData)
         descartarUltimoAtaque()
     end
 
+    -- Descarta GUIDs herdados de uma copia ou de dados antigos sem a marca de
+    -- propriedade. Nenhum objeto e destruido durante esta reconciliacao.
+    obterDadosAtaqueAtuais()
+    obterDadosDanoAtuais()
+
     ocultarResultadoGlobalLegado()
-    construirBotoes()
+    instalarObjectUI()
 end
 
 function onSave()
@@ -2107,6 +2083,31 @@ function nomearModExtraPorIndice(
     state.modExtras[indice].nome =
         limitarTexto(valor, 18)
         or "EXTRA " .. tostring(indice)
+end
+
+function limparDados(
+    objeto,
+    jogador,
+    cliqueAlternativo
+)
+    -- Invalida callbacks antes de parar waits. Qualquer dado que termine de
+    -- spawnar depois deste ponto sera destruido pelo proprio callback antigo.
+    dadoAtaqueRolagemId = dadoAtaqueRolagemId + 1
+    dadoDanoRolagemId = dadoDanoRolagemId + 1
+
+    destruirDadoAtaqueAtual()
+    destruirDadosDanoAtuais()
+    atualizarBotoes()
+
+    if jogador ~= nil and jogador ~= "" then
+        pcall(function()
+            printToColor(
+                "Edward: dados deste painel removidos.",
+                jogador,
+                CONFIG.corChat
+            )
+        end)
+    end
 end
 
 -- =========================================================
@@ -2381,6 +2382,10 @@ function rolarAtaque(
     local dados = {}
     local guids = {}
     local dadosSpawnados = 0
+    dadosAtaqueObjetos = {}
+    dadoAtaqueObjeto = nil
+    state.dadoAtaqueGuid = ""
+    state.dadoAtaqueGuids = {}
 
     for indice = 1, quantidadeD20 do
         local indiceDado =
@@ -2409,6 +2414,20 @@ function rolarAtaque(
                     return
                 end
 
+                if not marcarDadoComoProprio(dado, "attack")
+                    or not dadoPertenceAoPainel(dado, "attack") then
+                    dadoAtaqueRolagemId = dadoAtaqueRolagemId + 1
+                    pcall(function()
+                        dado.destruct()
+                    end)
+                    destruirDadoAtaqueAtual()
+                    erroRolagemDado(
+                        jogador,
+                        "Nao foi possivel identificar com seguranca o dado de ataque."
+                    )
+                    return
+                end
+
                 dados[indiceDado] = dado
                 dadosSpawnados =
                     dadosSpawnados + 1
@@ -2417,6 +2436,11 @@ function rolarAtaque(
                     guids,
                     dado.getGUID()
                 )
+
+                table.insert(dadosAtaqueObjetos, dado)
+                dadoAtaqueObjeto = dadosAtaqueObjetos[1]
+                state.dadoAtaqueGuid = guids[1] or ""
+                state.dadoAtaqueGuids = guids
 
                 pcall(function()
                     dado.setName("D20 Ataque Edward")
@@ -2689,6 +2713,8 @@ local function iniciarRolagemDanoFisico(
     local dados = {}
     local guids = {}
     local dadosSpawnados = 0
+    dadosDanoObjetos = {}
+    state.dadoDanoGuids = {}
 
     for indice = 1, quantidadeDados do
         local indiceDado =
@@ -2717,6 +2743,20 @@ local function iniciarRolagemDanoFisico(
                     return
                 end
 
+                if not marcarDadoComoProprio(dado, "damage")
+                    or not dadoPertenceAoPainel(dado, "damage") then
+                    dadoDanoRolagemId = dadoDanoRolagemId + 1
+                    pcall(function()
+                        dado.destruct()
+                    end)
+                    destruirDadosDanoAtuais()
+                    erroRolagemDado(
+                        jogador,
+                        "Nao foi possivel identificar com seguranca um dado de dano."
+                    )
+                    return
+                end
+
                 dados[indiceDado] = dado
                 dadosSpawnados =
                     dadosSpawnados + 1
@@ -2725,6 +2765,9 @@ local function iniciarRolagemDanoFisico(
                     guids,
                     dado.getGUID()
                 )
+
+                table.insert(dadosDanoObjetos, dado)
+                state.dadoDanoGuids = guids
 
                 pcall(function()
                     dado.setName("D6 Dano Edward")

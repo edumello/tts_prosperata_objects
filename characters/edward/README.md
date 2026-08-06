@@ -1,37 +1,43 @@
 # Edward Attack Panel
 
-Painel/script de Tabletop Simulator para automatizar ataques do personagem Edward em Tormenta20.
+Painel de Tabletop Simulator para automatizar os ataques de Edward, Humano Soldado Guerreiro 5, com Espada de Execucao.
 
-## Arquivos principais
+## Arquitetura
 
-- `ataque_edward.lua`: script do objeto no Tabletop Simulator.
-- `ui.xml`: referencia legada do antigo popup de resultado (nao e mais usada pelo script).
-- `assets/edward_attack_panel.png`: imagem oficial usada no painel.
-- `image_menu/build_panel.ps1`: gerador da imagem do painel.
-- `image_menu/manifest.json`: posicoes e metadados da UI.
-- `CONTEXT.md`: contexto tecnico e decisoes oficiais do projeto.
-- `UI_PLAN.md`: plano de manutencao da UI.
+- `ataque_edward.lua`: runtime autocontido usado pelo objeto e pelo updater.
+- `ui.xml`: fonte canonica da Object UI XML.
+- `build.ps1`: gera a imagem, incorpora o XML no Lua e produz um Saved Object de teste.
+- `assets/edward_attack_panel.png`: fundo decorativo sem controles ou valores duplicados.
+- `tests/`: validacao estrutural e smoke do runtime no MoonSharp do TTS.
 
-## Fluxo de update
+Todos os controles sao componentes XML reais. O carregamento remove botoes e inputs da Classic UI deixados por versoes anteriores, sem recarregar ou mover o Custom Tile.
 
-1. Edite `ataque_edward.lua` e os arquivos necessarios.
-2. Se alterar a imagem, rode a partir desta pasta:
+## Build e testes
 
-```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File image_menu\build_panel.ps1
-```
-
-Ou a partir da raiz do repo:
+Na raiz do repositorio:
 
 ```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File characters\edward\image_menu\build_panel.ps1
+npm run build:edward
+npm test
+npm run test:smoke
 ```
 
-3. Atualize o objeto salvo no Tabletop Simulator ou use o updater futuro.
-4. Teste `ROLAR ATAQUE`, `ROLAR DANO` e `ROLAR ATAQUE CRITICO`.
+O build gera `characters/edward/dist/Edward_Attack_Panel_UI_Test.json`. Para testar assets de uma branch ainda nao incorporada, informe seu raw URL:
 
-## Observacoes
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File characters/edward/build.ps1 `
+  -AssetUrl "https://raw.githubusercontent.com/edumello/tts_prosperata_objects/refs/heads/agent/edward-panel-ui/characters/edward/assets/edward_attack_panel.png"
+```
 
-Resultados de ataque e dano aparecem somente no chat, usando o verde original do Edward. O script converte os colchetes dos dados para caracteres Unicode antes de publicar, evitando que o parser de BBCode do TTS corrompa o chat.
+## Limpar dados
 
-Todos os modificadores permanecem ativos entre ataques, incluindo poderes, selecoes temporarias e os quatro modificadores extras. O usuario os desativa manualmente quando o efeito terminar.
+Cada dado recebe em `GMNotes` o projeto produtor, o GUID do painel proprietario e o tipo `attack` ou `damage`. `LIMPAR DADOS`:
+
+- cancela waits e callbacks pendentes;
+- remove apenas dados pertencentes a essa instancia;
+- preserva o ultimo ataque e todos os modificadores;
+- ignora dados manuais, dados antigos sem marca e dados de outra copia.
+
+## Update
+
+`UPDATE` baixa de `main` o runtime autocontido e a imagem, aplica ambos e recarrega o mesmo objeto. Como o XML esta incorporado no Lua, nao existe uma terceira requisicao nem risco de versoes incompatíveis entre interface e logica.

@@ -221,8 +221,6 @@ $g.DrawLine((Pen "#C39B3B" 3), 56, 150, 1992, 150)
 
 DrawText "EDWARD" $fontHero "#F3D987" 118 82 420 62 "Near" $true
 DrawText "ESPADA DE EXECUCAO" $fontHeader "#FFF2D4" 600 88 560 54 "Center" $true
-FillRound 1710 86 220 48 10 "#101211" "#8F8A78" 2
-DrawText "UPDATE" $fontSmall "#D8D2C0" 1710 86 220 48 "Center" $false
 
 # Column background areas. Left and center have one section border each; the
 # internal rows stay borderless to preserve spacing around the attack names.
@@ -234,30 +232,9 @@ DrawText "ATAQUES" $fontSection "#BDB7A8" 130 160 300 34 "Near" $false
 DrawText "MOD. EXTRAS" $fontSection "#BDB7A8" 766 160 300 34 "Near" $false
 DrawText "PREVIA" $fontSection "#BDB7A8" 1402 160 300 34 "Near" $false
 
-DrawSlot 128 184 570 52 "swords" "PREPARADA" "OFF"
-DrawSlot 128 240 570 52 "power" "PODEROSO" "OFF"
-DrawSlot 128 296 570 52 "weight" "PESADO" "OFF"
-DrawSlot 128 352 570 52 "d20" "GOLPE PESSOAL" "OFF"
-DrawSlot 128 408 570 52 "star" "ESPECIAL" "MODO" "1 PM"
-
-DrawExtraSlot 764 204 570 52
-DrawExtraSlot 764 268 570 52
-DrawExtraSlot 764 332 570 52
-DrawExtraSlot 764 396 570 52
-
-DrawReadout 1400 198 510 70 "PM GASTO" "0 PM" "custo das opcoes"
-DrawReadout 1400 294 510 70 "ATAQUE" "min / med / max" "d20 + modificador atual"
-DrawReadout 1400 390 510 70 "DANO" "min / med / max" "dano normal selecionado"
-
-# Action buttons
-FillRound 430 500 360 76 14 "#2D5FA8" "#F0C865" 5
-DrawIconCircle 486 538 "d20"
-
-FillRound 844 500 360 76 14 "#8A4318" "#F0C865" 5
-DrawIconCircle 900 538 "crit"
-
-FillRound 1258 500 360 76 14 "#7D1E18" "#F0C865" 5
-DrawIconCircle 1314 538 "swords"
+# Os controles, valores e cards clicaveis sao desenhados integralmente pela
+# Object UI XML. A imagem fica deliberadamente livre de labels duplicadas,
+# hitboxes falsas e valores que possam ficar dessincronizados.
 
 $bmp.Save($exportPath, [System.Drawing.Imaging.ImageFormat]::Png)
 $bmp.Save($assetPath, [System.Drawing.Imaging.ImageFormat]::Png)

@@ -11,6 +11,9 @@ Desktop.ini
 *.bak
 *.log
 
+# Generated Saved Objects
+characters/edward/dist/
+
 # Tabletop Simulator local saves are machine-specific.
 # Keep exported/saved objects outside the repo unless intentionally copied here.
 *.json.bak
