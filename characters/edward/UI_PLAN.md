@@ -121,7 +121,7 @@ font_size = 180
 
 Os valores usam clique esquerdo para `+1` e clique alternativo para `-1`.
 
-Os valores sao zerados depois de rolar ataque. Os nomes permanecem.
+Todas as selecoes permanecem depois de qualquer ataque: Preparada, Poderoso, Ataque Especial, Pesado, Golpe Pessoal e os valores/nomes dos modificadores extras. O usuario desativa ou zera cada modificador manualmente quando o efeito terminar.
 
 ## D20 fisico
 
