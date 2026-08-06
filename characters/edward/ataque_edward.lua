@@ -75,6 +75,13 @@ local CONFIG = {
     dadoDanoEsperaMaxima = 8,
     dadoDanoIntervaloLeitura = 0.25,
 
+    -- Verde original dos resultados de ataque e dano no chat.
+    corChat = {
+        r = 0.35,
+        g = 1.00,
+        b = 0.35
+    },
+
     corErro = {
         r = 1.00,
         g = 0.35,
@@ -1158,7 +1165,10 @@ end
 
 local function enviarResumoParaChat(mensagem)
     local sucesso, erro = pcall(function()
-        printToAll(mensagemSeguraParaChat(mensagem))
+        printToAll(
+            mensagemSeguraParaChat(mensagem),
+            CONFIG.corChat
+        )
     end)
 
     if not sucesso then

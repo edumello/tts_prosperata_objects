@@ -32,4 +32,4 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File characters\edward\image_
 
 ## Observacoes
 
-Resultados de ataque e dano aparecem somente no chat. O script converte os colchetes dos dados para caracteres Unicode antes de publicar, evitando que o parser de BBCode do TTS corrompa o chat.
+Resultados de ataque e dano aparecem somente no chat, usando o verde original do Edward. O script converte os colchetes dos dados para caracteres Unicode antes de publicar, evitando que o parser de BBCode do TTS corrompa o chat.

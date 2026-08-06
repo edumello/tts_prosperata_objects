@@ -352,7 +352,7 @@ Se precisar ajustar o salto/giro dos D6, alterar `dadoDanoForca*` e `dadoDanoTor
 
 O primeiro campo do `resumoChat` deve usar `Player[cor].steam_name` quando disponivel. A cor do jogador (`White`, `Blue`, etc.) fica apenas como fallback se o nome Steam nao puder ser lido.
 
-Mensagens normais de ataque, dano e update devem usar `printToAll(mensagem)` ou `printToColor(mensagem, jogador)` sem parametro de cor. Antes de enviar resultados com dados, os colchetes ASCII devem ser convertidos para `［` e `］`, pois o parser de BBCode do chat do TTS pode interpretar valores como `[18]` como marcacao e corromper mensagens posteriores. `CONFIG.corErro` continua reservado para erros.
+Resumos de ataque, dano e critico devem usar `printToAll(mensagem, CONFIG.corChat)` com o verde original `{r = 0.35, g = 1.00, b = 0.35}`. Antes do envio, os colchetes ASCII devem ser convertidos para `［` e `］`, pois o parser de BBCode do chat do TTS pode interpretar valores como `[18]` como marcacao e corromper mensagens posteriores. Mensagens do updater continuam com a cor padrao; `CONFIG.corErro` permanece reservado para erros.
 
 Ataques e danos nao devem criar ou mostrar Global UI. O resultado aparece somente no chat, sem popup no centro da tela. O `ui.xml` permanece no repositorio apenas como referencia legada.
 
