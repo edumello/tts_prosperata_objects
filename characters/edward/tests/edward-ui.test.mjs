@@ -10,6 +10,7 @@ const uiPath = join(root, "ui.xml");
 const luaPath = join(root, "ataque_edward.lua");
 const manifestPath = join(root, "image_menu", "manifest.json");
 const imagePath = join(root, "assets", "edward_attack_panel.png");
+const sourceImagePath = join(root, "image_menu", "source", "edward_medieval_frame.png");
 
 const requiredButtons = [
   "update",
@@ -137,6 +138,7 @@ test("runtime incorpora exatamente a UI canonica e remove criacao Classic UI", a
 test("grade 7:4 mantem controles dentro das colunas e acoes em faixa propria", async () => {
   const ui = normalize(await readFile(uiPath, "utf8"));
   assert.match(ui, /id="edwardConsole" width="1792" height="1024"/);
+  assert.match(ui, /scale="0\.19 0\.20 1"/);
   const inside = (id, bounds) => {
     const item = positionForId(ui, id);
     assert.ok(item.x >= bounds.left, `${id} invade a margem esquerda`);
@@ -155,7 +157,7 @@ test("grade 7:4 mantem controles dentro das colunas e acoes em faixa propria", a
     assert.equal(tagForId(ui, id), "Text");
 
   for (const id of ["roll_attack", "roll_critical", "roll_damage", "clear_dice"])
-    inside(id, { left: 30, right: 1762, top: 730, bottom: 990 });
+    inside(id, { left: 90, right: 1700, top: 640, bottom: 820 });
 });
 
 test("estados usam pills legiveis e cores fixadas pelo runtime", async () => {
@@ -163,7 +165,7 @@ test("estados usam pills legiveis e cores fixadas pelo runtime", async () => {
     readFile(uiPath, "utf8").then(normalize),
     readFile(luaPath, "utf8").then(normalize),
   ]);
-  assert.match(ui, /class="statePill" color="#292C30" outline="#555A60"/);
+  assert.match(ui, /class="statePill" color="#292C30" outline="#6A604A"/);
   assert.match(ui, /id="state_preparada" text="OFF"[\s\S]*?color="#C8CBD0"/);
   assert.match(lua, /uiSet\(textoId, "text", textoToggle\(ativo\)\)/);
   assert.match(lua, /ativo and "#9BE6B1" or "#C8CBD0"/);
@@ -192,15 +194,20 @@ test("dados recebem proveniencia e so passam pela limpeza do painel proprietario
   assert.doesNotMatch(lua, /getObjects\(\)[\s\S]{0,300}(?:D20 Ataque Edward|D6 Dano Edward)/);
 });
 
-test("manifesto e imagem correspondem ao canvas 1792x1024", async () => {
-  const [manifestText, png] = await Promise.all([
+test("manifesto, fonte medieval e imagem correspondem ao canvas 1792x1024", async () => {
+  const [manifestText, png, sourcePng] = await Promise.all([
     readFile(manifestPath, "utf8"),
     readFile(imagePath),
+    readFile(sourceImagePath),
   ]);
   const manifest = JSON.parse(manifestText);
-  assert.equal(manifest.version, "3.0.0");
+  assert.equal(manifest.version, "3.1.0");
   assert.deepEqual(manifest.canvas, { width: 1792, height: 1024 });
+  assert.deepEqual(manifest.objectUi.scale, [0.19, 0.2, 1]);
   assert.equal(png.toString("ascii", 1, 4), "PNG");
   assert.equal(png.readUInt32BE(16), 1792);
   assert.equal(png.readUInt32BE(20), 1024);
+  assert.equal(sourcePng.toString("ascii", 1, 4), "PNG");
+  assert.equal(sourcePng.readUInt32BE(16), 1659);
+  assert.equal(sourcePng.readUInt32BE(20), 948);
 });

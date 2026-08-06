@@ -1,10 +1,12 @@
 # Fundo visual do painel Edward
 
-`build_panel.ps1` gera o fundo `1792x1024` (`7:4`) usado pelo Custom Tile.
+`build_panel.ps1` redimensiona deterministicamente a arte-fonte medieval em
+`source/edward_medieval_frame.png` para o fundo `1792x1024` (`7:4`) usado pelo
+Custom Tile.
 
-O PNG deve conter somente o fundo e a moldura. Cabecalho, divisorias, nomes das
-secoes, botoes, inputs, estados, previews e textos pertencem exclusivamente ao
-`ui.xml`, evitando que a textura e os controles usem grades diferentes.
+A arte contem fundo de couro, moldura de aco e filigranas de bronze, mas nenhum
+texto ou controle. Cabecalho, divisorias, nomes das secoes, botoes, inputs,
+estados e previews pertencem exclusivamente ao `ui.xml`.
 
 Geracao isolada:
 

@@ -9,233 +9,54 @@ Add-Type -AssemblyName System.Drawing
 $width = 1792
 $height = 1024
 
+$sourcePath = Join-Path $Root "image_menu\source\edward_medieval_frame.png"
 $exports = Join-Path $Root "image_menu\exports"
 $assetPath = Join-Path $Root "assets\edward_attack_panel.png"
 $exportPath = Join-Path $exports "edward_attack_panel_v1.png"
 
+if (-not (Test-Path -LiteralPath $sourcePath -PathType Leaf)) {
+    throw "Fonte medieval do painel nao encontrada: $sourcePath"
+}
+
 New-Item -ItemType Directory -Path $exports -Force | Out-Null
 New-Item -ItemType Directory -Path (Split-Path $assetPath) -Force | Out-Null
 
-$bmp = New-Object System.Drawing.Bitmap($width, $height)
-$g = [System.Drawing.Graphics]::FromImage($bmp)
-$g.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::AntiAlias
-$g.TextRenderingHint = [System.Drawing.Text.TextRenderingHint]::AntiAliasGridFit
+$source = [System.Drawing.Image]::FromFile($sourcePath)
+$bitmap = New-Object System.Drawing.Bitmap($width, $height)
+$graphics = [System.Drawing.Graphics]::FromImage($bitmap)
 
-function Brush($hex) {
-    return New-Object System.Drawing.SolidBrush([System.Drawing.ColorTranslator]::FromHtml($hex))
+try {
+    $graphics.CompositingMode =
+        [System.Drawing.Drawing2D.CompositingMode]::SourceCopy
+    $graphics.CompositingQuality =
+        [System.Drawing.Drawing2D.CompositingQuality]::HighQuality
+    $graphics.InterpolationMode =
+        [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
+    $graphics.SmoothingMode =
+        [System.Drawing.Drawing2D.SmoothingMode]::HighQuality
+    $graphics.PixelOffsetMode =
+        [System.Drawing.Drawing2D.PixelOffsetMode]::HighQuality
+
+    # A arte-fonte ja usa 7:4. O resize deterministico preserva a moldura e
+    # produz exatamente o canvas esperado pelo Custom Tile e pela Object UI.
+    $graphics.DrawImage(
+        $source,
+        [System.Drawing.Rectangle]::new(0, 0, $width, $height),
+        0,
+        0,
+        $source.Width,
+        $source.Height,
+        [System.Drawing.GraphicsUnit]::Pixel
+    )
+
+    $bitmap.Save($exportPath, [System.Drawing.Imaging.ImageFormat]::Png)
+    $bitmap.Save($assetPath, [System.Drawing.Imaging.ImageFormat]::Png)
 }
-
-function Pen($hex, $size = 1) {
-    return New-Object System.Drawing.Pen([System.Drawing.ColorTranslator]::FromHtml($hex), $size)
+finally {
+    $graphics.Dispose()
+    $bitmap.Dispose()
+    $source.Dispose()
 }
-
-function RectPath($x, $y, $w, $h, $r) {
-    $path = New-Object System.Drawing.Drawing2D.GraphicsPath
-    $d = $r * 2
-    $path.AddArc($x, $y, $d, $d, 180, 90)
-    $path.AddArc($x + $w - $d, $y, $d, $d, 270, 90)
-    $path.AddArc($x + $w - $d, $y + $h - $d, $d, $d, 0, 90)
-    $path.AddArc($x, $y + $h - $d, $d, $d, 90, 90)
-    $path.CloseFigure()
-    return $path
-}
-
-function FillRound($x, $y, $w, $h, $r, $fill, $stroke, $strokeWidth = 2) {
-    $path = RectPath $x $y $w $h $r
-    $g.FillPath((Brush $fill), $path)
-    if ($stroke -ne $null) {
-        $g.DrawPath((Pen $stroke $strokeWidth), $path)
-    }
-    $path.Dispose()
-}
-
-function DrawText(
-    [string]$text,
-    [System.Drawing.Font]$font,
-    [string]$brushHex,
-    [float]$x,
-    [float]$y,
-    [float]$w,
-    [float]$h,
-    [string]$align = "Near",
-    [bool]$shadow = $true
-) {
-    $format = New-Object System.Drawing.StringFormat
-    $format.Alignment = [System.Drawing.StringAlignment]::$align
-    $format.LineAlignment = [System.Drawing.StringAlignment]::Center
-    $format.FormatFlags = [System.Drawing.StringFormatFlags]::NoWrap
-    $format.Trimming = [System.Drawing.StringTrimming]::EllipsisCharacter
-    $rect = New-Object System.Drawing.RectangleF -ArgumentList $x, $y, $w, $h
-    if ($shadow) {
-        $shadowRect = New-Object System.Drawing.RectangleF -ArgumentList ($x + 3), ($y + 3), $w, $h
-        $g.DrawString($text, $font, (Brush "#000000"), $shadowRect, $format)
-    }
-    $g.DrawString($text, $font, (Brush $brushHex), $rect, $format)
-}
-
-function DrawIconCircle($cx, $cy, $kind) {
-    FillRound ($cx - 34) ($cy - 34) 68 68 34 "#0D0D0B" "#D8B857" 4
-    $penGold = Pen "#EACB6D" 5
-    $penDark = Pen "#44320E" 2
-
-    if ($kind -eq "swords") {
-        $g.DrawLine($penGold, $cx - 18, $cy - 20, $cx + 20, $cy + 18)
-        $g.DrawLine($penGold, $cx + 18, $cy - 20, $cx - 20, $cy + 18)
-        $g.DrawLine($penDark, $cx - 24, $cy - 26, $cx - 12, $cy - 14)
-        $g.DrawLine($penDark, $cx + 24, $cy - 26, $cx + 12, $cy - 14)
-    } elseif ($kind -eq "power") {
-        $g.FillPie((Brush "#EACB6D"), $cx - 21, $cy - 8, 42, 32, 195, 150)
-        $g.FillRectangle((Brush "#EACB6D"), $cx - 3, $cy - 17, 13, 27)
-        $g.DrawArc($penDark, $cx - 25, $cy - 17, 44, 35, 20, 150)
-    } elseif ($kind -eq "weight") {
-        FillRound ($cx - 20) ($cy - 2) 40 24 5 "#EACB6D" $null 0
-        $g.DrawArc($penGold, $cx - 14, $cy - 24, 28, 28, 180, 180)
-    } elseif ($kind -eq "star") {
-        $g.DrawLine($penGold, $cx, $cy - 25, $cx, $cy + 25)
-        $g.DrawLine($penGold, $cx - 25, $cy, $cx + 25, $cy)
-        $g.DrawLine($penGold, $cx - 18, $cy - 18, $cx + 18, $cy + 18)
-        $g.DrawLine($penGold, $cx + 18, $cy - 18, $cx - 18, $cy + 18)
-    } elseif ($kind -eq "plus") {
-        $g.DrawLine($penGold, $cx - 22, $cy, $cx + 22, $cy)
-        $g.DrawLine($penGold, $cx, $cy - 22, $cx, $cy + 22)
-    } elseif ($kind -eq "crit") {
-        $g.DrawEllipse($penGold, $cx - 22, $cy - 22, 44, 44)
-        $g.DrawLine($penGold, $cx - 26, $cy, $cx + 26, $cy)
-        $g.DrawLine($penGold, $cx, $cy - 26, $cx, $cy + 26)
-    } elseif ($kind -eq "d20") {
-        $points = @(
-            [System.Drawing.Point]::new($cx, $cy - 28),
-            [System.Drawing.Point]::new($cx + 28, $cy - 8),
-            [System.Drawing.Point]::new($cx + 18, $cy + 24),
-            [System.Drawing.Point]::new($cx - 18, $cy + 24),
-            [System.Drawing.Point]::new($cx - 28, $cy - 8)
-        )
-        $g.DrawPolygon($penGold, $points)
-        $g.DrawLine($penGold, $cx, $cy - 28, $cx - 18, $cy + 24)
-        $g.DrawLine($penGold, $cx, $cy - 28, $cx + 18, $cy + 24)
-    }
-
-    $penGold.Dispose()
-    $penDark.Dispose()
-}
-
-function DrawSmallPlusCircle($cx, $cy) {
-    FillRound ($cx - 26) ($cy - 26) 52 52 26 "#0D0D0B" "#D8B857" 4
-
-    $penGold = Pen "#EACB6D" 5
-    $g.DrawLine($penGold, $cx - 16, $cy, $cx + 16, $cy)
-    $g.DrawLine($penGold, $cx, $cy - 16, $cx, $cy + 16)
-    $penGold.Dispose()
-}
-
-function DrawSlotIconCircle($cx, $cy, $kind) {
-    FillRound ($cx - 25) ($cy - 25) 50 50 25 "#0D0D0B" "#D8B857" 3
-    $penGold = Pen "#EACB6D" 4
-    $penDark = Pen "#44320E" 2
-
-    if ($kind -eq "swords") {
-        $g.DrawLine($penGold, $cx - 14, $cy - 15, $cx + 15, $cy + 14)
-        $g.DrawLine($penGold, $cx + 14, $cy - 15, $cx - 15, $cy + 14)
-        $g.DrawLine($penDark, $cx - 18, $cy - 19, $cx - 9, $cy - 10)
-        $g.DrawLine($penDark, $cx + 18, $cy - 19, $cx + 9, $cy - 10)
-    } elseif ($kind -eq "power") {
-        $g.FillPie((Brush "#EACB6D"), $cx - 15, $cy - 6, 30, 23, 195, 150)
-        $g.FillRectangle((Brush "#EACB6D"), $cx - 2, $cy - 13, 10, 20)
-        $g.DrawArc($penDark, $cx - 18, $cy - 13, 32, 26, 20, 150)
-    } elseif ($kind -eq "weight") {
-        FillRound ($cx - 15) ($cy - 1) 30 18 4 "#EACB6D" $null 0
-        $g.DrawArc($penGold, $cx - 10, $cy - 18, 20, 20, 180, 180)
-    } elseif ($kind -eq "star") {
-        $g.DrawLine($penGold, $cx, $cy - 19, $cx, $cy + 19)
-        $g.DrawLine($penGold, $cx - 19, $cy, $cx + 19, $cy)
-        $g.DrawLine($penGold, $cx - 13, $cy - 13, $cx + 13, $cy + 13)
-        $g.DrawLine($penGold, $cx + 13, $cy - 13, $cx - 13, $cy + 13)
-    } elseif ($kind -eq "d20") {
-        $points = @(
-            [System.Drawing.Point]::new($cx, $cy - 21),
-            [System.Drawing.Point]::new($cx + 21, $cy - 6),
-            [System.Drawing.Point]::new($cx + 14, $cy + 18),
-            [System.Drawing.Point]::new($cx - 14, $cy + 18),
-            [System.Drawing.Point]::new($cx - 21, $cy - 6)
-        )
-        $g.DrawPolygon($penGold, $points)
-        $g.DrawLine($penGold, $cx, $cy - 21, $cx - 14, $cy + 18)
-        $g.DrawLine($penGold, $cx, $cy - 21, $cx + 14, $cy + 18)
-    }
-
-    $penGold.Dispose()
-    $penDark.Dispose()
-}
-
-function DrawSlot($x, $y, $w, $h, $icon, $title, $controlText, $extraControlText = $null) {
-    FillRound $x $y $w $h 8 "#171510" $null 0
-    DrawSlotIconCircle ($x + 48) ($y + ($h / 2)) $icon
-    $titleFont = $fontTitle
-    if ($title.Length -gt 11) {
-        $titleFont = $fontSmall
-    }
-    DrawText $title $titleFont "#FFF5D7" ($x + 98) $y 300 $h "Near" $true
-
-    $controlY = $y + (($h - 46) / 2)
-    if ($extraControlText -eq $null) {
-        FillRound ($x + $w - 158) $controlY 132 46 10 "#0A0D0D" "#9AA19A" 2
-    } else {
-        FillRound ($x + $w - 240) $controlY 140 46 10 "#0A0D0D" "#9AA19A" 2
-        FillRound ($x + $w - 88) $controlY 72 46 10 "#0A0D0D" "#9AA19A" 2
-    }
-}
-
-function DrawExtraSlot($x, $y, $w, $h) {
-    FillRound $x $y $w $h 8 "#171510" $null 0
-    DrawSmallPlusCircle ($x + 48) ($y + ($h / 2))
-
-    $controlY = $y + (($h - 42) / 2)
-    FillRound ($x + 98) $controlY 294 42 10 "#0A0D0D" "#9AA19A" 2
-    FillRound ($x + $w - 158) $controlY 132 42 10 "#0A0D0D" "#9AA19A" 2
-}
-
-function DrawReadout($x, $y, $w, $h, $title, $value, $subtitle) {
-    FillRound $x $y $w $h 14 "#0E1D18" "#3AAE67" 2
-    DrawText $title $fontReadoutTitle "#CFFFE0" ($x + 24) ($y + 5) 190 34 "Near" $false
-}
-
-# Plain dark background for the official panel export.
-$g.Clear([System.Drawing.ColorTranslator]::FromHtml("#13120F"))
-
-$fontHero = New-Object System.Drawing.Font("Georgia", 48, [System.Drawing.FontStyle]::Bold)
-$fontHeader = New-Object System.Drawing.Font("Georgia", 28, [System.Drawing.FontStyle]::Bold)
-$fontTitle = New-Object System.Drawing.Font("Georgia", 28, [System.Drawing.FontStyle]::Bold)
-$fontAction = New-Object System.Drawing.Font("Georgia", 24, [System.Drawing.FontStyle]::Bold)
-$fontValue = New-Object System.Drawing.Font("Bahnschrift", 25, [System.Drawing.FontStyle]::Bold)
-$fontSmall = New-Object System.Drawing.Font("Bahnschrift", 22, [System.Drawing.FontStyle]::Bold)
-$fontSection = New-Object System.Drawing.Font("Bahnschrift", 22, [System.Drawing.FontStyle]::Bold)
-$fontReadoutTitle = New-Object System.Drawing.Font("Bahnschrift", 24, [System.Drawing.FontStyle]::Bold)
-$fontReadoutValue = New-Object System.Drawing.Font("Bahnschrift", 25, [System.Drawing.FontStyle]::Bold)
-$fontSubtle = New-Object System.Drawing.Font("Bahnschrift", 15, [System.Drawing.FontStyle]::Regular)
-
-# A imagem agora e apenas a superficie e a moldura. Cabecalho, divisores,
-# cards e controles sao desenhados pela Object UI no mesmo canvas 7:4,
-# eliminando desalinhamento entre a textura e os elementos clicaveis.
-FillRound 6 6 1780 1012 24 "#08090A" "#3B3D3C" 6
-FillRound 18 18 1756 988 10 "#08090A" "#D0AD32" 3
-
-# Cantos dourados discretos inspirados na referencia.
-$cornerPen = Pen "#D0AD32" 3
-$g.DrawLine($cornerPen, 28, 68, 28, 30)
-$g.DrawLine($cornerPen, 28, 30, 72, 30)
-$g.DrawLine($cornerPen, 1764, 68, 1764, 30)
-$g.DrawLine($cornerPen, 1764, 30, 1720, 30)
-$g.DrawLine($cornerPen, 28, 956, 28, 994)
-$g.DrawLine($cornerPen, 28, 994, 72, 994)
-$g.DrawLine($cornerPen, 1764, 956, 1764, 994)
-$g.DrawLine($cornerPen, 1764, 994, 1720, 994)
-$cornerPen.Dispose()
-
-$bmp.Save($exportPath, [System.Drawing.Imaging.ImageFormat]::Png)
-$bmp.Save($assetPath, [System.Drawing.Imaging.ImageFormat]::Png)
-
-$g.Dispose()
-$bmp.Dispose()
 
 Write-Output "Generated $exportPath"
 Write-Output "Updated $assetPath"

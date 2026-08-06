@@ -3,10 +3,11 @@
 ## Canvas e orientacao
 
 - Canvas logico: `1792x1024` (`7:4`), proximo ao painel de referencia.
-- Escala: `0.25 0.25 1`.
+- Escala calibrada no collider do Custom Tile: `0.19 0.20 1`.
 - Rotacao: `0 0 180`, compensando o `rotY=180` do Saved Object.
-- O PNG contem somente fundo e moldura. Cabecalho, divisores e secoes usam o
-  mesmo canvas da Object UI para evitar desalinhamento.
+- O PNG usa uma moldura medieval original de aco escuro, couro e bronze. A
+  arte-fonte fica em `image_menu/source/edward_medieval_frame.png`.
+- Cabecalho, divisores e secoes funcionais usam o mesmo canvas da Object UI.
 
 ## Controles
 
