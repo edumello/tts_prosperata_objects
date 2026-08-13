@@ -2,16 +2,19 @@
 
 ## Regras preservadas
 
-- Ataque preparado: `+13`; despreparado: `+8`.
+- Ataque preparado: `+14`; despreparado: `+9`.
 - Dano: `2d6+11`; critico `17-20/x4`.
 - Ataque Poderoso: `-2 ataque`, `+5 dano`.
 - Golpe Pessoal Passo do Carrasco: Preciso, Brutal, Avanco e Truque Secreto, custo `1 PM`.
-- Ataque Especial: ate `2 PM` no nivel 5.
-- Preparada, Poderoso, Pesado, Golpe Pessoal e Especial resetam depois de cada
-  ataque concluido. Somente os quatro modificadores extras permanecem ativos
-  entre rolagens.
+- Ataque Especial: ate `2 PM` no nivel 6.
+- Destruidor fica sempre ativo: dados de dano da arma que rolarem `1` ou `2`
+  sao rerrolados uma vez, no dano normal e no critico.
+- Preparada, Poderoso, Pesado, Golpe Pessoal, Especial e os quatro
+  modificadores extras resetam depois de cada ataque concluido.
 - Dano e critico usam a fotografia do ultimo ataque salvo.
 - Resultados aparecem somente no chat, no verde original de Edward.
+- Ataque Extra foi adquirido no nivel 6, mas nao deve ser automatizado nesta
+  versao: sem botao, custo, fluxo, mensagem ou segunda rolagem.
 
 ## Interface
 

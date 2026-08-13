@@ -117,7 +117,11 @@ local function makeDie(guid, value, initialNotes)
         setGMNotes = function(nextNotes) notes = nextNotes end,
         setName = function(_) end,
         setColorTint = function(_) end,
-        randomize = function(_) end,
+        randomize = function(_)
+            if value <= 2 then
+                value = value + 3
+            end
+        end,
         addForce = function(_, _) end,
         addTorque = function(_, _) end,
         getRotationValue = function() return value end,
@@ -130,7 +134,7 @@ end
 getObjectFromGUID = function(guid) return objects[guid] end
 spawnObject = function(params)
     dieSequence = dieSequence + 1
-    local value = params.type == 'Die_20' and 17 or ((dieSequence % 6) + 1)
+    local value = params.type == 'Die_20' and 17 or (((dieSequence + 4) % 6) + 1)
     local die = makeDie('owned' .. tostring(dieSequence), value, '')
     lastSpawnedDie = die
     if deferSpawns then
@@ -170,16 +174,16 @@ assert(string.find(publicChat[2].message, 'DANO NORMAL', 1, true) ~= nil)
 assert(attributes['label_poderoso:text'] == 'PODEROSO')
 assert(attributes['state_poderoso:text'] == 'OFF')
 assert(attributes['state_poderoso:color'] == '#C8CBD0')
-assert(attributes['mod_1_value:text'] == '+1')
+assert(attributes['mod_1_value:text'] == '+0')
+assert(string.find(publicChat[2].message, 'Destruidor', 1, true) ~= nil)
 
--- As tres opcoes continuam funcionando; selecoes de ataque resetam, mas o
--- modificador extra permanece ativo entre as rolagens.
+-- As tres opcoes continuam funcionando; selecoes e modificadores resetam.
 uiDispatch(whitePlayer, '-1', 'roll_attack')
 uiDispatch(whitePlayer, '-1', 'roll_critical')
 assert(#publicChat == 4)
 assert(string.find(publicChat[4].message, 'DANO CRÍTICO', 1, true) ~= nil)
 assert(attributes['state_poderoso:text'] == 'OFF')
-assert(attributes['mod_1_value:text'] == '+1')
+assert(attributes['mod_1_value:text'] == '+0')
 
 -- Limpar durante um spawn pendente invalida o callback; quando ele chega,
 -- o dado criado por esta rolagem e destruido sem publicar resultado falso.

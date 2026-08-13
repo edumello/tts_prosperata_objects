@@ -1,14 +1,13 @@
 -- =========================================================
 -- CONFIGURAÇÃO DO PERSONAGEM
--- Edward / Humano Guerreiro 5 / Espada de execução
+-- Edward / Humano Guerreiro 6 / Espada de execução
 -- =========================================================
 
 local CONFIG = {
     nomeArma = "Espada de execução",
 
-    -- Bônus com a espada preparada:
-    -- Luta +10, Foco em Arma +2, Armas da Ambição +1
-    bonusAtaqueBase = 13,
+    -- Bonus final com a espada preparada no nivel 6.
+    bonusAtaqueBase = 14,
 
     -- Dano normal:
     -- 2d6 da espada + Força 6 + Estilo de Duas Mãos +5
@@ -20,12 +19,13 @@ local CONFIG = {
     margemCritico = 17,
     multiplicadorCritico = 4,
 
-    -- Guerreiro nível 1 a 4: máximo 1 PM
-    -- Guerreiro nível 5 a 8: máximo 2 PM
-    -- Guerreiro nível 9 a 12: máximo 3 PM
-    -- Guerreiro nível 13 a 16: máximo 4 PM
-    -- Guerreiro nível 17+: máximo 5 PM
+    -- Limite atual do Ataque Especial do Edward no nivel 6.
     ataqueEspecialMaxPM = 2,
+
+    -- Destruidor: dados de dano da arma que rolarem 1 ou 2 sao
+    -- rerrolados uma vez. Edward possui este poder no nivel 6.
+    destruidorAtivo = true,
+    destruidorRerrolaAte = 2,
 
     -- Golpe Pessoal: Passo do Carrasco
     golpePessoalNome = "Passo do Carrasco",
@@ -46,8 +46,8 @@ local CONFIG = {
     -- ataque atual e voltam ao estado inativo depois que o d20 e resolvido.
     resetarAposAtaque = true,
 
-    -- Mantem modificadores extras entre ataques para efeitos de varios turnos.
-    resetarModExtraAposAtaque = false,
+    -- Modificadores extras tambem voltam a zero depois do ataque.
+    resetarModExtraAposAtaque = true,
 
     -- Depois de rolar o dano, consome o último ataque armazenado
     consumirAtaqueAposDano = true,
@@ -2371,7 +2371,40 @@ local function finalizarAtaqueRolado(jogador, calculo, d20, d20Lista)
     if ameacaCritico then
         resumoChat =
             resumoChat ..
-            " | AMEAÇA DE CRÍTICO"
+            " | AMEAÇA DE CRÍTICO" ..
+            " | Crítico possível: " ..
+            tostring(
+                calculo.quantidadeDadosDano *
+                CONFIG.multiplicadorCritico
+            ) ..
+            "d" ..
+            tostring(CONFIG.ladosDadoDano) ..
+            sinal(calculo.modificadorDano)
+    end
+
+    resumoChat =
+        resumoChat ..
+        " | Dano salvo " ..
+        tostring(calculo.quantidadeDadosDano) ..
+        "d" ..
+        tostring(CONFIG.ladosDadoDano) ..
+        sinal(calculo.modificadorDano)
+
+    if state.pesado then
+        resumoChat =
+            resumoChat ..
+            " | ATAQUE PESADO: se acertar, use " ..
+            tostring(totalAtaque) ..
+            " no teste para derrubar ou empurrar."
+    end
+
+    if calculo.golpePessoal then
+        resumoChat =
+            resumoChat ..
+            " | " ..
+            CONFIG.golpePessoalAvisoAvanco ..
+            " | " ..
+            CONFIG.golpePessoalAvisoTruque
     end
 
     enviarResumoParaChat(resumoChat)
@@ -2652,63 +2685,6 @@ function rolarAtaqueCritico(
     )
 end
 
-local function finalizarDanoRolado(
-    jogador,
-    ultimo,
-    quantidadeDados,
-    usarCritico,
-    totalDados,
-    listaDados
-)
-    local totalDano =
-        totalDados +
-        ultimo.modificadorDano
-
-    local tipoDano = "DANO NORMAL"
-
-    if usarCritico then
-        tipoDano = "DANO CRÍTICO"
-    end
-
-    -- -----------------------------------------------------
-    -- Resumo do chat e do popup global
-    -- -----------------------------------------------------
-
-    local resumoChat = string.format(
-        "%s | %s | %s %s (%sd%s [%s] %s) | Ataque %s | %s",
-
-        tostring(ultimo.jogador),
-        tostring(CONFIG.nomeArma),
-        tostring(tipoDano),
-        tostring(totalDano),
-        tostring(quantidadeDados),
-        tostring(CONFIG.ladosDadoDano),
-        tostring(listaDados),
-        sinal(ultimo.modificadorDano),
-        tostring(ultimo.totalAtaque),
-        tostring(ultimo.resumoEfeitosChat)
-    )
-
-    if usarCritico
-        and not ultimo.ameacaCritico then
-        resumoChat =
-            resumoChat ..
-            " | CRITICO MANUAL"
-    end
-
-    enviarResumoParaChat(resumoChat)
-
-    -- -----------------------------------------------------
-    -- Limpeza do último ataque
-    -- -----------------------------------------------------
-
-    if CONFIG.consumirAtaqueAposDano then
-        descartarUltimoAtaque()
-    end
-
-    atualizarBotoes()
-end
-
 local function lerResultadoDado(dado, lados)
     local sucesso, valor =
         pcall(function()
@@ -2728,6 +2704,75 @@ local function lerResultadoDado(dado, lados)
     end
 
     return math.floor(valor)
+end
+
+local function copiarLista(lista)
+    local copia = {}
+
+    if type(lista) ~= "table" then
+        return copia
+    end
+
+    for indice, valor in ipairs(lista) do
+        copia[indice] = valor
+    end
+
+    return copia
+end
+
+local function formatarListaDados(lista)
+    if type(lista) ~= "table" then
+        return ""
+    end
+
+    return table.concat(lista, ", ")
+end
+
+local function somarListaDados(lista)
+    local total = 0
+
+    if type(lista) ~= "table" then
+        return total
+    end
+
+    for _, valor in ipairs(lista) do
+        total =
+            total +
+            (tonumber(valor) or 0)
+    end
+
+    return total
+end
+
+local function indicesParaDestruidor(resultados)
+    local indices = {}
+
+    if not CONFIG.destruidorAtivo
+        or type(resultados) ~= "table" then
+        return indices
+    end
+
+    for indice, valor in ipairs(resultados) do
+        if valor <= CONFIG.destruidorRerrolaAte then
+            table.insert(indices, indice)
+        end
+    end
+
+    return indices
+end
+
+local function textoDestruidor(resultado)
+    if type(resultado) ~= "table"
+        or not resultado.usou then
+        return ""
+    end
+
+    return
+        " | Destruidor: " ..
+        formatarListaDados(resultado.originaisRerolados) ..
+        " -> " ..
+        formatarListaDados(resultado.novosResultados) ..
+        " uma vez"
 end
 
 local function todosDadosEmRepouso(dados)
@@ -2772,7 +2817,65 @@ local function lerResultadosDados(dados, lados)
         )
     end
 
-    return total, table.concat(resultados, ", ")
+    return total, resultados
+end
+
+local function finalizarDanoRolado(
+    jogador,
+    ultimo,
+    quantidadeDados,
+    usarCritico,
+    resultadoDano
+)
+    local listaDados =
+        resultadoDano.finais or {}
+
+    local totalDados =
+        somarListaDados(listaDados)
+
+    local totalDano =
+        totalDados +
+        ultimo.modificadorDano
+
+    local tipoDano = "DANO NORMAL"
+
+    if usarCritico then
+        tipoDano = "DANO CRÍTICO"
+    end
+
+    local resumoChat = string.format(
+        "%s | %s | %s %s (%sd%s [%s] %s) | Ataque %s | %s",
+
+        tostring(ultimo.jogador),
+        tostring(CONFIG.nomeArma),
+        tostring(tipoDano),
+        tostring(totalDano),
+        tostring(quantidadeDados),
+        tostring(CONFIG.ladosDadoDano),
+        formatarListaDados(listaDados),
+        sinal(ultimo.modificadorDano),
+        tostring(ultimo.totalAtaque),
+        tostring(ultimo.resumoEfeitosChat)
+    )
+
+    resumoChat =
+        resumoChat ..
+        textoDestruidor(resultadoDano.destruidor)
+
+    if usarCritico
+        and not ultimo.ameacaCritico then
+        resumoChat =
+            resumoChat ..
+            " | CRITICO MANUAL"
+    end
+
+    enviarResumoParaChat(resumoChat)
+
+    if CONFIG.consumirAtaqueAposDano then
+        descartarUltimoAtaque()
+    end
+
+    atualizarBotoes()
 end
 
 local function aguardarDadosDano(
@@ -2782,6 +2885,8 @@ local function aguardarDadosDano(
     ultimo,
     quantidadeDados,
     usarCritico,
+    resultadoParcial,
+    rerrolandoDestruidor,
     tempoDecorrido
 )
     if rolagemId ~= dadoDanoRolagemId then
@@ -2803,7 +2908,7 @@ local function aguardarDadosDano(
     end
 
     if todosDadosEmRepouso(dados) then
-        local totalDados, listaDados =
+        local totalDados, resultados =
             lerResultadosDados(
                 dados,
                 CONFIG.ladosDadoDano
@@ -2821,13 +2926,96 @@ local function aguardarDadosDano(
             return
         end
 
+        if resultadoParcial == nil then
+            resultadoParcial = {
+                originais = copiarLista(resultados),
+                finais = copiarLista(resultados),
+                destruidor = {
+                    usou = false,
+                    indices = {},
+                    originaisRerolados = {},
+                    novosResultados = {}
+                }
+            }
+        end
+
+        if CONFIG.destruidorAtivo
+            and not rerrolandoDestruidor then
+            local indices =
+                indicesParaDestruidor(resultados)
+
+            if #indices > 0 then
+                resultadoParcial.destruidor.usou = true
+                resultadoParcial.destruidor.indices =
+                    copiarLista(indices)
+
+                for _, indice in ipairs(indices) do
+                    table.insert(
+                        resultadoParcial.destruidor.originaisRerolados,
+                        resultados[indice]
+                    )
+
+                    local dado =
+                        dados[indice]
+
+                    pcall(function()
+                        dado.randomize(jogador)
+                        dado.addForce(
+                            vetorAleatorio(
+                                CONFIG.dadoDanoForcaMinima,
+                                CONFIG.dadoDanoForcaMaxima
+                            ),
+                            3
+                        )
+                        dado.addTorque(
+                            vetorAleatorio(
+                                CONFIG.dadoDanoTorqueMinimo,
+                                CONFIG.dadoDanoTorqueMaximo
+                            ),
+                            3
+                        )
+                    end)
+                end
+
+                dadoDanoWaitId =
+                    Wait.time(function()
+                        aguardarDadosDano(
+                            rolagemId,
+                            dados,
+                            jogador,
+                            ultimo,
+                            quantidadeDados,
+                            usarCritico,
+                            resultadoParcial,
+                            true,
+                            0
+                        )
+                    end, CONFIG.dadoDanoIntervaloLeitura)
+
+                return
+            end
+        elseif rerrolandoDestruidor
+            and resultadoParcial.destruidor.usou then
+            resultadoParcial.finais =
+                copiarLista(resultadoParcial.originais)
+
+            for _, indice in ipairs(resultadoParcial.destruidor.indices) do
+                table.insert(
+                    resultadoParcial.destruidor.novosResultados,
+                    resultados[indice]
+                )
+
+                resultadoParcial.finais[indice] =
+                    resultados[indice]
+            end
+        end
+
         finalizarDanoRolado(
             jogador,
             ultimo,
             quantidadeDados,
             usarCritico,
-            totalDados,
-            listaDados
+            resultadoParcial
         )
 
         return
@@ -2854,6 +3042,8 @@ local function aguardarDadosDano(
                 ultimo,
                 quantidadeDados,
                 usarCritico,
+                resultadoParcial,
+                rerrolandoDestruidor,
                 tempoDecorrido +
                     CONFIG.dadoDanoIntervaloLeitura
             )
@@ -2957,6 +3147,8 @@ local function iniciarRolagemDanoFisico(
                                 ultimo,
                                 quantidadeDados,
                                 usarCritico,
+                                nil,
+                                false,
                                 0
                             )
                         end, CONFIG.dadoDanoIntervaloLeitura)

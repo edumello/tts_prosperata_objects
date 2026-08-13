@@ -215,16 +215,27 @@ test("limpeza cancela rolagens sem consumir o ataque salvo", async () => {
   assert.doesNotMatch(clearBlock[0], /descartarUltimoAtaque\(\)/);
 });
 
-test("ataque reseta selecoes e preserva os quatro modificadores extras", async () => {
+test("ataque reseta selecoes e os quatro modificadores extras", async () => {
   const lua = normalize(await readFile(luaPath, "utf8"));
   assert.match(lua, /resetarAposAtaque\s*=\s*true/);
-  assert.match(lua, /resetarModExtraAposAtaque\s*=\s*false/);
+  assert.match(lua, /resetarModExtraAposAtaque\s*=\s*true/);
   const resetBlock = lua.match(/local function resetarSelecoesAposAtaque\(\)[\s\S]*?\nend\n\n-- =+\n-- CARREGAMENTO/);
   assert.ok(resetBlock, "funcao de reset das selecoes ausente");
   for (const field of ["preparada", "poderoso", "pesado", "golpePessoal"])
     assert.match(resetBlock[0], new RegExp(`state\\.${field} = false`));
   assert.match(resetBlock[0], /state\.especialModo = 0/);
   assert.match(resetBlock[0], /if CONFIG\.resetarModExtraAposAtaque then/);
+  assert.match(resetBlock[0], /state\.modExtras\[indice\]\.valor = 0/);
+});
+
+test("nivel 6 ativa Destruidor sem Ataque Extra", async () => {
+  const lua = normalize(await readFile(luaPath, "utf8"));
+  assert.match(lua, /Edward \/ Humano Guerreiro 6/);
+  assert.match(lua, /bonusAtaqueBase\s*=\s*14/);
+  assert.match(lua, /destruidorAtivo\s*=\s*true/);
+  assert.match(lua, /indicesParaDestruidor/);
+  assert.match(lua, /textoDestruidor/);
+  assert.doesNotMatch(lua, /ataqueExtra|toggle_ataque_extra|roll_extra/i);
 });
 
 test("dados recebem proveniencia e so passam pela limpeza do painel proprietario", async () => {
