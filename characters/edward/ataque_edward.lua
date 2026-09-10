@@ -1,25 +1,25 @@
 -- =========================================================
 -- CONFIGURAÇÃO DO PERSONAGEM
--- Edward / Humano Guerreiro 6 / Espada de execução
+-- Edward / Humano Guerreiro 7 / Espada de execução de Adamante
 -- =========================================================
 
 local CONFIG = {
-    nomeArma = "Espada de execução",
+    nomeArma = "Espada de execução de Adamante",
 
-    -- Bonus final com a espada preparada no nivel 6.
+    -- Bonus final com a espada preparada no nivel 7.
     bonusAtaqueBase = 14,
 
     -- Dano normal:
-    -- 2d6 da espada + Força 6 + Estilo de Duas Mãos +5
+    -- 2d8 da espada + Força 6 + Estilo de Duas Mãos +5
     quantidadeDadosDano = 2,
-    ladosDadoDano = 6,
+    ladosDadoDano = 8,
     bonusDanoBase = 11,
 
     -- Crítico da espada com Armas da Ambição
     margemCritico = 17,
     multiplicadorCritico = 4,
 
-    -- Limite atual do Ataque Especial do Edward no nivel 6.
+    -- Limite atual do Ataque Especial do Edward no nivel 7.
     ataqueEspecialMaxPM = 2,
 
     -- Destruidor: dados de dano da arma que rolarem 1 ou 2 sao
@@ -64,8 +64,8 @@ local CONFIG = {
     dadoAtaqueEsperaMaxima = 8,
     dadoAtaqueIntervaloLeitura = 0.25,
 
-    -- D6 fisicos usados por ROLAR DANO e ROLAR ATAQUE CRITICO
-    dadoDanoTipo = "Die_6",
+    -- D8 fisicos usados por ROLAR DANO e ROLAR ATAQUE CRITICO
+    dadoDanoTipo = "Die_8",
     dadoDanoOffsetLocal = {0, 2.0, 1.35},
     dadoDanoEspacamento = 0.48,
     dadoDanoEscala = {1.05, 1.05, 1.05},
@@ -3124,7 +3124,7 @@ local function iniciarRolagemDanoFisico(
                 state.dadoDanoGuids = guids
 
                 pcall(function()
-                    dado.setName("D6 Dano Edward")
+                    dado.setName("D8 Dano Edward")
                     dado.setColorTint({0.12, 0.28, 0.55})
                     dado.measure_movement = false
                 end)
