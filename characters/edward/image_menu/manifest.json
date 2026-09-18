@@ -51,7 +51,7 @@
     "readIntervalSeconds": 0.25
   },
   "damageDice": {
-    "type": "Die_6",
+    "type": "Die_8",
     "offsetLocal": [0, 2.0, 1.35],
     "spacing": 0.48,
     "scale": [1.05, 1.05, 1.05],

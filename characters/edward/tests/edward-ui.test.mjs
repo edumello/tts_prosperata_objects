@@ -18,6 +18,7 @@ const requiredButtons = [
   "toggle_poderoso",
   "toggle_pesado",
   "toggle_golpe_pessoal",
+  "toggle_furia",
   "especial_mode",
   "especial_pm_minus",
   "especial_pm_plus",
@@ -42,10 +43,12 @@ const requiredReadouts = [
   "label_poderoso",
   "label_pesado",
   "label_golpe_pessoal",
+  "label_furia",
   "state_preparada",
   "state_poderoso",
   "state_pesado",
   "state_golpe_pessoal",
+  "state_furia",
   "especial_pm_value",
   "mod_1_value",
   "mod_2_value",
@@ -160,8 +163,24 @@ test("grade 7:4 mantem controles dentro das colunas e acoes em faixa propria", a
     assert.ok(item.y + item.height <= bounds.bottom, `${id} invade a area inferior`);
   };
 
-  for (const id of ["toggle_preparada", "toggle_poderoso", "toggle_pesado", "toggle_golpe_pessoal", "especial_mode", "especial_pm_plus"])
-    inside(id, { left: 30, right: 600, top: 195, bottom: 600 });
+  const leftColumnIds = [
+    "toggle_preparada",
+    "toggle_poderoso",
+    "toggle_pesado",
+    "toggle_golpe_pessoal",
+    "toggle_furia",
+    "especial_mode",
+  ];
+  for (const id of [...leftColumnIds, "especial_pm_plus"])
+    inside(id, { left: 30, right: 600, top: 195, bottom: 635 });
+  for (let index = 1; index < leftColumnIds.length; index += 1) {
+    const previous = positionForId(ui, leftColumnIds[index - 1]);
+    const current = positionForId(ui, leftColumnIds[index]);
+    assert.ok(
+      current.y >= previous.y + previous.height,
+      `${leftColumnIds[index]} sobrepoe ${leftColumnIds[index - 1]}`,
+    );
+  }
 
   for (const id of ["mod_name_1", "mod_1_minus", "mod_1_value", "mod_1_plus", "mod_name_4", "mod_4_plus"])
     inside(id, { left: 625, right: 1150, top: 195, bottom: 600 });
@@ -180,6 +199,7 @@ test("estados usam pills legiveis e cores fixadas pelo runtime", async () => {
   ]);
   assert.match(ui, /class="statePill" color="#292C30" outline="#6A604A"/);
   assert.match(ui, /id="state_preparada" text="OFF"[\s\S]*?color="#C8CBD0"/);
+  assert.match(ui, /id="state_furia" text="OFF"[\s\S]*?color="#C8CBD0"/);
   assert.match(lua, /uiSet\(textoId, "text", textoToggle\(ativo\)\)/);
   assert.match(lua, /ativo and "#9BE6B1" or "#C8CBD0"/);
   assert.match(lua, /return "OFF"/);
@@ -223,19 +243,30 @@ test("ataque reseta selecoes e os quatro modificadores extras", async () => {
   assert.ok(resetBlock, "funcao de reset das selecoes ausente");
   for (const field of ["preparada", "poderoso", "pesado", "golpePessoal"])
     assert.match(resetBlock[0], new RegExp(`state\\.${field} = false`));
+  assert.doesNotMatch(resetBlock[0], /state\.furia = false/);
   assert.match(resetBlock[0], /state\.especialModo = 0/);
   assert.match(resetBlock[0], /if CONFIG\.resetarModExtraAposAtaque then/);
   assert.match(resetBlock[0], /state\.modExtras\[indice\]\.valor = 0/);
 });
 
-test("nivel 6 ativa Destruidor sem Ataque Extra", async () => {
+test("nivel 9 integra Furia e Destruidor sem ataques adicionais", async () => {
   const lua = normalize(await readFile(luaPath, "utf8"));
-  assert.match(lua, /Edward \/ Humano Guerreiro 6/);
-  assert.match(lua, /bonusAtaqueBase\s*=\s*14/);
+  assert.match(lua, /Edward \/ Humano Guerreiro 7 \/ Bárbaro 2/);
+  assert.match(lua, /nomeArma\s*=\s*"Espada de execução de Adamante"/);
+  assert.match(lua, /bonusAtaqueBase\s*=\s*15/);
+  assert.match(lua, /quantidadeDadosDano\s*=\s*2/);
+  assert.match(lua, /ladosDadoDano\s*=\s*8/);
+  assert.match(lua, /dadoDanoTipo\s*=\s*"Die_8"/);
+  assert.match(lua, /furiaBonusAtaque\s*=\s*2/);
+  assert.match(lua, /furiaBonusDano\s*=\s*2/);
+  assert.match(lua, /furiaCustoPM\s*=\s*2/);
+  assert.match(lua, /state\.furia = not state\.furia/);
+  assert.match(lua, /state\.furia\s*=\s*\n?\s*dadosSalvos\.furia == true/);
+  assert.match(lua, /"Fúria \+2\/\+2"/);
   assert.match(lua, /destruidorAtivo\s*=\s*true/);
   assert.match(lua, /indicesParaDestruidor/);
   assert.match(lua, /textoDestruidor/);
-  assert.doesNotMatch(lua, /ataqueExtra|toggle_ataque_extra|roll_extra/i);
+  assert.doesNotMatch(lua, /frenesi|ataqueExtra|toggle_ataque_extra|roll_extra/i);
 });
 
 test("dados recebem proveniencia e so passam pela limpeza do painel proprietario", async () => {
@@ -245,7 +276,7 @@ test("dados recebem proveniencia e so passam pela limpeza do painel proprietario
   assert.match(lua, /tostring\(dados\.ownerGuid or ""\) == guidDoPainel\(\)/);
   assert.match(lua, /dadoPertenceAoPainel\(dado, "attack"\)/);
   assert.match(lua, /dadoPertenceAoPainel\(dado, "damage"\)/);
-  assert.doesNotMatch(lua, /getObjects\(\)[\s\S]{0,300}(?:D20 Ataque Edward|D6 Dano Edward)/);
+  assert.doesNotMatch(lua, /getObjects\(\)[\s\S]{0,300}(?:D20 Ataque Edward|D8 Dano Edward)/);
 });
 
 test("manifesto, fonte medieval e imagem correspondem ao canvas 1792x1024", async () => {
@@ -258,6 +289,7 @@ test("manifesto, fonte medieval e imagem correspondem ao canvas 1792x1024", asyn
   assert.equal(manifest.version, "3.2.1");
   assert.deepEqual(manifest.canvas, { width: 1792, height: 1024 });
   assert.deepEqual(manifest.objectUi.scale, [0.19, 0.2, 1]);
+  assert.equal(manifest.damageDice.type, "Die_8");
   assert.equal(png.toString("ascii", 1, 4), "PNG");
   assert.equal(png.readUInt32BE(16), 1792);
   assert.equal(png.readUInt32BE(20), 1024);

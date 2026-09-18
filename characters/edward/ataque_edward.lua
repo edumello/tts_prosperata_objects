@@ -1,16 +1,16 @@
 -- =========================================================
 -- CONFIGURAÇÃO DO PERSONAGEM
--- Edward / Humano Guerreiro 7 / Espada de execução de Adamante
+-- Edward / Humano Guerreiro 7 / Bárbaro 2 / Espada de execução de Adamante
 -- =========================================================
 
 local CONFIG = {
     nomeArma = "Espada de execução de Adamante",
 
-    -- Bonus final com a espada preparada no nivel 7.
-    bonusAtaqueBase = 14,
+    -- Bonus final com a espada preparada no nivel 9.
+    bonusAtaqueBase = 15,
 
     -- Dano normal:
-    -- 2d8 da espada + Força 6 + Estilo de Duas Mãos +5
+    -- 2d8 da espada de Adamante + Força 6 + Estilo de Duas Mãos +5
     quantidadeDadosDano = 2,
     ladosDadoDano = 8,
     bonusDanoBase = 11,
@@ -19,13 +19,19 @@ local CONFIG = {
     margemCritico = 17,
     multiplicadorCritico = 4,
 
-    -- Limite atual do Ataque Especial do Edward no nivel 7.
+    -- Limite atual do Ataque Especial do Edward como Guerreiro 7.
     ataqueEspecialMaxPM = 2,
 
     -- Destruidor: dados de dano da arma que rolarem 1 ou 2 sao
-    -- rerrolados uma vez. Edward possui este poder no nivel 6.
+    -- rerrolados uma vez.
     destruidorAtivo = true,
     destruidorRerrolaAte = 2,
+
+    -- Furia permanece ativa ate ser desligada. O custo de ativacao e pago
+    -- manualmente e nao entra no PM declarado por cada ataque.
+    furiaBonusAtaque = 2,
+    furiaBonusDano = 2,
+    furiaCustoPM = 2,
 
     -- Golpe Pessoal: Passo do Carrasco
     golpePessoalNome = "Passo do Carrasco",
@@ -44,6 +50,7 @@ local CONFIG = {
 
     -- Preparada, Poderoso, Pesado, Golpe Pessoal e Especial sao escolhas do
     -- ataque atual e voltam ao estado inativo depois que o d20 e resolvido.
+    -- Furia e um estado de cena persistente e nao participa deste reset.
     resetarAposAtaque = true,
 
     -- Modificadores extras tambem voltam a zero depois do ataque.
@@ -174,7 +181,7 @@ local OBJECT_UI_XML = [==[
           rectAlignment="UpperLeft" offsetXY="205 -42"
           alignment="MiddleLeft" color="#E4C75E" fontSize="50"
           fontStyle="Bold" />
-    <Text text="ESPADA DE EXECUÇÃO" width="500" height="60"
+    <Text text="ESPADA DE EXECUÇÃO DE ADAMANTE" width="620" height="60"
           rectAlignment="UpperLeft" offsetXY="1075 -52"
           alignment="MiddleRight" color="#C2A54A" fontSize="25"
           fontStyle="BoldAndItalic" />
@@ -182,9 +189,9 @@ local OBJECT_UI_XML = [==[
            rectAlignment="UpperLeft" offsetXY="100 -166" />
 
     <!-- Divisores e titulos das tres colunas -->
-    <Panel class="line" width="2" height="440"
+    <Panel class="line" width="2" height="455"
            rectAlignment="UpperLeft" offsetXY="610 -178" color="#5A4825" />
-    <Panel class="line" width="2" height="440"
+    <Panel class="line" width="2" height="455"
            rectAlignment="UpperLeft" offsetXY="1145 -178" color="#5A4825" />
     <Text text="A T A Q U E S" width="490" height="36"
           rectAlignment="UpperLeft" offsetXY="100 -174"
@@ -265,18 +272,32 @@ local OBJECT_UI_XML = [==[
               raycastTarget="false" />
     </Panel>
 
+    <Button id="toggle_furia" class="rowButton" text=""
+            onClick="uiDispatch" width="490" height="56"
+            rectAlignment="UpperLeft" offsetXY="100 -492" />
+    <Text id="label_furia" text="FÚRIA" width="330" height="56"
+          rectAlignment="UpperLeft" offsetXY="122 -492"
+          alignment="MiddleLeft" color="#FFF8E8" fontSize="22"
+          outline="#000000" outlineSize="1 1" raycastTarget="false" />
+    <Panel id="state_furia_pill" class="statePill" width="96" height="34"
+           rectAlignment="UpperLeft" offsetXY="476 -503">
+        <Text id="state_furia" text="OFF" width="96" height="34"
+              rectAlignment="MiddleCenter" color="#C8CBD0" fontSize="17"
+              raycastTarget="false" />
+    </Panel>
+
     <Button id="especial_mode" class="modeButton" text="ESPECIAL&#10;INATIVO"
             onClick="uiDispatch" width="300" height="68"
-            rectAlignment="UpperLeft" offsetXY="100 -496" />
+            rectAlignment="UpperLeft" offsetXY="100 -559" />
     <Button id="especial_pm_minus" class="miniButton" text="−"
             onClick="uiDispatch" width="44" height="48"
-            rectAlignment="UpperLeft" offsetXY="414 -506" />
+            rectAlignment="UpperLeft" offsetXY="414 -569" />
     <Text id="especial_pm_value" text="1 PM" width="70" height="48"
-          rectAlignment="UpperLeft" offsetXY="465 -506"
+          rectAlignment="UpperLeft" offsetXY="465 -569"
           color="#E4C75E" fontSize="20" />
     <Button id="especial_pm_plus" class="miniButton" text="+"
             onClick="uiDispatch" width="44" height="48"
-            rectAlignment="UpperLeft" offsetXY="542 -506" />
+            rectAlignment="UpperLeft" offsetXY="542 -569" />
 
     <!-- Modificadores extras -->
     <Panel class="section" width="500" height="56"
@@ -465,6 +486,7 @@ local function criarEstadoPadrao()
         especialPM = 1,
         pesado = false,
         golpePessoal = false,
+        furia = false,
         modExtras = criarModExtrasPadrao(),
 
         ultimoAtaque = criarUltimoAtaqueVazio(),
@@ -1083,6 +1105,13 @@ local function atualizarBotoes()
     )
     aplicarEstadoToggle("golpe_pessoal", state.golpePessoal)
 
+    uiSet(
+        "label_furia",
+        "text",
+        "FÚRIA"
+    )
+    aplicarEstadoToggle("furia", state.furia)
+
     local modoEspecial =
         state.especialModo == 0 and
             "INATIVO" or
@@ -1239,6 +1268,8 @@ function uiDispatch(player, valor, id)
         alternarPesado(self, jogador, false)
     elseif id == "toggle_golpe_pessoal" then
         alternarGolpePessoal(self, jogador, false)
+    elseif id == "toggle_furia" then
+        alternarFuria(self, jogador, false)
     elseif id == "especial_mode" then
         alternarEspecial(self, jogador, false)
     elseif id == "especial_pm_minus" then
@@ -1619,6 +1650,30 @@ calcularModificadoresSelecionados = function()
         table.insert(
             efeitosChat,
             "Poderoso -2/+5"
+        )
+    end
+
+    -- -----------------------------------------------------
+    -- Furia
+    -- -----------------------------------------------------
+
+    if state.furia then
+        modificadorAtaque =
+            modificadorAtaque +
+            CONFIG.furiaBonusAtaque
+
+        modificadorDano =
+            modificadorDano +
+            CONFIG.furiaBonusDano
+
+        table.insert(
+            efeitos,
+            "Fúria (+2 ataque, +2 dano; custo pago ao ativar)"
+        )
+
+        table.insert(
+            efeitosChat,
+            "Fúria +2/+2"
         )
     end
 
@@ -2004,6 +2059,9 @@ function onLoad(savedData)
             state.golpePessoal =
                 dadosSalvos.golpePessoal == true
 
+            state.furia =
+                dadosSalvos.furia == true
+
             state.especialModo =
                 limitarInteiro(
                     dadosSalvos.especialModo or 0,
@@ -2097,6 +2155,15 @@ function alternarGolpePessoal(
     cliqueAlternativo
 )
     state.golpePessoal = not state.golpePessoal
+    atualizarBotoes()
+end
+
+function alternarFuria(
+    objeto,
+    jogador,
+    cliqueAlternativo
+)
+    state.furia = not state.furia
     atualizarBotoes()
 end
 

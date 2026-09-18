@@ -134,7 +134,7 @@ end
 getObjectFromGUID = function(guid) return objects[guid] end
 spawnObject = function(params)
     dieSequence = dieSequence + 1
-    local value = params.type == 'Die_20' and 17 or (((dieSequence + 4) % 6) + 1)
+    local value = params.type == 'Die_20' and 17 or (((dieSequence + 6) % 8) + 1)
     local die = makeDie('owned' .. tostring(dieSequence), value, '')
     lastSpawnedDie = die
     if deferSpawns then
@@ -154,13 +154,20 @@ assert(string.find(uiXml, 'id="clear_dice"', 1, true) ~= nil)
 assert(attributes['label_preparada:text'] == 'PREPARADA')
 assert(attributes['state_preparada:text'] == 'OFF')
 assert(attributes['state_preparada:color'] == '#C8CBD0')
+assert(attributes['label_furia:text'] == 'FÚRIA')
+assert(attributes['state_furia:text'] == 'OFF')
 
+uiDispatch(whitePlayer, '-1', 'toggle_furia')
+assert(attributes['preview_pm:text'] == '0 PM')
 uiDispatch(whitePlayer, '-1', 'toggle_poderoso')
 uiDispatch(whitePlayer, '-1', 'mod_1_plus')
 uiDispatch(whitePlayer, '-1', 'roll_attack')
 assert(#publicChat == 1)
 assert(string.find(publicChat[1].message, 'ATAQUE', 1, true) ~= nil)
+assert(string.find(publicChat[1].message, 'ATAQUE 28', 1, true) ~= nil)
+assert(string.find(publicChat[1].message, 'Fúria +2/+2', 1, true) ~= nil)
 assert(publicChat[1].color.r == 0.35 and publicChat[1].color.g == 1.0)
+assert(attributes['state_furia:text'] == 'ON')
 
 local attackDie = objects.owned1
 assert(attackDie ~= nil)
@@ -176,6 +183,7 @@ assert(attributes['state_poderoso:text'] == 'OFF')
 assert(attributes['state_poderoso:color'] == '#C8CBD0')
 assert(attributes['mod_1_value:text'] == '+0')
 assert(string.find(publicChat[2].message, 'Destruidor', 1, true) ~= nil)
+assert(string.find(publicChat[2].message, 'Fúria +2/+2', 1, true) ~= nil)
 
 -- As tres opcoes continuam funcionando; selecoes e modificadores resetam.
 uiDispatch(whitePlayer, '-1', 'roll_attack')
@@ -184,6 +192,7 @@ assert(#publicChat == 4)
 assert(string.find(publicChat[4].message, 'DANO CRÍTICO', 1, true) ~= nil)
 assert(attributes['state_poderoso:text'] == 'OFF')
 assert(attributes['mod_1_value:text'] == '+0')
+assert(attributes['state_furia:text'] == 'ON')
 
 -- Limpar durante um spawn pendente invalida o callback; quando ele chega,
 -- o dado criado por esta rolagem e destruido sem publicar resultado falso.

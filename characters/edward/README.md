@@ -1,6 +1,6 @@
 # Edward Attack Panel
 
-Painel de Tabletop Simulator para automatizar os ataques de Edward, Humano Soldado Guerreiro 6, com Espada de Execucao.
+Painel de Tabletop Simulator para automatizar os ataques de Edward, Humano Guerreiro 7 / Barbaro 2, com Espada de Execucao de Adamante.
 
 ## Arquitetura
 
